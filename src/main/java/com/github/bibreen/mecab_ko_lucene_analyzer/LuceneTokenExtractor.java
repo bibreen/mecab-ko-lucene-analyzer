@@ -1,6 +1,7 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -14,6 +15,13 @@ public class LuceneTokenExtractor {
   private SortedSet<TokenInfo> tokens;
   private Tagger tagger;
   private Lattice lattice;
+  private EnumSet<Option> options;
+  
+  enum Option {
+    EXTRACT_STEMMING_ENGLISH,
+    EXTRACT_DECOMPOSED_NOUN,
+    EXTRACT_EOJEOL,
+  };
   
   static {
     try {
@@ -25,10 +33,13 @@ public class LuceneTokenExtractor {
       System.exit(1);
     }
   }
-  public LuceneTokenExtractor(String dicDirectory) {
+  
+  public LuceneTokenExtractor(EnumSet<Option> options) {
     tokens = new TreeSet<TokenInfo>();
+    //engStemmer = new EnglishStemmer();
+    this.options = options;
     
-    Model model = new Model("-F%M -d " + dicDirectory);
+    Model model = new Model("-d /home/amitabul/mecab-ko-dic"); 
     tagger = model.createTagger();
     lattice = model.createLattice();
   }
@@ -84,10 +95,12 @@ public class LuceneTokenExtractor {
   }
   
   public void extractEojeols(Node beginNode) {
+    if (!options.contains(Option.EXTRACT_EOJEOL)) {
+      return;
+    }
+
     int offset = 0;
-    
     Eojeol eojeol = new Eojeol(offset);
-    
     for (Node node = beginNode; node != null; node = node.getNext()) {
       int whiteSpaceLength = node.getRlength() - node.getLength();
       boolean isEndEojeol = (whiteSpaceLength != 0 || node.getRcAttr() == 0);
