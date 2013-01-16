@@ -39,7 +39,7 @@ public class LuceneTokenExtractor {
     //engStemmer = new EnglishStemmer();
     this.options = options;
     
-    Model model = new Model("-d /home/amitabul/mecab-ko-dic"); 
+    Model model = new Model("-d /usr/local/lib/mecab/dic"); 
     tagger = model.createTagger();
     lattice = model.createLattice();
   }

@@ -22,7 +22,7 @@ public class PerformanceWatcher {
    * @param args
    */
   public static void main(String[] args) {
-    Model model = new Model("-d /home/amitabul/mecab-ko-dic");
+    Model model = new Model("-d /usr/local/lib/mecab/dic");
     Tagger tagger = model.createTagger();
     Lattice lattice = model.createLattice();
     long start, end;
