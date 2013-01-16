@@ -48,29 +48,37 @@ public class LuceneTokenExtractor {
     lattice.set_sentence(string);
     tokens.clear();
     if (tagger.parse(lattice)) {
-      extractNouns(lattice.bos_node());
+      extractKeywords(lattice.bos_node());
 //      extractComposedNouns(morphemes);
 //      extractDecomposedNouns();
-      extractEojeols(lattice.bos_node());
-//      for (Node node = lattice.bos_node(); node != null; node = node.getNext()) {
-//         System.out.println(
-//             node.getSurface() + "\t" + 
-//             node.getLength() + "\t" + 
-//             node.getRlength() + "\t" +
-//             node.getLcAttr() + "\t" +
-//             node.getRcAttr() + "\t" +
-//             node.getChar_type() + "\t" +
-//             node.getFeature());
-//      }
+//      extractEojeols(lattice.bos_node());
+      for (Node node = lattice.bos_node(); node != null; node = node.getNext()) {
+         System.out.println(
+             node.getSurface() + "\t" + 
+             node.getLength() + "\t" + 
+             node.getRlength() + "\t" +
+             node.getLcAttr() + "\t" +
+             node.getRcAttr() + "\t" +
+             node.getChar_type() + "\t" +
+             node.getFeature());
+      }
     }
     
     return tokens;
   }
   
-  public void extractNouns(Node beginNode) {
+  public void extractKeywords(Node beginNode) {
+    // 접두사(XP) + 체언(N*)
+    // 어근(XR) [+ ?]* + 어미
+    // 용언(V*) [+ ?]* + 어말어미(EM)
+    // 용언(V*) + 어미(EM)
+    // 체언(N*) + 명사 파생 접미사(XSN)
+    // 체언(N*) + 조사 [+ 조사]*
+    
     int offset = 0;
     for (Node node = beginNode; node != null; node = node.getNext()) {
-      if (isNoun(node)) {
+      if (isNoun(node) || isAdverb(node) || isInterjection(node) || 
+          isRadix(node)) {
         String surface = node.getSurface();
         int whiteSpaceLength = node.getRlength() - node.getLength();
         Offsets offsets = 
@@ -83,16 +91,33 @@ public class LuceneTokenExtractor {
   }
   
   public boolean isNoun(Node node) {
-    // 명사인지 확인하는 방법은 3가지가 있음.
-    // 첫째, 왼쪽ID가 168 또는 169인지 확인.
-    // 둘째, 오른쪽ID가 19 또는 20인지 확인.
-    // 셋째, feature 스트링에서 NN을 확인하는 방법.
-    // 그 중 두번째 방법을 사용함.
-    if (node.getRcAttr() == 19 || node.getRcAttr() == 20) {
+    if (109 <= node.getPosid() && node.getPosid() <= 113) { 
       return true;
     }
     return false;
   }
+  
+  public boolean isAdverb(Node node) {
+    if (104 <= node.getPosid() && node.getPosid() <= 106) { 
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean isInterjection(Node node) {
+    if (node.getPosid() == 102) { 
+      return true;
+    }
+    return false;
+  }
+  
+  public boolean isRadix(Node node) {
+    if (node.getPosid() == 135) { 
+      return true;
+    }
+    return false;
+  }
+  
   
   public void extractEojeols(Node beginNode) {
     if (!options.contains(Option.EXTRACT_EOJEOL)) {
@@ -208,7 +233,7 @@ public class LuceneTokenExtractor {
     }
   }
   
-  class Offsets {
+  public class Offsets {
     public int start;
     public int end;
     
