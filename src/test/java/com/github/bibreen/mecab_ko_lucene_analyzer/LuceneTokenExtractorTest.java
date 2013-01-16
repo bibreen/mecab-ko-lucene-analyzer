@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.LuceneTokenExtractor.Option;
-import com.github.bibreen.mecab_ko_lucene_analyzer.LuceneTokenExtractor.TokenInfo;
 
 public class LuceneTokenExtractorTest {
 

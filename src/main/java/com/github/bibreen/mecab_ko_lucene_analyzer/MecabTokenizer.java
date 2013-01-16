@@ -12,7 +12,6 @@ import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.LuceneTokenExtractor.Option;
-import com.github.bibreen.mecab_ko_lucene_analyzer.LuceneTokenExtractor.TokenInfo;
 
 public class MecabTokenizer extends Tokenizer {
 
