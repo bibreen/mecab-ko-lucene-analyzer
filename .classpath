@@ -5,7 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/MeCab.jar"/>
-	<classpathentry kind="lib" path="/home/amitabul/workspace/mecab-ko-lucene-analyzer/lib/lucene-analyzers-common-4.0.0.jar"/>
-	<classpathentry kind="lib" path="/home/amitabul/workspace/mecab-ko-lucene-analyzer/lib/lucene-core-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-analyzers-common-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/lucene-core-4.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
