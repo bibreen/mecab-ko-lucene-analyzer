@@ -10,7 +10,7 @@ import org.chasen.mecab.Node;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.Pos.Tag;
 
-public class EojeolGenerator {
+public class TokenGenerator {
   
   static public Set<Appendable> appendableSet;
   
@@ -30,14 +30,12 @@ public class EojeolGenerator {
      appendableSet.add(new Appendable(Tag.JO, Tag.JO));
   }
   
-  private Pos prev = null;
-  private boolean isStarted = false;
-  private List<Pos> poses = new ArrayList<Pos>();
-  private int prevEojeolEndOffset = 0;
- 
   private Node curNode;
+  private Pos prev = null;
+  private int prevEojeolEndOffset = 0;
+  private List<Pos> poses = new ArrayList<Pos>();
   
-  public EojeolGenerator(Node beginNode) {
+  public TokenGenerator(Node beginNode) {
     if (beginNode != null)
       this.curNode = beginNode.getNext();
   }
@@ -46,41 +44,46 @@ public class EojeolGenerator {
    * 다음 Token들을 반환한다.
    * @return 반환 값이 null이면 generator 종료이다.
    */
-  public LinkedList<TokenInfo> getNextTokens() {
+  public LinkedList<TokenInfo> getNextEojeolTokens() {
     while (curNode != null) {
       Pos pos = new Pos(curNode);
-      if (pos.getTag() != Tag.OTHER) {
-        insert(new Pos(curNode));
-        if (isStarted()) {
-          return getTokenInfo();
+      if (willBeExtracted(pos)) {
+        if (!append(new Pos(curNode))) {
+          return makeTokens();
         }
       }
       curNode = curNode.getNext();
     }
     // return last tokens
-    return getTokenInfo();
+    return makeTokens();
   }
   
-  public void insert(Pos pos) {
+  private boolean willBeExtracted(Pos pos) {
+    return pos.getTag() != Tag.OTHER;
+  }
+ 
+  /**
+   * POS를 현재 어절에 포함시킬 수 있다면 포함시키고, true를 반환하고,
+   * 그렇지 않다면 false를 반환한다.
+   */
+  public boolean append(Pos pos) {
+    // 유닛 테스트 때문에 public
     if (prev == null || isAppendable(pos)) {
-      isStarted = false;
       prev = pos;
       poses.add(pos);
+      return true;
     } else {
-      isStarted = true;
       prev = null;
+      return false;
     }
   }
   
   private boolean isAppendable(Pos cur) {
+    if (cur.getNode() != null && spaceLen(cur.getNode()) > 0) return false;
     return appendableSet.contains(new Appendable(prev.getTag(), cur.getTag()));
   }
   
-  public boolean isStarted() {
-    return isStarted;
-  }
-  
-  public LinkedList<TokenInfo> getTokenInfo() {
+  private LinkedList<TokenInfo> makeTokens() {
     // TODO: 리팩토링 필요
     if (poses.isEmpty()) {
       return null;
@@ -94,16 +97,14 @@ public class EojeolGenerator {
     int length = 0;
     for (Pos pos: poses) {
       Node node = pos.getNode();
-      System.out.println(node.getSurface());
       String surface = node.getSurface();
       
-      if (poses.size() > 1 &&
-          (pos.getTag() == Tag.N || pos.getTag() == Tag.XR) /*메서드로 분리*/) {
-        // 명사와 어근은 유의어로 미리 넣어둔다.
+      if (poses.size() > 1 && (pos.isTagOf(Tag.N) || pos.isTagOf(Tag.XR))) {
+        // 명사와 어근은 incrPos=0 으로 미리 넣어둔다.
         int start = prevEojeolEndOffset + length + spaceLen(pos.getNode()) ;
         int end = start + surface.length();
         result.add(
-            new TokenInfo( surface, 0, new Offsets(start, end), false));
+            new TokenInfo(surface, 0, new Offsets(start, end), false));
       }
       
       str += surface;
@@ -121,13 +122,5 @@ public class EojeolGenerator {
   
   static private int spaceLen(Node node) {
     return node.getRlength() - node.getLength();
-  }
- 
-  /**
-   * 해당 node 표층형 문자열의 실제 길이를 반환한다.
-   * node.length()는 byte 길이이므로 사용할 수 없다.
-   */
-  static private int surfaceLen(Node node) {
-    return node.getSurface().length();
   }
 }

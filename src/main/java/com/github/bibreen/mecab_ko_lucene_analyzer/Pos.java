@@ -34,6 +34,10 @@ public class Pos {
     return tag;
   }
   
+  public boolean isTagOf(Tag tag) {
+    return this.tag == tag;
+  }
+  
   private static Tag convertToTag(int posId) {
     // TODO: pos-id가 숫자로 적혀있음 나중에 빼야함
     // 외국어처리 빠져있음.
