@@ -4,13 +4,14 @@ import org.chasen.mecab.Node;
 
 public class Pos {
   enum Tag {
-    XP,
+    IC,
+    XPN,
     N,
     XR,
     E,
     V,
     XSN,
-    JO,
+    J,
     OTHER,
   }
   
@@ -38,22 +39,25 @@ public class Pos {
     return this.tag == tag;
   }
   
-  private static Tag convertToTag(int posId) {
+  public static Tag convertToTag(int posId) {
     // TODO: pos-id가 숫자로 적혀있음 나중에 빼야함
     // 외국어처리 빠져있음.
-    if (109 <= posId && posId <= 113) { 
+    if (107 <= posId && posId <= 110) { 
       return Tag.N;
     } else if (posId == 101) {
       return Tag.E;
+    } else if (posId == 102) {
+      return Tag.IC;
     } else if (posId == 103) {
-      return Tag.JO;
-    } else if (125 <= posId && posId <= 132) {
+      return Tag.J;
+    } else if (122 <= posId && posId <= 127) {
       return Tag.V;
-    } else if (133 <= posId && posId <= 134) {
-      return Tag.XP;
-    } else if (posId == 135) {
+//    } else if (133 <= posId && posId <= 134) {
+    } else if (posId == 128) {
+      return Tag.XPN;
+    } else if (posId == 129) {
       return Tag.XR;
-    } else if (138 <= posId && posId <= 139) {
+    } else if (posId == 131) {
       return Tag.XSN;
     } else {
       return Tag.OTHER;

@@ -15,19 +15,19 @@ public class TokenGenerator {
   static public Set<Appendable> appendableSet;
   
   static {
-    // 접두사(XP) + 체언(N*)
+    // 체언접두사(XPN) + 체언(N*)
     // 어근(XR) + E [+ E]*
     // 용언(V*) + E [+ E]*
     // 체언(N*) + 명사 파생 접미사(XSN)
     // 체언(N*) + 조사 [+ 조사]*
      appendableSet = new HashSet<Appendable>();
-     appendableSet.add(new Appendable(Tag.XP, Tag.N));
+     appendableSet.add(new Appendable(Tag.XPN, Tag.N));
      appendableSet.add(new Appendable(Tag.XR, Tag.E));
      appendableSet.add(new Appendable(Tag.E, Tag.E));
      appendableSet.add(new Appendable(Tag.V, Tag.E));
      appendableSet.add(new Appendable(Tag.N, Tag.XSN));
-     appendableSet.add(new Appendable(Tag.N, Tag.JO));
-     appendableSet.add(new Appendable(Tag.JO, Tag.JO));
+     appendableSet.add(new Appendable(Tag.N, Tag.J));
+     appendableSet.add(new Appendable(Tag.J, Tag.J));
   }
   
   private Node curNode;

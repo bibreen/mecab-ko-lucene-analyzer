@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.EnumSet;
 import java.util.Iterator;
-import java.util.SortedSet;
+import java.util.List;
 
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -21,7 +21,7 @@ public class MecabTokenizer extends Tokenizer {
   
   private String document;
   private LuceneTokenExtractor tokenExtractor;
-  private SortedSet<TokenInfo> tokens;
+  private List<TokenInfo> tokens;
   private Iterator<TokenInfo> tokenIterator;
   
   public MecabTokenizer(Reader input) {

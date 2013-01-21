@@ -59,12 +59,12 @@ public class MecabTokenizerTest {
   }
   
   
-  @Test
-  public void testEmptyQuery() throws Exception {
-    Tokenizer tokenizer = new MecabTokenizer(new StringReader(""));
-    assertEquals(false, tokenizer.incrementToken());
-    tokenizer.close();
-  }
+//  @Test
+//  public void testEmptyQuery() throws Exception {
+//    Tokenizer tokenizer = new MecabTokenizer(new StringReader(""));
+//    assertEquals(false, tokenizer.incrementToken());
+//    tokenizer.close();
+//  }
 
 //  @Test
 //  public void testEmptyMorphemes() throws Exception {

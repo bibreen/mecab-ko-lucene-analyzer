@@ -45,16 +45,16 @@ public class TokenGeneratorTest {
     boolean isAppendable;
     isAppendable = generator.append(new Pos(Pos.Tag.N));
     assertEquals(true, isAppendable);
-    isAppendable = generator.append(new Pos(Pos.Tag.JO));
+    isAppendable = generator.append(new Pos(Pos.Tag.J));
     assertEquals(true, isAppendable);
     
     isAppendable = generator.append(new Pos(Pos.Tag.N));
     assertEquals(false, isAppendable);
     isAppendable = generator.append(new Pos(Pos.Tag.N));
     assertEquals(true, isAppendable);
-    isAppendable = generator.append(new Pos(Pos.Tag.JO));
+    isAppendable = generator.append(new Pos(Pos.Tag.J));
     assertEquals(true, isAppendable);
-    isAppendable = generator.append(new Pos(Pos.Tag.JO));
+    isAppendable = generator.append(new Pos(Pos.Tag.J));
     assertEquals(true, isAppendable);
     
     isAppendable = generator.append(new Pos(Pos.Tag.V));

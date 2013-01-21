@@ -31,7 +31,7 @@ public class MeCabKoDicTest {
   @Test
   public void test() {
     System.out.println(MeCab.VERSION);
-    Tagger tagger = new Tagger("-d /usr/local/lib/mecab/dic");
+    Tagger tagger = new Tagger("-d /usr/local/lib/mecab/dic/mecab-ko-dic");
     String str = "아버지가방에들어가신다.";
     //System.out.println(tagger.parse(str));
     Node node = tagger.parseToNode(str);
@@ -41,7 +41,7 @@ public class MeCabKoDicTest {
 //    System.out.println ("EOS\n");
 
     System.out.println("###");
-    Model model = new Model("-d /home/amitabul/mecab-ko-dic");
+    Model model = new Model("-d /usr/local/lib/mecab/dic/mecab-ko-dic");
     Tagger tagger2 = model.createTagger();
     //System.out.println (tagger2.parse(str));
 
