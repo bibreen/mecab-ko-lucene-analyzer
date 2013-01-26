@@ -121,6 +121,24 @@ public class TokenGeneratorTest {
   }
   
   @Test
+  public void testCompoundNounSentence() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("삼성전자는 대표적인 복합명사이다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[삼성전자는:1:0:5, 삼성전자:0:0:4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[대표적인:1:6:10, 대표:0:6:8]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[복합:1:11:13]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[명사이다:1:13:17, 명사:0:13:15]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
   public void testEmptySentence() {
     List<TokenInfo> tokens;
     lattice.set_sentence("");
