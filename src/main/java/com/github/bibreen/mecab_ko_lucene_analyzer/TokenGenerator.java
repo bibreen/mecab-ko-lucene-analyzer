@@ -1,43 +1,22 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
 
 import org.chasen.mecab.Node;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.Pos.Tag;
-
 public class TokenGenerator {
-  
-  static public Set<Appendable> appendableSet;
-  
-  static {
-    // 체언접두사(XPN) + 체언(N*)
-    // 어근(XR) + E [+ E]*
-    // 용언(V*) + E [+ E]*
-    // 체언(N*) + 명사 파생 접미사(XSN)
-    // 체언(N*) + 조사 [+ 조사]*
-     appendableSet = new HashSet<Appendable>();
-     appendableSet.add(new Appendable(Tag.XPN, Tag.N));
-     appendableSet.add(new Appendable(Tag.XR, Tag.E));
-     appendableSet.add(new Appendable(Tag.E, Tag.E));
-     appendableSet.add(new Appendable(Tag.V, Tag.E));
-     appendableSet.add(new Appendable(Tag.N, Tag.XSN));
-     appendableSet.add(new Appendable(Tag.N, Tag.J));
-     appendableSet.add(new Appendable(Tag.J, Tag.J));
-  }
+  PosAppender appender;
   
   private Node curNode;
   private Pos prev = null;
   private int prevEojeolEndOffset = 0;
-  private List<Pos> poses = new ArrayList<Pos>();
+  private ArrayList<Pos> poses = new ArrayList<Pos>();
   
   public TokenGenerator(Node beginNode) {
     if (beginNode != null)
       this.curNode = beginNode.getNext();
+    appender = new StandardPosAppender();
   }
   
   /**
@@ -46,81 +25,113 @@ public class TokenGenerator {
    */
   public LinkedList<TokenInfo> getNextEojeolTokens() {
     while (curNode != null) {
-      Pos pos = new Pos(curNode);
-      if (willBeExtracted(pos)) {
-        if (!append(new Pos(curNode))) {
-          return makeTokens();
+      if (!append(new Pos(curNode))) {
+        curNode = curNode.getNext();
+        LinkedList<TokenInfo> tokens = makeTokens();
+        if (tokens != null) {
+          return tokens;
+        } else {
+          continue;
         }
+      } else {
+        curNode = curNode.getNext();
       }
-      curNode = curNode.getNext();
     }
     // return last tokens
     return makeTokens();
   }
   
-  private boolean willBeExtracted(Pos pos) {
-    return pos.getTag() != Tag.OTHER;
-  }
- 
   /**
    * POS를 현재 어절에 포함시킬 수 있다면 포함시키고, true를 반환하고,
    * 그렇지 않다면 false를 반환한다.
+   * 유닛 테스트 때문에 public이다.
    */
   public boolean append(Pos pos) {
-    // 유닛 테스트 때문에 public
-    if (prev == null || isAppendable(pos)) {
+    if (poses.isEmpty() && prev != null) {
+      poses.add(prev);
+    }
+    
+    if (poses.isEmpty() || isAppendable(pos)) {
       prev = pos;
       poses.add(pos);
       return true;
     } else {
-      prev = null;
+      prev = pos;
       return false;
     }
   }
   
-  private boolean isAppendable(Pos cur) {
-    if (cur.getNode() != null && spaceLen(cur.getNode()) > 0) return false;
-    return appendableSet.contains(new Appendable(prev.getTag(), cur.getTag()));
+  private boolean isAppendable(Pos curPos) {
+    Pos prevPos = poses.get(poses.size() - 1);
+    return appender.isAppendable(prevPos, curPos);
   }
-  
+ 
+  /**
+   * poses에 있는 Pos를 조합하여, Token을 뽑아낸다.
+   * @return token이 있을 경우 TokenInfo의 리스트를 반환하고, 뽑아낼 token이 없을 경우
+   * null을 반환한다.
+   */
   private LinkedList<TokenInfo> makeTokens() {
-    // TODO: 리팩토링 필요
     if (poses.isEmpty()) {
       return null;
     }
+    
+    if (isSkippablePoses()) {
+      updatePrevEojeolEndOffsetAndClearPoses();
+      return null;
+    }
+    
     LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
-    
-    Node firstNode = poses.get(0).getNode();
-    int startOffset = prevEojeolEndOffset + spaceLen(firstNode);
-    
+    int startOffset = prevEojeolEndOffset + poses.get(0).getSpaceLength();
     String str = "";
     int length = 0;
     for (Pos pos: poses) {
-      Node node = pos.getNode();
-      String surface = node.getSurface();
-      
-      if (poses.size() > 1 && (pos.isTagOf(Tag.N) || pos.isTagOf(Tag.XR))) {
-        // 명사와 어근은 incrPos=0 으로 미리 넣어둔다.
-        int start = prevEojeolEndOffset + length + spaceLen(pos.getNode()) ;
-        int end = start + surface.length();
-        result.add(
-            new TokenInfo(surface, 0, new Offsets(start, end), false));
-      }
-      
-      str += surface;
-      length += spaceLen(node) + surface.length();
+      addAdditinalToken(result, pos, prevEojeolEndOffset + length);
+      str += pos.getSurface();
+      length += pos.getLength();
     }
     int endOffset = prevEojeolEndOffset + length;
+    result.addFirst(new TokenInfo(str, 1, new Offsets(startOffset, endOffset)));
     
-    result.addFirst(
-        new TokenInfo(str, 1, new Offsets(startOffset, endOffset), false));
-    
-    prevEojeolEndOffset = endOffset;
-    poses.clear();
+    updatePrevEojeolEndOffsetAndClearPoses();
     return result;
   }
+
+  private void addAdditinalToken(
+      LinkedList<TokenInfo> result, Pos pos, int prevEndOffset) {
+    if (poses.size() > 1 && isAbsolutePos(pos)) {
+      // 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
+      int startOffset = prevEndOffset + pos.getSpaceLength();
+      int endOffset = startOffset + pos.getSurfaceLength();
+      result.add(
+          new TokenInfo(
+              pos.getSurface(), 0, new Offsets(startOffset, endOffset)));
+    }
+  }
+
+  private boolean isAbsolutePos(Pos pos) {
+    return appender.isAbsolutePos(pos);
+  }
   
-  static private int spaceLen(Node node) {
-    return node.getRlength() - node.getLength();
+  private void updatePrevEojeolEndOffsetAndClearPoses() {
+    prevEojeolEndOffset += getPosesLength();
+    poses.clear();
+  }
+  
+  private int getPosesLength() {
+    int length = 0;
+    for (Pos pos: poses) {
+      length += pos.getLength();
+    }
+    return length;
+  }
+  
+  private boolean isSkippablePoses() {
+    // 단독으로 쓰인 심볼은 Token 생성 제외한다.
+    if (poses.size() == 1) {
+      return appender.isSkippablePos(poses.get(0));
+    } else {
+      return false;
+    }
   }
 }

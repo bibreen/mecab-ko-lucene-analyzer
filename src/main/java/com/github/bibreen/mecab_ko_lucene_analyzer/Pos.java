@@ -1,66 +1,92 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 import org.chasen.mecab.Node;
+import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
 public class Pos {
-  enum Tag {
-    IC,
-    XPN,
-    N,
-    XR,
-    E,
-    V,
-    XSN,
-    J,
-    OTHER,
-  }
-  
-  private Tag tag;
+  private String surface;
+  private String expression;
+  private PosId posId;
+  private PosId startPosId;
+  private PosId endPosId;
   private Node node;
   
-  public Pos(Tag tag) {
-    this.tag = tag;
+  public Pos(PosId posId) {
+    this.posId= posId;
+    this.startPosId = posId;
+    this.endPosId = posId;
+    this.expression = "";
   }
   
   public Pos(Node node) {
     this.node = node;
-    this.tag = convertToTag(node.getPosid());
+    surface = node.getSurface();
+    expression = "";
+    posId = PosId.convertFrom(node.getPosid());
+    if (posId == PosId.COMPOUND || posId == PosId.INFLECT) {
+      parseFeatureString();
+    } else {
+      startPosId = posId;
+      endPosId = posId;
+    }
+  }
+  
+  private void parseFeatureString() {
+    final int startPosPosition = 4;
+    final int endPosPosition = 5;
+    final int expressionPosition = 6;
+    
+    String feature = node.getFeature();
+    String items[] = feature.split(",");
+    if (posId == PosId.INFLECT) {
+      startPosId = PosId.convertFrom(items[startPosPosition].toUpperCase());
+      endPosId = PosId.convertFrom(items[endPosPosition].toUpperCase());
+    } else {
+      this.startPosId = posId;
+      this.endPosId = posId;
+    }
+    expression = items[expressionPosition];
   }
   
   public Node getNode()  {
     return node;
   }
   
-  public Tag getTag() {
-    return tag;
+  public PosId getPosId() {
+    return posId;
   }
   
-  public boolean isTagOf(Tag tag) {
-    return this.tag == tag;
+  public PosId getStartPosId() {
+    return startPosId;
   }
   
-  public static Tag convertToTag(int posId) {
-    // TODO: pos-id가 숫자로 적혀있음 나중에 빼야함
-    // 외국어처리 빠져있음.
-    if (107 <= posId && posId <= 110) { 
-      return Tag.N;
-    } else if (posId == 101) {
-      return Tag.E;
-    } else if (posId == 102) {
-      return Tag.IC;
-    } else if (posId == 103) {
-      return Tag.J;
-    } else if (122 <= posId && posId <= 127) {
-      return Tag.V;
-//    } else if (133 <= posId && posId <= 134) {
-    } else if (posId == 128) {
-      return Tag.XPN;
-    } else if (posId == 129) {
-      return Tag.XR;
-    } else if (posId == 131) {
-      return Tag.XSN;
-    } else {
-      return Tag.OTHER;
-    }
+  public PosId getEndPosId() {
+    return endPosId;
+  }
+  
+  public String getSurface() {
+    return surface;
+  }
+  
+  public int getSurfaceLength() {
+    return surface.length();
+  }
+  
+  public String getExpression() {
+    return expression;
+  }
+  
+  public int getSpaceLength() {
+    return node.getRlength() - node.getLength(); 
+  }
+  
+  public int getLength() {
+    return getSpaceLength() + getSurfaceLength();
+  }
+ 
+  @Override
+  public String toString() {
+    return surface + "/" + posId +
+        "/" + startPosId + "," + endPosId + "(" + expression + ")";
   }
 }

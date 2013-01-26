@@ -1,21 +1,21 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.Pos.Tag;
+import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
 public class Appendable {
-  private Tag left;
-  private Tag right;
+  private PosId left;
+  private PosId right;
   
-  public Appendable(Tag left, Tag right) {
+  public Appendable(PosId left, PosId right) {
     this.left = left;
     this.right = right;
   }
   
-  public Tag getLeft() {
+  public PosId getLeft() {
     return left;
   }
   
-  public Tag getRight() {
+  public PosId getRight() {
     return right;
   }
   
@@ -31,5 +31,3 @@ public class Appendable {
            this.right.equals(appendableObject.getRight());
   }
 }
-
-

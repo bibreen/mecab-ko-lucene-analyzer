@@ -5,13 +5,11 @@ public class TokenInfo implements Comparable<TokenInfo> {
   private String term;
   private int posIncr;
   private Offsets offsets;
-  private boolean composed;
 
-  public TokenInfo(String term, int posIncr, Offsets offsets, boolean composed) {
+  public TokenInfo(String term, int posIncr, Offsets offsets) {
     this.term = term;
     this.posIncr = posIncr;
     this.offsets = offsets;
-    this.composed = composed;
   }
 
   public String getTerm() {
@@ -24,10 +22,6 @@ public class TokenInfo implements Comparable<TokenInfo> {
 
   public Offsets getOffsets() {
     return offsets;
-  }
-
-  public boolean isComposed() {
-    return composed;
   }
 
   @Override
@@ -44,5 +38,4 @@ public class TokenInfo implements Comparable<TokenInfo> {
   public String toString() {
     return new String(term + ":" + posIncr + ":" + offsets.start + ":" + offsets.end);
   }
-  
 }
