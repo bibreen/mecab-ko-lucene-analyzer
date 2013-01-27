@@ -21,7 +21,7 @@ public class TokenGenerator {
   private Pos prev = null;
   private ArrayList<Pos> posList = new ArrayList<Pos>();
   
-  private boolean needNounDecompound = true;
+  private boolean needNounDecompound;
   private Queue<Pos> decompoundedNounsQueue;
   
   public TokenGenerator(
