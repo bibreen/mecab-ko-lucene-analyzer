@@ -72,10 +72,9 @@ public class StandardPosAppender extends PosAppender {
   @Override
   public boolean isAbsolutePos(Pos pos) {
     // 체언(명사류)와 XR(어근)은 단독으로도 token을 생성한다.
-    return (pos.getPosId() == PosId.COMPOUND ||
-        (PosId.NN.getNum() <= pos.getPosId().getNum() &&
-        pos.getPosId().getNum() <= PosId.NR.getNum()) ||
-        pos.getPosId() == PosId.XR);
+    return (pos.isPosIdOf(PosId.COMPOUND) ||
+        pos.getPosId().in(PosId.NN, PosId.NR) ||
+        pos.isPosIdOf(PosId.XR));
   }
 
   @Override

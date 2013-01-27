@@ -5,13 +5,14 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
 public class Pos {
   private String surface;
-  private String expression;
-  
+  private int startOffset;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
-  
-  private int startOffset;
+  private String expression;
+ 
+  /// 복합명사 분해과정에서 복합명사와 같은 위치에 인덱싱 되어야할 품사를 저장하기 위한 변수
+  private Pos samePositionPos = null;
   
   private Node node;
   
@@ -104,7 +105,19 @@ public class Pos {
   public int getLength() {
     return getSpaceLength() + getSurfaceLength();
   }
+  
+  public boolean isPosIdOf(PosId posId) {
+    return (this.posId == posId);
+  }
  
+  public Pos getSamePositionPos() {
+    return samePositionPos;
+  }
+
+  public void setSamePositionPos(Pos pos) {
+    samePositionPos = pos;
+  }
+
   @Override
   public String toString() {
     return surface + "/" + posId +

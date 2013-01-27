@@ -127,7 +127,9 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[삼성전자:1:0:4]", tokens.toString());
+    assertEquals("[삼성:1:0:2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[삼성전자:1:0:4, 전자:0:2:4]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
@@ -139,7 +141,10 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[삼성전자는:1:0:5, 삼성전자:0:0:4]", tokens.toString());
+    assertEquals("[삼성:1:0:2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[삼성전자는:1:0:5, 삼성전자:0:0:4, 전자:0:2:4]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[대표적인:1:6:10, 대표:0:6:8]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
