@@ -6,9 +6,13 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 public class Pos {
   private String surface;
   private String expression;
+  
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
+  
+  private int startOffset;
+  
   private Node node;
   
   public Pos(PosId posId) {
@@ -18,7 +22,15 @@ public class Pos {
     this.expression = "";
   }
   
-  public Pos(Node node) {
+  public Pos(String surface, PosId posId, int startOffset) {
+    this.surface = surface;
+    this.posId = posId;
+    startPosId = posId;
+    endPosId = posId;
+    this.startOffset = startOffset;
+  }
+  
+  public Pos(Node node, int prevEndOffset) {
     this.node = node;
     surface = node.getSurface();
     expression = "";
@@ -29,6 +41,7 @@ public class Pos {
       startPosId = posId;
       endPosId = posId;
     }
+    startOffset = prevEndOffset + this.getSpaceLength();
   }
   
   private void parseFeatureString() {
@@ -74,6 +87,14 @@ public class Pos {
   
   public String getExpression() {
     return expression;
+  }
+  
+  public int getStartOffset() {
+    return startOffset;
+  }
+  
+  public int getEndOffset() {
+    return startOffset + surface.length();
   }
   
   public int getSpaceLength() {

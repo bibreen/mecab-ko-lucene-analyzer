@@ -121,6 +121,18 @@ public class TokenGeneratorTest {
   }
   
   @Test
+  public void testCompoundNoun() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("삼성전자");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[삼성전자:1:0:4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
   public void testCompoundNounSentence() {
     List<TokenInfo> tokens;
     lattice.set_sentence("삼성전자는 대표적인 복합명사이다.");

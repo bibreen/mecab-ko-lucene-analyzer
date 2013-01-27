@@ -10,7 +10,6 @@ public class TokenGenerator {
   
   private Node curNode;
   private Pos prev = null;
-  private int prevEojeolEndOffset = 0;
   private ArrayList<Pos> poses = new ArrayList<Pos>();
   
   public TokenGenerator(Node beginNode) {
@@ -25,7 +24,10 @@ public class TokenGenerator {
    */
   public LinkedList<TokenInfo> getNextEojeolTokens() {
     while (curNode != null) {
-      if (!append(new Pos(curNode))) {
+      int prevEndOffset = 0;
+      if (prev != null) prevEndOffset = prev.getEndOffset();
+      
+      if (!append(new Pos(curNode, prevEndOffset))) {
         curNode = curNode.getNext();
         LinkedList<TokenInfo> tokens = makeTokens();
         if (tokens != null) {
@@ -77,35 +79,29 @@ public class TokenGenerator {
     }
     
     if (isSkippablePoses()) {
-      updatePrevEojeolEndOffsetAndClearPoses();
+      clearPoses();
       return null;
     }
     
     LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
-    int startOffset = prevEojeolEndOffset + poses.get(0).getSpaceLength();
+    int startOffset = poses.get(0).getStartOffset();
     String str = "";
-    int length = 0;
     for (Pos pos: poses) {
-      addAdditinalToken(result, pos, prevEojeolEndOffset + length);
+      addAdditinalToken(result, pos);
       str += pos.getSurface();
-      length += pos.getLength();
     }
-    int endOffset = prevEojeolEndOffset + length;
+    int endOffset = poses.get(poses.size() - 1).getEndOffset();
     result.addFirst(new TokenInfo(str, 1, new Offsets(startOffset, endOffset)));
     
-    updatePrevEojeolEndOffsetAndClearPoses();
+    clearPoses();
     return result;
   }
 
-  private void addAdditinalToken(
-      LinkedList<TokenInfo> result, Pos pos, int prevEndOffset) {
+  private void addAdditinalToken(LinkedList<TokenInfo> result, Pos pos) {
     if (poses.size() > 1 && isAbsolutePos(pos)) {
       // 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
-      int startOffset = prevEndOffset + pos.getSpaceLength();
-      int endOffset = startOffset + pos.getSurfaceLength();
-      result.add(
-          new TokenInfo(
-              pos.getSurface(), 0, new Offsets(startOffset, endOffset)));
+      Offsets offsets = new Offsets(pos.getStartOffset(), pos.getEndOffset());
+      result.add(new TokenInfo(pos.getSurface(), 0, offsets));
     }
   }
 
@@ -113,18 +109,17 @@ public class TokenGenerator {
     return appender.isAbsolutePos(pos);
   }
   
-  private void updatePrevEojeolEndOffsetAndClearPoses() {
-    prevEojeolEndOffset += getPosesLength();
+  private void clearPoses() {
     poses.clear();
   }
   
-  private int getPosesLength() {
-    int length = 0;
-    for (Pos pos: poses) {
-      length += pos.getLength();
-    }
-    return length;
-  }
+//  private int getPosesLength() {
+//    int length = 0;
+//    for (Pos pos: poses) {
+//      length += pos.getLength();
+//    }
+//    return length;
+//  }
   
   private boolean isSkippablePoses() {
     // 단독으로 쓰인 심볼은 Token 생성 제외한다.
