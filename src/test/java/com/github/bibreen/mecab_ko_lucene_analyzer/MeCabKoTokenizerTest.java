@@ -38,6 +38,40 @@ public class MeCabKoTokenizerTest {
     assertEquals(
         "꽃:1:0:1,배달:1:1:3,꽃:1:4:5,꽃망울:1:4:7,망울:0:5:7,오토바이:1:8:12,",
         tokenizerToString(tokenizer));
+   
+    tokenizer.reset();
+    tokenizer.setReader(new StringReader("김진명 소설 무궁화꽃이 피었습니다."));
+    assertEquals(
+        "김진명:1:0:3,소설:1:4:6,무궁화:1:7:10,꽃이:1:10:12,꽃:0:10:11," +
+        "피었습니다:1:13:18,",
+        tokenizerToString(tokenizer));
+    tokenizer.close();
+  }
+
+  @Test
+  public void testEmptyQuery() throws Exception {
+    Tokenizer tokenizer = new MeCabKoTokenizer(
+        new StringReader(""),
+        new StandardPosAppender(), true);
+    assertEquals(false, tokenizer.incrementToken());
+    tokenizer.close();
+  }
+
+  @Test
+  public void testEmptyMorphemes() throws Exception {
+    Tokenizer tokenizer = new MeCabKoTokenizer(
+        new StringReader("!@#$%^&*"),
+        new StandardPosAppender(), true);
+    assertEquals(false, tokenizer.incrementToken());
+    tokenizer.close();
+  }
+
+  @Test
+  public void testHanEnglish() throws Exception {
+    Tokenizer tokenizer = new MeCabKoTokenizer(
+        new StringReader("한win"),
+        new StandardPosAppender(), true);
+    assertEquals("한:1:0:1,win:1:1:4,", tokenizerToString(tokenizer));
     tokenizer.close();
   }
 }

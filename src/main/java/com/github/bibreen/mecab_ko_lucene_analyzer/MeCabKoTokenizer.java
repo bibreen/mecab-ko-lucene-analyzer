@@ -60,7 +60,6 @@ public class MeCabKoTokenizer extends Tokenizer {
       }
     }
     TokenInfo token = tokensQueue.poll();
-    System.out.println(token);
     setAttributes(token);
     return true;
   }
