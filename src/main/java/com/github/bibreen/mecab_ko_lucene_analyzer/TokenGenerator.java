@@ -22,13 +22,15 @@ public class TokenGenerator {
   private ArrayList<Pos> posList = new ArrayList<Pos>();
   
   private boolean needNounDecompound = true;
-  private Queue<Pos> decompoundNounsQueue;
+  private Queue<Pos> decompoundedNounsQueue;
   
-  public TokenGenerator(Node beginNode) {
+  public TokenGenerator(
+      PosAppender appender, boolean needNounDecompound, Node beginNode) {
     if (beginNode != null)
       this.curNode = beginNode.getNext();
-    appender = new StandardPosAppender();
-    decompoundNounsQueue = new LinkedList<Pos>();
+    this.appender = appender;
+    this.needNounDecompound = needNounDecompound;
+    decompoundedNounsQueue = new LinkedList<Pos>();
   }
   
   /**
@@ -38,7 +40,7 @@ public class TokenGenerator {
   public LinkedList<TokenInfo> getNextEojeolTokens() {
     while (curNode != null) {
       Pos curPos;
-      if (decompoundNounsQueue.isEmpty()) {
+      if (decompoundedNounsQueue.isEmpty()) {
         curPos = new Pos(curNode, getPrevEndOffset());
         curNode = curNode.getNext();
         if (needNounDecompound && curPos.isPosIdOf(PosId.COMPOUND)) {
@@ -46,7 +48,7 @@ public class TokenGenerator {
           continue;
         }
       } else {
-        curPos = decompoundNounsQueue.poll();
+        curPos = decompoundedNounsQueue.poll();
       }
       
       if (!append(curPos)) {
@@ -79,10 +81,10 @@ public class TokenGenerator {
     for (int i = 0; i < nouns.length; ++i) {
       Pos noun = new Pos(nouns[i], PosId.NN, startOffset);
       if (i < nouns.length - 1) {
-        decompoundNounsQueue.add(noun);
+        decompoundedNounsQueue.add(noun);
       } else {
         pos.setSamePositionPos(noun);
-        decompoundNounsQueue.add(pos);
+        decompoundedNounsQueue.add(pos);
       }
       startOffset = noun.getEndOffset();
     }

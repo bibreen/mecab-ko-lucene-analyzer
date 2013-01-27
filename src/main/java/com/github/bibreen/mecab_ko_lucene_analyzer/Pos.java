@@ -9,19 +9,10 @@ public class Pos {
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
-  private String expression;
- 
+  private String expression = null;
   /// 복합명사 분해과정에서 복합명사와 같은 위치에 인덱싱 되어야할 품사를 저장하기 위한 변수
   private Pos samePositionPos = null;
-  
   private Node node;
-  
-  public Pos(PosId posId) {
-    this.posId= posId;
-    this.startPosId = posId;
-    this.endPosId = posId;
-    this.expression = "";
-  }
   
   public Pos(String surface, PosId posId, int startOffset) {
     this.surface = surface;
@@ -32,17 +23,14 @@ public class Pos {
   }
   
   public Pos(Node node, int prevEndOffset) {
+    this(
+        node.getSurface(),
+        PosId.convertFrom(node.getPosid()),
+        prevEndOffset + node.getRlength() - node.getLength());
     this.node = node;
-    surface = node.getSurface();
-    expression = "";
-    posId = PosId.convertFrom(node.getPosid());
     if (posId == PosId.COMPOUND || posId == PosId.INFLECT) {
       parseFeatureString();
-    } else {
-      startPosId = posId;
-      endPosId = posId;
     }
-    startOffset = prevEndOffset + this.getSpaceLength();
   }
   
   private void parseFeatureString() {
@@ -99,6 +87,7 @@ public class Pos {
   }
   
   public int getSpaceLength() {
+    if (node == null) return 0;
     return node.getRlength() - node.getLength(); 
   }
   

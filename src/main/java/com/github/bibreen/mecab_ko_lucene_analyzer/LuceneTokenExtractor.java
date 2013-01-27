@@ -56,7 +56,9 @@ public class LuceneTokenExtractor {
 //             node.getChar_type() + "\t" +
 //             node.getFeature());
 //      }
-      TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+      TokenGenerator generator =
+          new TokenGenerator(
+              new StandardPosAppender(), true, lattice.bos_node());
       List<TokenInfo> eojeolTokens;
       while (true) {
         eojeolTokens = generator.getNextEojeolTokens();

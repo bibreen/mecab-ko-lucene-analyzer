@@ -43,7 +43,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence("무궁화 꽃이 피었습니다.");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[무궁화:1:0:3]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -59,7 +60,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence("무궁화 꽃이 피었습니다. 이 문장 지겹다.");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[무궁화:1:0:3]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -81,7 +83,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence("영어(english)를 study 하는 것은 어렵다.");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[영어:1:0:2]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -107,7 +110,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence("속이 쓰린 이유를 모릅니다.");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[속이:1:0:2, 속:0:0:1]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -121,11 +125,12 @@ public class TokenGeneratorTest {
   }
   
   @Test
-  public void testCompoundNoun() {
+  public void testDecompoundNoun() {
     List<TokenInfo> tokens;
     lattice.set_sentence("삼성전자");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[삼성:1:0:2]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -135,16 +140,35 @@ public class TokenGeneratorTest {
   }
   
   @Test
-  public void testCompoundNounSentence() {
+  public void testDecompoundNounSentence() {
     List<TokenInfo> tokens;
     lattice.set_sentence("삼성전자는 대표적인 복합명사이다.");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[삼성:1:0:2]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals(
-        "[삼성전자는:1:0:5, 삼성전자:0:0:4, 전자:0:2:4]", tokens.toString());
+    assertEquals("[삼성전자는:1:0:5, 삼성전자:0:0:4, 전자:0:2:4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[대표적인:1:6:10, 대표:0:6:8]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[복합:1:11:13]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[명사이다:1:13:17, 명사:0:13:15]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
+  public void testNoDecompoundNounSentence() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("삼성전자는 대표적인 복합명사이다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(
+            new StandardPosAppender(), false, lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[삼성전자는:1:0:5, 삼성전자:0:0:4]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[대표적인:1:6:10, 대표:0:6:8]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
@@ -160,7 +184,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence("");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
@@ -170,7 +195,8 @@ public class TokenGeneratorTest {
     List<TokenInfo> tokens;
     lattice.set_sentence(".,;:~");
     tagger.parse(lattice);
-    TokenGenerator generator = new TokenGenerator(lattice.bos_node());
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), true, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
