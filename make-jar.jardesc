@@ -11,9 +11,6 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/mecab-ko-lucene-analyzer/.classpath"/>
         <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java"/>
-        <file path="/mecab-ko-lucene-analyzer/.project"/>
-        <file path="/mecab-ko-lucene-analyzer/.gitignore"/>
     </selectedElements>
 </jardesc>
