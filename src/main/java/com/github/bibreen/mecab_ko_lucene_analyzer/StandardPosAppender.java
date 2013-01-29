@@ -76,6 +76,8 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.XSN, PosId.J));
     // 어미(E) + 조사(J) - 어미가 명사형 전성 어미인 경우
     appendableSet.add(new Appendable(PosId.E, PosId.J));
+    // 부사(MAG) + 조사(J)
+    appendableSet.add(new Appendable(PosId.MAG, PosId.J));
     // 조사(J) + 조사(J)
     appendableSet.add(new Appendable(PosId.J, PosId.J));
   }
@@ -91,8 +93,9 @@ public class StandardPosAppender extends PosAppender {
 
   @Override
   public boolean isAbsolutePos(Pos pos) {
-    // 체언(명사류)와 XR(어근)은 단독으로도 token을 생성한다.
+    // 체언(명사류), MAG(부사)와 XR(어근)은 단독으로도 token을 생성한다.
     return (pos.isPosIdOf(PosId.COMPOUND) ||
+        pos.isPosIdOf(PosId.MAG) ||
         pos.getPosId().in(PosId.NN, PosId.NR) ||
         pos.isPosIdOf(PosId.XR));
   }
