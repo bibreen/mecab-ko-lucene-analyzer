@@ -52,20 +52,13 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSA));
     appendableSet.add(new Appendable(PosId.MAG, PosId.XSA));
     appendableSet.add(new Appendable(PosId.XR, PosId.XSA));
-    // 체언(N*) + 긍정/부정 지정사(VCP, VCN)
+    // 체언(N*)|명사 파생 접미사(XSN) + 긍정지정사(VCP)
     appendableSet.add(new Appendable(PosId.NN, PosId.VCP));
     appendableSet.add(new Appendable(PosId.NNB, PosId.VCP));
     appendableSet.add(new Appendable(PosId.NR, PosId.VCP));
     appendableSet.add(new Appendable(PosId.NP, PosId.VCP));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.VCP));
-    appendableSet.add(new Appendable(PosId.NN, PosId.VCN));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.VCN));
-    appendableSet.add(new Appendable(PosId.NR, PosId.VCN));
-    appendableSet.add(new Appendable(PosId.NP, PosId.VCN));
-    appendableSet.add(new Appendable(PosId.COMPOUND, PosId.VCN));
-    // 명사 파생 접미사(XSN) + 긍정/부정 지정사(VCP, VCN)
     appendableSet.add(new Appendable(PosId.XSN, PosId.VCP));
-    appendableSet.add(new Appendable(PosId.XSN, PosId.VCN));
     // 체언(N*) + 조사 [+ 조사]*
     appendableSet.add(new Appendable(PosId.NN, PosId.J));
     appendableSet.add(new Appendable(PosId.NNB, PosId.J));
