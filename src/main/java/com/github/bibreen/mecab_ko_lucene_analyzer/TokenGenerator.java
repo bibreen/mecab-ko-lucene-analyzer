@@ -126,7 +126,7 @@ public class TokenGenerator {
     }
     
     if (isSkippablePoses()) {
-      clearPoses();
+      clearPosList();
       return null;
     }
     
@@ -140,7 +140,7 @@ public class TokenGenerator {
     int endOffset = posList.get(posList.size() - 1).getEndOffset();
     result.addFirst(new TokenInfo(str, 1, new Offsets(startOffset, endOffset)));
     
-    clearPoses();
+    clearPosList();
     return result;
   }
 
@@ -157,7 +157,7 @@ public class TokenGenerator {
     return appender.isAbsolutePos(pos);
   }
   
-  private void clearPoses() {
+  private void clearPosList() {
     posList.clear();
   }
   
