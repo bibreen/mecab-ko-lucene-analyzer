@@ -15,7 +15,6 @@
 
 [여기 (MeCab-0.994)](http://code.google.com/p/mecab/downloads/detail?name=mecab-0.994.tar.gz&can=1&q=) 에서 MeCab의 소스를 다운 받고 설치합니다.
 
-    :::text
     $ tar zxfv mecab-XX.tar.gz
     $ cd mecab-XX
     $ ./configure 
@@ -79,12 +78,12 @@ libMeCab.so 파일이 있는 라이브러리 경로를 지정해 주면서 solr�
 
     $ java -Djava.library.path="/usr/local/lib" -jar start.jar
 
-### 실행 결과
+### 분석 결과
 
     input:
     mecab-ko-lucene-analyzer를 사용하여 한글 검색서버를 개발하세요.
 
-    output
+    output:
     mecab | ko | lucene | analyzer | 를 | 사용하여 | 사용 | 한글 | 검색 | 서버를 | 서버 | 개발하세요 | 개발
 
 ## 라이센스
