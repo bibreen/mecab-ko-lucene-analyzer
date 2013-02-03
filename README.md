@@ -2,7 +2,7 @@
 
 ## 소개
 
-[mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)는 [mecab-ko-dic](https://bitbucket.org/bibreen/mecab-ko-dic/src)을 사용한 lucene/solr용 색인어 추출기 입니다.
+[mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)는 [mecab-ko-dic](https://bitbucket.org/bibreen/mecab-ko-dic/src)을 사용한 lucene/solr용 한국어 형태소분석기입니다.
 
 다음과 같은 기능들을 제공합니다.
 - 명사추출
