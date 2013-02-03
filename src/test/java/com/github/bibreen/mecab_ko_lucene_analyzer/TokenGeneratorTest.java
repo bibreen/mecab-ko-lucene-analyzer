@@ -193,6 +193,21 @@ public class TokenGeneratorTest {
   }
   
   @Test
+  public void testEnglishKorean() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("bag은 가방이다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(
+            new StandardPosAppender(), false, lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[bag은:1:0:4, bag:0:0:3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[가방이다:1:5:9, 가방:0:5:7]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
   public void testEmptySentence() {
     List<TokenInfo> tokens;
     lattice.set_sentence("");
