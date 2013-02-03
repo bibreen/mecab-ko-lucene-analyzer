@@ -84,7 +84,7 @@ libMeCab.so 파일이 있는 라이브러리 경로를 지정해 주면서 solr�
     mecab-ko-lucene-analyzer를 사용하여 한글 검색서버를 개발하세요.
 
     output:
-    mecab | ko | lucene | analyzer | 를 | 사용하여 | 사용 | 한글 | 검색 | 서버를 | 서버 | 개발하세요 | 개발
+    mecab | ko | lucene | analyzer를 | analyzer | 사용하여 | 사용 | 한글 | 검색 | 서버를 | 서버 | 개발하세요 | 개발
 
 ## 라이센스
 Copyright 2013 Yongwoon Lee, Yungho Yu. 
