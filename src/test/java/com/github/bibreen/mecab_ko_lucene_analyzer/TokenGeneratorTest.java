@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.chasen.mecab.Lattice;
-import org.chasen.mecab.Model;
 import org.chasen.mecab.Tagger;
 import org.junit.After;
 import org.junit.Before;
