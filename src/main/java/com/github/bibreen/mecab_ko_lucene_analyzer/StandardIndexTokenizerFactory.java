@@ -31,15 +31,17 @@ public class StandardIndexTokenizerFactory extends TokenizerFactory {
   @Override
   public void init(Map<String, String> args) {
     super.init(args);
-    mecabDicDir = getConfigFile();
+    setMeCabDicDir();
   }
 
-  private String getConfigFile() {
+  private void setMeCabDicDir() {
     String path = getArgs().get("mecabDicDir");
-    if (path.startsWith("/")) {
-      return path;
-    } else {
-      return SolrResourceLoader.locateSolrHome() + path;
+    if (path != null) {
+      if (path.startsWith("/")) {
+        mecabDicDir = path;
+      } else {
+        mecabDicDir = SolrResourceLoader.locateSolrHome() + path;
+      }
     }
   }
 
