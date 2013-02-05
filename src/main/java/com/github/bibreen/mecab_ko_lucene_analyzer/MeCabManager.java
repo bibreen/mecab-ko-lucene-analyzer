@@ -20,7 +20,8 @@ import org.chasen.mecab.Model;
 import org.chasen.mecab.Tagger;
 
 public final class MeCabManager {
-  static private Model model;
+  private volatile static MeCabManager uniqueInstance;
+  private static Model model;
   static {
     try {
       System.loadLibrary("MeCab");
@@ -30,22 +31,28 @@ public final class MeCabManager {
           + "Make sure your LD_LIBRARY_PATH contains MeCab.so path.\n" + e);
       System.exit(1);
     }
-    model = new Model("-d /usr/local/lib/mecab/dic/mecab-ko-dic");
   }
  
-  private Tagger tagger;
-  private Lattice lattice;
+  public static MeCabManager getInstance(String dicDir)
+      throws NullPointerException, RuntimeException {
+    // DCL(Double-checking Locking) Singleton. thread-safe
+    if (uniqueInstance == null) {
+      synchronized (MeCabManager.class){
+        uniqueInstance = new MeCabManager(dicDir);
+      }
+    }
+    return uniqueInstance;
+  }
   
-  MeCabManager() {
-    tagger = model.createTagger();
-    lattice = model.createLattice();
+  private MeCabManager(String dicDir) {
+    model = new Model("-d " + dicDir);
   }
 
-  public Tagger getTagger() {
-    return tagger;
+  public Tagger createTagger() {
+    return model.createTagger();
   }
   
-  public Lattice getLattice() {
-    return lattice;
+  public Lattice createLattice() {
+    return model.createLattice();
   }
 }

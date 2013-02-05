@@ -20,14 +20,28 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
+import org.apache.solr.core.SolrResourceLoader;
 
 public class StandardQueryTokenizerFactory extends TokenizerFactory {
+  private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
   @Override
-  public void init(Map<String,String> args) {
+  public void init(Map<String, String> args) {
+    super.init(args);
+    mecabDicDir = getConfigFile();
+  }
+
+  private String getConfigFile() {
+    String path = getArgs().get("mecabDicDir");
+    if (path.startsWith("/")) {
+      return path;
+    } else {
+      return SolrResourceLoader.locateSolrHome() + path;
+    }
   }
 
   @Override
   public Tokenizer create(Reader input) {
-    return new MeCabKoTokenizer(input, new StandardPosAppender(), false);
+    return new MeCabKoTokenizer(
+        input, mecabDicDir, new StandardPosAppender(), false);
   }
 }

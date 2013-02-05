@@ -32,6 +32,7 @@ public class MeCabKoTokenizer extends Tokenizer {
   private OffsetAttribute offsetAtt;
  
   private String document;
+  private String mecabDicDir;
   private MeCabManager mecabManager;
   private Lattice lattice;
   private Tagger tagger;
@@ -41,18 +42,22 @@ public class MeCabKoTokenizer extends Tokenizer {
   private Queue<TokenInfo> tokensQueue;
 
   protected MeCabKoTokenizer(
-      Reader input, PosAppender appender, boolean needNounDecompound) {
+      Reader input,
+      String dicDir,
+      PosAppender appender,
+      boolean needNounDecompound) {
     super(input);
     posAppender = appender;
+    mecabDicDir = dicDir;
     this.needNounDecompound = needNounDecompound;
     setMeCab();
     setAttributes();
   }
 
   private void setMeCab() {
-    mecabManager = new MeCabManager();
-    lattice = mecabManager.getLattice();
-    tagger = mecabManager.getTagger();
+    mecabManager = MeCabManager.getInstance(mecabDicDir);
+    lattice = mecabManager.createLattice();
+    tagger = mecabManager.createTagger();
   }
   
   private void setAttributes() {

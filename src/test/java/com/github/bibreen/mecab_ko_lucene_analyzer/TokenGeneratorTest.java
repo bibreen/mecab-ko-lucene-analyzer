@@ -30,23 +30,12 @@ public class TokenGeneratorTest {
   private Tagger tagger;
   private Lattice lattice;
   
-  static {
-    // TODO: 이 코드가 계속 중복인데 어떻게 해야하지?
-    try {
-      System.loadLibrary("MeCab");
-    } catch (UnsatisfiedLinkError e) {
-      System.err.println(
-          "Cannot load the example native code.\n"
-          + "Make sure your LD_LIBRARY_PATH contains \'.\'\n" + e);
-      System.exit(1);
-    }
-  }
-
   @Before
   public void setUp() throws Exception {
-    Model model = new Model("-d /usr/local/lib/mecab/dic/mecab-ko-dic"); 
-    tagger = model.createTagger();
-    lattice = model.createLattice();
+    MeCabManager manager =
+        MeCabManager.getInstance("/usr/local/lib/mecab/dic/mecab-ko-dic");
+    tagger = manager.createTagger();
+    lattice = manager.createLattice();
   }
 
   @After
