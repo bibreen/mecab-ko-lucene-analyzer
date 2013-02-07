@@ -50,9 +50,10 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
     $ su
     # make install
 
-### mecab-ko-lucene-analyzer 다운로드
+### mecab-ko-lucene-analyzer 소스 다운로드 및 컴파일
 
-[mecab-ko-lucene-analyzer.jar](https://github.com/bibreen/mecab-ko-lucene-analyzer/downloads)와 [MeCab.jar](https://github.com/bibreen/mecab-ko-lucene-analyzer/blob/master/lib/MeCab.jar) 파일을 다운로드 받아 solr library 디렉토리로 복사합니다.
+[프로젝트 소스](https://github.com/bibreen/mecab-ko-lucene-analyzer/archive/master.zip)를 다운로드 받아 이클립스에 import하여 make-jar.jardesc 를 실행하여 mecab-ko-lucene-analyzer.jar 파일을 생성합니다.
+그리고 mecab-ko-lucene-analyzer.jar 와 [MeCab.jar](https://github.com/bibreen/mecab-ko-lucene-analyzer/blob/master/lib/MeCab.jar) 파일을 solr library 디렉토리로 복사합니다.
 
 ## 사용법
 
