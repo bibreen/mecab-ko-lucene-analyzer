@@ -63,10 +63,10 @@ public class MeCabKoStandardTokenizerTest {
         tokenizerToString(tokenizer));
    
     tokenizer.reset();
-    tokenizer.setReader(new StringReader("김진명 소설 무궁화꽃이 피었습니다."));
+    tokenizer.setReader(new StringReader("소설 무궁화꽃이 피었습니다."));
     assertEquals(
-        "김진명:1:0:3,소설:1:4:6,무궁화:1:7:10,꽃이:1:10:12,꽃:0:10:11," +
-        "피었습니다:1:13:18,",
+        "소설:1:0:2,무궁:1:3:5,무궁화:1:3:6,화:0:5:6,꽃이:1:6:8,꽃:0:6:7," +
+        "피었습니다:1:9:14,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }

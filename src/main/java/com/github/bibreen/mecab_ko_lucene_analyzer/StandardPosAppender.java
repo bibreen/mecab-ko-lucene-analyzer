@@ -28,10 +28,7 @@ public class StandardPosAppender extends PosAppender {
    
     // Appenable HashSet 구성
     // 체언접두사(XPN) + 체언(N*)
-    appendableSet.add(new Appendable(PosId.XPN, PosId.NN));
-    appendableSet.add(new Appendable(PosId.XPN, PosId.NNB));
-    appendableSet.add(new Appendable(PosId.XPN, PosId.NR));
-    appendableSet.add(new Appendable(PosId.XPN, PosId.NP));
+    appendableSet.add(new Appendable(PosId.XPN, PosId.N));
     appendableSet.add(new Appendable(PosId.XPN, PosId.COMPOUND));
     // 어미(E) + 어미(E)
     appendableSet.add(new Appendable(PosId.E, PosId.E));
@@ -46,39 +43,24 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.XSV, PosId.E));
     appendableSet.add(new Appendable(PosId.XSA, PosId.E));
     // 체언(N*) + 명사 파생 접미사(XSN)
-    appendableSet.add(new Appendable(PosId.NN, PosId.XSN));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.XSN));
-    appendableSet.add(new Appendable(PosId.NR, PosId.XSN));
-    appendableSet.add(new Appendable(PosId.NP, PosId.XSN));
+    appendableSet.add(new Appendable(PosId.N, PosId.XSN));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSN));
     // 체언(N*)|일반부사(MAG)|어근(XR) + 동사 파생 접미사(XSV)
-    appendableSet.add(new Appendable(PosId.NN, PosId.XSV));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.XSV));
-    appendableSet.add(new Appendable(PosId.NR, PosId.XSV));
-    appendableSet.add(new Appendable(PosId.NP, PosId.XSV));
+    appendableSet.add(new Appendable(PosId.N, PosId.XSV));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSV));
     appendableSet.add(new Appendable(PosId.MAG, PosId.XSV));
     appendableSet.add(new Appendable(PosId.XR, PosId.XSV));
     // 체언(N*)|일반부사(MAG)|어근(XR) + 형용사 파생 접미사(XSA)
-    appendableSet.add(new Appendable(PosId.NN, PosId.XSA));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.XSA));
-    appendableSet.add(new Appendable(PosId.NR, PosId.XSA));
-    appendableSet.add(new Appendable(PosId.NP, PosId.XSA));
+    appendableSet.add(new Appendable(PosId.N, PosId.XSA));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSA));
     appendableSet.add(new Appendable(PosId.MAG, PosId.XSA));
     appendableSet.add(new Appendable(PosId.XR, PosId.XSA));
     // 체언(N*)|명사 파생 접미사(XSN) + 긍정지정사(VCP)
-    appendableSet.add(new Appendable(PosId.NN, PosId.VCP));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.VCP));
-    appendableSet.add(new Appendable(PosId.NR, PosId.VCP));
-    appendableSet.add(new Appendable(PosId.NP, PosId.VCP));
+    appendableSet.add(new Appendable(PosId.N, PosId.VCP));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.VCP));
     appendableSet.add(new Appendable(PosId.XSN, PosId.VCP));
     // 체언(N*) + 조사 [+ 조사]*
-    appendableSet.add(new Appendable(PosId.NN, PosId.J));
-    appendableSet.add(new Appendable(PosId.NNB, PosId.J));
-    appendableSet.add(new Appendable(PosId.NR, PosId.J));
-    appendableSet.add(new Appendable(PosId.NP, PosId.J));
+    appendableSet.add(new Appendable(PosId.N, PosId.J));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.J));
     // 명사 파생 접미사(XSN) + 조사(J)
     appendableSet.add(new Appendable(PosId.XSN, PosId.J));
@@ -112,7 +94,7 @@ public class StandardPosAppender extends PosAppender {
   public boolean isAbsolutePos(Pos pos) {
     return (pos.isPosIdOf(PosId.COMPOUND) ||
         pos.isPosIdOf(PosId.MAG) ||
-        pos.getPosId().in(PosId.NN, PosId.NR) ||
+        pos.isPosIdOf(PosId.N) ||
         pos.isPosIdOf(PosId.XR) ||
         pos.isPosIdOf(PosId.SL)
         );

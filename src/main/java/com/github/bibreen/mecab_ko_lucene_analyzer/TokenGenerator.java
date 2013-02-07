@@ -94,7 +94,7 @@ public class TokenGenerator {
     String nouns[] = expression.split("\\+");
     int startOffset = pos.getStartOffset();
     for (int i = 0; i < nouns.length; ++i) {
-      Pos noun = new Pos(nouns[i], PosId.NN, startOffset);
+      Pos noun = new Pos(nouns[i], PosId.N, startOffset);
       if (i < nouns.length - 1) {
         decompoundedNounsQueue.add(noun);
       } else {

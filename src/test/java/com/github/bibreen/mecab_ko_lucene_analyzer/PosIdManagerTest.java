@@ -24,7 +24,7 @@ public class PosIdManagerTest {
   @Test
   public void testConvertFromTagString() {
     PosId posId = PosId.convertFrom("NN");
-    assertEquals(PosId.NN, posId);
+    assertEquals(PosId.N, posId);
     
     posId = PosId.convertFrom("InvalidTagString");
     assertEquals(PosId.UNKNOWN, posId);

@@ -27,10 +27,10 @@ public final class PosIdManager {
   public enum PosId {
     UNKNOWN(0),
     COMPOUND(1), INFLECT(2),
-    E(100), IC(101), J(102), MAG(103), MAJ(104), MM(105), NN(106), NNB(107),
-    NP(108), NR(109), SF(110), SH(111), SL(112), SN(113), SP(114), SSC(115),
-    SSO(116), SU(117), SY(118), VA(119), VCN(120), VCP(121), VV(122), VX(123),
-    XPN(124), XR(125), XSA(126), XSN(127), XSV(128); 
+    E(100), IC(110), J(120), MAG(130), MAJ(131), MM(140), N(150), SF(160),
+    SH(161), SL(162), SN(163), SP(164), SSC(165), SSO(166), SU(167), SY(168),
+    VA(170), VCN(171), VCP(172), VV(173), VX(174), XPN(181), XR(182), XSA(183),
+    XSN(184), XSV(185);
 
     private int num;
     
@@ -48,34 +48,31 @@ public final class PosIdManager {
       case 1: return PosId.COMPOUND;
       case 2: return PosId.INFLECT;
       case 100: return PosId.E;
-      case 101: return PosId.IC;
-      case 102: return PosId.J;
-      case 103: return PosId.MAG;
-      case 104: return PosId.MAJ;
-      case 105: return PosId.MM;
-      case 106: return PosId.NN;
-      case 107: return PosId.NNB;
-      case 108: return PosId.NP;
-      case 109: return PosId.NR;
-      case 110: return PosId.SF;
-      case 111: return PosId.SH;
-      case 112: return PosId.SL;
-      case 113: return PosId.SN;
-      case 114: return PosId.SP;
-      case 115: return PosId.SSC;
-      case 116: return PosId.SSO;
-      case 117: return PosId.SU;
-      case 118: return PosId.SY;
-      case 119: return PosId.VA;
-      case 120: return PosId.VCN;
-      case 121: return PosId.VCP;
-      case 122: return PosId.VV;
-      case 123: return PosId.VX;
-      case 124: return PosId.XPN;
-      case 125: return PosId.XR;
-      case 126: return PosId.XSA;
-      case 127: return PosId.XSN;
-      case 128: return PosId.XSV;
+      case 110: return PosId.IC;
+      case 120: return PosId.J;
+      case 130: return PosId.MAG;
+      case 131: return PosId.MAJ;
+      case 140: return PosId.MM;
+      case 150: return PosId.N;
+      case 160: return PosId.SF;
+      case 161: return PosId.SH;
+      case 162: return PosId.SL;
+      case 163: return PosId.SN;
+      case 164: return PosId.SP;
+      case 165: return PosId.SSC;
+      case 166: return PosId.SSO;
+      case 167: return PosId.SU;
+      case 168: return PosId.SY;
+      case 170: return PosId.VA;
+      case 171: return PosId.VCN;
+      case 172: return PosId.VCP;
+      case 173: return PosId.VV;
+      case 174: return PosId.VX;
+      case 181: return PosId.XPN;
+      case 182: return PosId.XR;
+      case 183: return PosId.XSA;
+      case 184: return PosId.XSN;
+      case 185: return PosId.XSV;
       default:
         return PosId.UNKNOWN;
       }
@@ -83,7 +80,15 @@ public final class PosIdManager {
     
     public static PosId convertFrom(String tagString) {
       try {
-        return PosId.valueOf(tagString);
+        if (tagString.charAt(0) == 'N') {
+          return PosId.N;
+        } else if (tagString.charAt(0) == 'J') {
+          return PosId.J;
+        } else if (tagString.charAt(0) == 'E') {
+          return PosId.E;
+        } else {
+          return PosId.valueOf(tagString);
+        }
       } catch(Exception e) {
         return PosId.UNKNOWN;
       }
