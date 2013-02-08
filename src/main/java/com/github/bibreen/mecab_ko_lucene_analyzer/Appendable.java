@@ -17,6 +17,9 @@ package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
+/**
+ * 연접 가능한 PosId를 저장하는 클래스
+ */
 public class Appendable {
   private PosId left;
   private PosId right;

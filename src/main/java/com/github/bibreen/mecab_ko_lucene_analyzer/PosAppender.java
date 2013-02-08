@@ -16,8 +16,8 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 /**
- * TokenGenerator에서 token으로 뽑는 품사와 품사의 연결과 품사의 선택의 알고리즘을
- * 담당하는 추상 클래스.
+ * TokenGenerator에서 token으로 뽑는 품사와 품사의 연접과 token으로 뽑는 품사의 선택
+ * 알고리즘을 담당하는 추상 클래스.
  * 
  * @author bibreen <bibreen@gmail.com>
  */

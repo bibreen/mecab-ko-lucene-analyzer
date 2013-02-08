@@ -22,7 +22,7 @@ package com.github.bibreen.mecab_ko_lucene_analyzer;
  */
 public final class PosIdManager {
   /**
-   * PosId와 일대일 매핑되는 enum
+   * PosId와 매핑되는 enum
    */
   public enum PosId {
     UNKNOWN(0),

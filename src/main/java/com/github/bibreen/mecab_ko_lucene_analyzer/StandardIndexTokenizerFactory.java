@@ -23,6 +23,19 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
 
 /**
+ * 표준 index용 tokenizer 팩토리 생성자.
+ * mecabDicDir의 디폴트 경로는 /usr/local/lib/mecab/dic/mecab-ko-dic 이다.
+ * 
+ * <pre>
+ * {@code
+ * <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
+ *   <analyzer type="index">
+ *     <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory"
+ *                mecabDicDir="/usr/local/lib/mecab/dic/mecab-ko-dic"/>
+ *   </analyzer>
+ * </fieldType>
+ * }
+ * </pre>
  * 
  * @author bibreen <bibreen@gmail.com>
  */

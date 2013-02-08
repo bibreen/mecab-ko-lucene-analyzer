@@ -20,6 +20,12 @@ import java.util.Set;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
+/**
+ * 표준 tokenizer를 위한 PosAppender.
+ * 
+ * @author bibreen <bibreen@gmail.com>
+ * @author amitabul <mousegood@gmail.com>
+ */
 public class StandardPosAppender extends PosAppender {
   static public Set<Appendable> appendableSet;
   

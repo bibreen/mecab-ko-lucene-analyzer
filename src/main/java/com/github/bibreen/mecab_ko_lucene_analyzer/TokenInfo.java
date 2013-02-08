@@ -15,6 +15,10 @@
  ******************************************************************************/
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
+/**
+ * Tokenizer에서 사용될 토큰 정보를 갖는 클래스.
+ * @author bibreen <bibreen@gmail.com>
+ */
 public class TokenInfo {
   private String term;
   private int posIncr;

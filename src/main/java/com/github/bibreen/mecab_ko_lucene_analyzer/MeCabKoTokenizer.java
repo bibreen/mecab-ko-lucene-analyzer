@@ -26,6 +26,12 @@ import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
+/**
+ * Lucene/Solr용 Tokenizer.
+ * 
+ * @author bibreen <bibreen@gmail.com>
+ * @author amitabul <mousegood@gmail.com>
+ */
 public class MeCabKoTokenizer extends Tokenizer {
   private CharTermAttribute charTermAtt;
   private PositionIncrementAttribute posIncrAtt;
@@ -41,6 +47,14 @@ public class MeCabKoTokenizer extends Tokenizer {
   private TokenGenerator generator;
   private Queue<TokenInfo> tokensQueue;
 
+  /**
+   * MeCabKoTokenizer 생성자.
+   * 
+   * @param input
+   * @param dicDir mecab 사전 디렉터리 경로
+   * @param appender PosAppender
+   * @param needNounDecompound 복합명사 분해 필요 여부
+   */
   protected MeCabKoTokenizer(
       Reader input,
       String dicDir,

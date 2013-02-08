@@ -18,6 +18,11 @@ package com.github.bibreen.mecab_ko_lucene_analyzer;
 import org.chasen.mecab.Node;
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
+/**
+ * 품사(형태소, 품사 ID, 위치 등) 정보 클래스
+ * 
+ * @author bibreen <bibreen@gmail.com>
+ */
 public class Pos {
   private String surface;
   private int startOffset;
@@ -37,6 +42,12 @@ public class Pos {
     this.startOffset = startOffset;
   }
   
+  /**
+   * mecab의 자료 구조인 node를 사용하는 Pos 생성자.
+   * 
+   * @param node Node
+   * @param prevEndOffset 이전 Pos의 end offset
+   */
   public Pos(Node node, int prevEndOffset) {
     this(
         node.getSurface(),
