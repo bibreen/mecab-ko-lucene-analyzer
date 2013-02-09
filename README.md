@@ -34,12 +34,13 @@ MeCab 설치의 자세한 내용은 [MeCab 홈페이지](http://mecab.googlecode
 
 ### libMeCab.so 설치
 
-[mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
+[mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다. \(주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.\)
 
     $ tar zxvf mecab-java-XX.tar.gz
     $ mv mecab-java-XX.tar.gz mecab-XX/java
     $ cd mecab-XX/java
     $ make
+    $ cp MeCab.jar [solr 라이브러리 디렉터리]
     $ su
     # cp libMeCab.so /usr/local/lib
 
@@ -58,12 +59,10 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
     # make install
 
 ### mecab-ko-lucene-analyzer 다운로드
-[mecab-ko-dic 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads) 에서 `mecab-ko-lucene-analyzer`의 최신 버전을 다운 받습니다.
+[mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyze`의 최신 버전을 받아 solr library 디렉터리로 복사합니다.
 
 ### mecab-ko-lucene-analyzer 소스 다운로드 및 컴파일
-
 [프로젝트 소스](https://github.com/bibreen/mecab-ko-lucene-analyzer/archive/master.zip)를 다운로드 받아 이클립스에 import하여 `make-jar.jardesc` 를 실행하여 `mecab-ko-lucene-analyzer.jar` 파일을 생성합니다.
-그리고 `mecab-ko-lucene-analyzer.jar` 와 [MeCab.jar](https://github.com/bibreen/mecab-ko-lucene-analyzer/blob/master/lib/MeCab.jar) 파일을 solr library 디렉토리로 복사합니다.
 
 ## 사용법
 
@@ -72,7 +71,7 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
 
     <lib dir="../lib" regex=".*\.jar" />
 
-schema.xml 에 fieldType 을 설정합니다.
+`schema.xml` 에 `fieldType` 을 설정합니다.
 
     <!-- Korean -->
     <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
@@ -85,7 +84,7 @@ schema.xml 에 fieldType 을 설정합니다.
     </fieldType>
 
 ### solr 실행
-libMeCab.so 파일이 있는 라이브러리 경로를 지정해 주면서 solr를 실행합니다.
+`libMeCab.so` 파일이 있는 라이브러리 경로를 지정해 주면서 solr를 실행합니다.
 
     $ java -Djava.library.path="/usr/local/lib" -jar start.jar
 
