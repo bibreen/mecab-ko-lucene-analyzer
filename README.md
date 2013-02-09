@@ -32,7 +32,7 @@
 
 MeCab 설치의 자세한 내용은 [MeCab 홈페이지](http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html)를 참조하시기 바랍니다.
 
-### libMeCab.so 설치
+### MeCab.jar와 libMeCab.so 설치
 
 [mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다. \(주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.\)
 
