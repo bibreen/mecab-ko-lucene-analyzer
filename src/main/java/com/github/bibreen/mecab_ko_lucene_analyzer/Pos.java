@@ -69,6 +69,9 @@ public class Pos {
     if (posId == PosId.INFLECT) {
       startPosId = PosId.convertFrom(items[startPosPosition].toUpperCase());
       endPosId = PosId.convertFrom(items[endPosPosition].toUpperCase());
+    } else if (posId == PosId.COMPOUND){
+      startPosId = PosId.N;
+      endPosId = PosId.N;
     } else {
       this.startPosId = posId;
       this.endPosId = posId;
@@ -123,6 +126,10 @@ public class Pos {
   
   public boolean isPosIdOf(PosId posId) {
     return (this.posId == posId);
+  }
+ 
+  public boolean hasSpace() {
+    return getSpaceLength() > 0;
   }
  
   public Pos getSamePositionPos() {

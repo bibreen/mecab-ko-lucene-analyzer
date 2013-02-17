@@ -40,7 +40,7 @@ public class TokenGeneratorTest {
   @After
   public void tearDown() throws Exception {
   }
-
+  
   @Test
   public void testHangulSentence() {
     List<TokenInfo> tokens;
@@ -191,6 +191,56 @@ public class TokenGeneratorTest {
     assertEquals("[bag은:1:0:4, bag:0:0:3]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[가방이다:1:5:9, 가방:0:5:7]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  /**
+   * 떨어진 조사 문제(https://bitbucket.org/bibreen/mecab-ko-dic/issue/1/--------------------)
+   * 해결을 위한 코드 테스트.
+   */
+  @Test
+  public void testIsolatedJosaCase1() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("무궁화 꽃 이 그림같다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(
+            new StandardPosAppender(), false, lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[무궁화:1:0:3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[꽃:1:4:5]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[이:1:6:7]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[그림:1:8:10]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[같다:1:10:12]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  /**
+   * 떨어진 조사 문제(https://bitbucket.org/bibreen/mecab-ko-dic/issue/1/--------------------)
+   * 해결을 위한 코드 테스트.
+   */
+  @Test
+  public void testIsolatedJosaCase2() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("무궁화 꽃 이그림같다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(
+            new StandardPosAppender(), false, lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[무궁화:1:0:3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[꽃:1:4:5]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[이:1:6:7]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[그림:1:7:9, 이그림:0:6:9]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[같다:1:9:11]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }

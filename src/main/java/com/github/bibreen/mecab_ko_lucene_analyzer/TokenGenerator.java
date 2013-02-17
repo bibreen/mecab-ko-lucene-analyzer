@@ -33,7 +33,7 @@ public class TokenGenerator {
   PosAppender appender;
   
   private Node curNode;
-  private Pos prev = null;
+  private Pos lastPos = null;
   private ArrayList<Pos> posList = new ArrayList<Pos>();
   
   private boolean needNounDecompound;
@@ -56,7 +56,7 @@ public class TokenGenerator {
     while (curNode != null) {
       Pos curPos;
       if (decompoundedNounsQueue.isEmpty()) {
-        curPos = new Pos(curNode, getPrevEndOffset());
+        curPos = new Pos(curNode, getLastPosEndOffset());
         curNode = curNode.getNext();
         if (needNounDecompound && curPos.isPosIdOf(PosId.COMPOUND)) {
           decompoundNoun(curPos);
@@ -79,9 +79,9 @@ public class TokenGenerator {
     return makeTokens();
   }
 
-  private int getPrevEndOffset() {
-    if (prev != null) {
-      return prev.getEndOffset();
+  private int getLastPosEndOffset() {
+    if (lastPos != null) {
+      return lastPos.getEndOffset();
     } else {
       return 0;
     }
@@ -111,16 +111,16 @@ public class TokenGenerator {
    * 유닛 테스트 때문에 public이다.
    */
   public boolean append(Pos pos) {
-    if (posList.isEmpty() && prev != null) {
-      posList.add(prev);
+    if (posList.isEmpty() && lastPos != null) {
+      posList.add(lastPos);
     }
     
     if (posList.isEmpty() || isAppendable(pos)) {
-      prev = pos;
+      lastPos = pos;
       posList.add(pos);
       return true;
     } else {
-      prev = pos;
+      lastPos = pos;
       return false;
     }
   }
@@ -160,24 +160,64 @@ public class TokenGenerator {
   }
 
   private void addAdditinalToken(LinkedList<TokenInfo> result, Pos pos) {
+    addAbsolutePosToken(result, pos);
+    addSamePositionPosToken(result, pos);
+    addIsolatedJosaToken(result, pos);
+  }
+
+  /**
+   * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
+   */
+  private void addAbsolutePosToken(LinkedList<TokenInfo> result, Pos pos) {
     if (posList.size() > 1 && isAbsolutePos(pos)) {
-      // 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
       result.add(new TokenInfo(pos, 0));
     }
+  }
+  
+  /**
+   * 같은 위치에 넣어야되는 품사가 있을 경우(복합명사의 경우), 해당 품사를 icrsPos=0으로
+   * 넣어둔다.
+   */
+  private void addSamePositionPosToken(LinkedList<TokenInfo> result, Pos pos) {
     Pos samePositionPos = pos.getSamePositionPos();
     if (samePositionPos != null) result.add(new TokenInfo(samePositionPos, 0));
   }
 
+  /**
+   * '떨어진 조사' 이슈에 대한 처리를 한다.
+   * 참고: https://bitbucket.org/bibreen/mecab-ko-dic/issue/1/--------------------
+   */
+  private void addIsolatedJosaToken(LinkedList<TokenInfo> result, Pos pos) {
+    if (pos.getNode() == null || pos.getNode().getPrev() == null) {
+      return;
+    }
+    Node prevNode = pos.getNode().getPrev();
+    if (isIsolatedJosa(prevNode) && !pos.hasSpace()) {
+      String prevSurface = prevNode.getSurface();
+      result.add(
+          new TokenInfo(
+              prevSurface + pos.getSurface(),
+              0,
+              new Offsets(
+                  pos.getStartOffset() - prevSurface.length(),
+                  pos.getEndOffset())));
+    }
+  }
+  
   private boolean isAbsolutePos(Pos pos) {
     return appender.isAbsolutePos(pos);
   }
   
+  private static boolean isIsolatedJosa(Node node) {
+    return node.getPosid() == PosId.J.getNum() &&
+        node.getRlength() - node.getLength() > 0;
+  }
+
   private void clearPosList() {
     posList.clear();
   }
   
   private boolean isSkippablePoses() {
-    // 단독으로 쓰인 심볼은 Token 생성 제외한다.
     if (posList.size() == 1) {
       return appender.isSkippablePos(posList.get(0));
     } else {

@@ -84,7 +84,7 @@ public class StandardPosAppender extends PosAppender {
 
   @Override
   public boolean isAppendable(Pos left, Pos right) {
-    if (right.getNode() != null && right.getSpaceLength() > 0) {
+    if (right.getNode() != null && right.hasSpace()) {
       return false;
     }
     return appendableSet.contains(
