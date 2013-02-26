@@ -46,18 +46,18 @@ public class MeCabKoStandardTokenizerTest {
   }
   
   private Tokenizer createTokenizer(
-      StringReader reader, boolean needNounDecompound) {
+      StringReader reader, int decompoundMinLength) {
     return new MeCabKoTokenizer(
         reader,
         "/usr/local/lib/mecab/dic/mecab-ko-dic",
         new StandardPosAppender(),
-        needNounDecompound);
+        decompoundMinLength);
   }
-
+  
   @Test
   public void test() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("꽃배달 꽃망울 오토바이"), true);
+        new StringReader("꽃배달 꽃망울 오토바이"), 2);
     assertEquals(
         "꽃:1:0:1,배달:1:1:3,꽃:1:4:5,꽃망울:1:4:7,망울:0:5:7,오토바이:1:8:12,",
         tokenizerToString(tokenizer));
@@ -70,24 +70,40 @@ public class MeCabKoStandardTokenizerTest {
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
-
+  
+  @Test
+  public void test1() throws Exception {
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
+        TokenGenerator.DECOMPOUND_ALL);
+    assertEquals(
+        "한국을:1:0:3,한국:0:0:2,최대:1:4:6,최대한:1:4:7,한:0:6:7," +
+        "배려했다는:1:8:13,배려:0:8:10,사실을:1:14:17,사실:0:14:16,이:1:18:19," +
+        "이해해주길:1:18:23,이해:0:18:20,해:0:19:20,바란다:1:24:27,",
+        tokenizerToString(tokenizer));
+    tokenizer.close();
+  }
+  
   @Test
   public void testEmptyQuery() throws Exception {
-    Tokenizer tokenizer = createTokenizer(new StringReader(""), true);
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader(""), TokenGenerator.DECOMPOUND_ALL);
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
 
   @Test
   public void testEmptyMorphemes() throws Exception {
-    Tokenizer tokenizer = createTokenizer(new StringReader("!@#$%^&*"), true);
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("!@#$%^&*"), TokenGenerator.DECOMPOUND_ALL);
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
 
   @Test
   public void testHanEnglish() throws Exception {
-    Tokenizer tokenizer = createTokenizer(new StringReader("한win"), true);
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("한win"), TokenGenerator.DECOMPOUND_ALL);
     assertEquals("한:1:0:1,win:1:1:4,", tokenizerToString(tokenizer));
     tokenizer.close();
   }

@@ -80,6 +80,8 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.J, PosId.J));
     // 외국어(SL) + 조사(J)
     appendableSet.add(new Appendable(PosId.SL, PosId.J));
+    // 한자(SH) + 조사(J)
+    appendableSet.add(new Appendable(PosId.SH, PosId.J));
   }
 
   @Override
@@ -96,14 +98,13 @@ public class StandardPosAppender extends PosAppender {
    * 단독으로 쓰일 수 있는 형태소인지를 판단한다.
    * 
    * @param Pos pos 형태소.
-   * @return 체언(NN, NR), 부사(MAG), 어근(XR), 외국어(SL)의 경우 true,
-   *         그 외의 경우 false.
    */
   public boolean isAbsolutePos(Pos pos) {
     return (pos.isPosIdOf(PosId.COMPOUND) ||
         pos.isPosIdOf(PosId.MAG) ||
         pos.isPosIdOf(PosId.N) ||
         pos.isPosIdOf(PosId.XR) ||
+        pos.isPosIdOf(PosId.SH) ||
         pos.isPosIdOf(PosId.SL)
         );
   }

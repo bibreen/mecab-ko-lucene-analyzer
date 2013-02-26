@@ -43,7 +43,7 @@ public class MeCabKoTokenizer extends Tokenizer {
   private Lattice lattice;
   private Tagger tagger;
   private PosAppender posAppender;
-  private boolean needNounDecompound;
+  private int decompoundMinLength;
   private TokenGenerator generator;
   private Queue<TokenInfo> tokensQueue;
 
@@ -53,17 +53,18 @@ public class MeCabKoTokenizer extends Tokenizer {
    * @param input
    * @param dicDir mecab 사전 디렉터리 경로
    * @param appender PosAppender
-   * @param needNounDecompound 복합명사 분해 필요 여부
+   * @param decompoundMinLength 복합명사 분해를 하기위한 복합명사의 최소 길이.
+   * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
    */
   protected MeCabKoTokenizer(
       Reader input,
       String dicDir,
       PosAppender appender,
-      boolean needNounDecompound) {
+      int decompoundMinLength) {
     super(input);
     posAppender = appender;
     mecabDicDir = dicDir;
-    this.needNounDecompound = needNounDecompound;
+    this.decompoundMinLength = decompoundMinLength;
     setMeCab();
     setAttributes();
   }
@@ -106,7 +107,7 @@ public class MeCabKoTokenizer extends Tokenizer {
     lattice.set_sentence(document);
     tagger.parse(lattice);
     this.generator = new TokenGenerator(
-        posAppender, needNounDecompound, lattice.bos_node());
+        posAppender, decompoundMinLength, lattice.bos_node());
   }
   
   private void setAttributes(TokenInfo token) {

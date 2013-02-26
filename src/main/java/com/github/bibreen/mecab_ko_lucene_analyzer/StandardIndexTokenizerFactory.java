@@ -23,15 +23,17 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
 
 /**
- * 표준 index용 tokenizer 팩토리 생성자.
- * mecabDicDir의 디폴트 경로는 /usr/local/lib/mecab/dic/mecab-ko-dic 이다.
+ * 표준 index용 tokenizer 팩토리 생성자. 다음과 같은 파라미터를 받는다.
+ *   - mecabDicDir: mecab-ko-dic 사전 경로. 디폴트 경로는 /usr/local/lib/mecab/dic/mecab-ko-dic 이다.
+ *   - decompoundMinLength: 복합명사 분해 최소 길이. 디폴트 값은 2이다.
  * 
  * <pre>
  * {@code
  * <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
  *   <analyzer type="index">
  *     <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory"
- *                mecabDicDir="/usr/local/lib/mecab/dic/mecab-ko-dic"/>
+ *                mecabDicDir="/usr/local/lib/mecab/dic/mecab-ko-dic"
+ *                decompoundMinLength="2"/>
  *   </analyzer>
  * </fieldType>
  * }
@@ -41,10 +43,12 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
  */
 public class StandardIndexTokenizerFactory extends TokenizerFactory {
   private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
+  private int decompoundMinLength = TokenGenerator.DECOMPOUND_ALL;
   @Override
   public void init(Map<String, String> args) {
     super.init(args);
     setMeCabDicDir();
+    setDecompoundMinLength();
   }
 
   private void setMeCabDicDir() {
@@ -57,10 +61,17 @@ public class StandardIndexTokenizerFactory extends TokenizerFactory {
       }
     }
   }
+  
+  private void setDecompoundMinLength() {
+    String v = getArgs().get("decompoundMinLength");
+    if (v != null) {
+      decompoundMinLength = Integer.valueOf(v);
+    }
+  }
 
   @Override
   public Tokenizer create(Reader input) {
     return new MeCabKoTokenizer(
-        input, mecabDicDir, new StandardPosAppender(), true);
+        input, mecabDicDir, new StandardPosAppender(), decompoundMinLength);
   }
 }

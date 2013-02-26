@@ -30,21 +30,32 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  * @author amitabul <mousegood@gmail.com>
  */
 public class TokenGenerator {
+  static public int NO_DECOMPOUND = -1;
+  static public int DECOMPOUND_ALL = 2;
+  
   PosAppender appender;
   
   private Node curNode;
   private Pos lastPos = null;
   private ArrayList<Pos> posList = new ArrayList<Pos>();
   
-  private boolean needNounDecompound;
+  private int decompoundMinLength;
   private Queue<Pos> decompoundedNounsQueue;
-  
+ 
+  /**
+   * TokenGenerator 생성자
+   * 
+   * @param appender PosAppender
+   * @param decompoundMinLength 복합명사 분해를 하기위한 복합명사의 최소 길이.
+   * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
+   * @param beginNode
+   */
   public TokenGenerator(
-      PosAppender appender, boolean needNounDecompound, Node beginNode) {
+      PosAppender appender, int decompoundMinLength, Node beginNode) {
     if (beginNode != null)
       this.curNode = beginNode.getNext();
     this.appender = appender;
-    this.needNounDecompound = needNounDecompound;
+    this.decompoundMinLength = decompoundMinLength;
     decompoundedNounsQueue = new LinkedList<Pos>();
   }
   
@@ -58,7 +69,7 @@ public class TokenGenerator {
       if (decompoundedNounsQueue.isEmpty()) {
         curPos = new Pos(curNode, getLastPosEndOffset());
         curNode = curNode.getNext();
-        if (needNounDecompound && curPos.isPosIdOf(PosId.COMPOUND)) {
+        if (needDecompound(curPos)) {
           decompoundNoun(curPos);
           continue;
         }
@@ -77,6 +88,12 @@ public class TokenGenerator {
     }
     // return last tokens
     return makeTokens();
+  }
+
+  private boolean needDecompound(Pos curPos) {
+    return (curPos.isPosIdOf(PosId.COMPOUND) &&
+        decompoundMinLength >= 0 &&
+        curPos.getSurfaceLength() >= decompoundMinLength);
   }
 
   private int getLastPosEndOffset() {
@@ -131,7 +148,7 @@ public class TokenGenerator {
   }
  
   /**
-   * poses에 있는 Pos를 조합하여, Token을 뽑아낸다.
+   * posList에 있는 Pos를 조합하여, Token을 뽑아낸다.
    * @return token이 있을 경우 TokenInfo의 리스트를 반환하고, 뽑아낼 token이 없을 경우
    * null을 반환한다.
    */
