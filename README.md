@@ -73,10 +73,10 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
     <!-- Korean -->
     <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
-        <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardQueryTokenizerFactory"/>
+        <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory"/>
       </analyzer>
       <analyzer type="query">
-        <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory"/>
+        <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardQueryTokenizerFactory"/>
       </analyzer>
     </fieldType>
 
