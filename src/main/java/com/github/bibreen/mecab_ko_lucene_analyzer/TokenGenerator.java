@@ -30,8 +30,8 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  * @author amitabul <mousegood@gmail.com>
  */
 public class TokenGenerator {
-  static public int NO_DECOMPOUND = -1;
-  static public int DECOMPOUND_ALL = 2;
+  public static final int NO_DECOMPOUND = 9999;
+  public static final int DEFAULT_DECOMPOUND = 2;
   
   PosAppender appender;
   
@@ -46,7 +46,7 @@ public class TokenGenerator {
    * TokenGenerator 생성자
    * 
    * @param appender PosAppender
-   * @param decompoundMinLength 복합명사 분해를 하기위한 복합명사의 최소 길이.
+   * @param decompoundMinLength 복합명사에서 분해할 명사의 최소길이.
    * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
    * @param beginNode
    */
@@ -69,7 +69,7 @@ public class TokenGenerator {
       if (decompoundedNounsQueue.isEmpty()) {
         curPos = new Pos(curNode, getLastPosEndOffset());
         curNode = curNode.getNext();
-        if (needDecompound(curPos)) {
+        if (isDecompound(curPos)) {
           decompoundNoun(curPos);
           continue;
         }
@@ -90,10 +90,8 @@ public class TokenGenerator {
     return makeTokens();
   }
 
-  private boolean needDecompound(Pos curPos) {
-    return (curPos.isPosIdOf(PosId.COMPOUND) &&
-        decompoundMinLength >= 0 &&
-        curPos.getSurfaceLength() >= decompoundMinLength);
+  private boolean isDecompound(Pos curPos) {
+    return (curPos.isPosIdOf(PosId.COMPOUND));
   }
 
   private int getLastPosEndOffset() {
@@ -113,9 +111,13 @@ public class TokenGenerator {
     for (int i = 0; i < nouns.length; ++i) {
       Pos noun = new Pos(nouns[i], PosId.N, startOffset);
       if (i < nouns.length - 1) {
-        decompoundedNounsQueue.add(noun);
+        if (noun.getSurfaceLength() >= decompoundMinLength) {
+          decompoundedNounsQueue.add(noun);
+        }
       } else {
-        pos.setSamePositionPos(noun);
+        if (noun.getSurfaceLength() >= decompoundMinLength) {
+          pos.setSamePositionPos(noun);
+        }
         decompoundedNounsQueue.add(pos);
       }
       startOffset = noun.getEndOffset();

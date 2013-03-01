@@ -43,7 +43,7 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
  */
 public class StandardIndexTokenizerFactory extends TokenizerFactory {
   private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
-  private int decompoundMinLength = TokenGenerator.DECOMPOUND_ALL;
+  private int decompoundMinLength = TokenGenerator.DEFAULT_DECOMPOUND;
   @Override
   public void init(Map<String, String> args) {
     super.init(args);
