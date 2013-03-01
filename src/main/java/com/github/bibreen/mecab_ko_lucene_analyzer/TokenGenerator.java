@@ -69,7 +69,7 @@ public class TokenGenerator {
       if (decompoundedNounsQueue.isEmpty()) {
         curPos = new Pos(curNode, getLastPosEndOffset());
         curNode = curNode.getNext();
-        if (isDecompound(curPos)) {
+        if (curPos.isPosIdOf(PosId.COMPOUND)) {
           decompoundNoun(curPos);
           continue;
         }
@@ -88,10 +88,6 @@ public class TokenGenerator {
     }
     // return last tokens
     return makeTokens();
-  }
-
-  private boolean isDecompound(Pos curPos) {
-    return (curPos.isPosIdOf(PosId.COMPOUND));
   }
 
   private int getLastPosEndOffset() {
