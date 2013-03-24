@@ -284,7 +284,10 @@ public class TokenGeneratorTest {
     tokens = generator.getNextEojeolTokens();
     assertEquals("[사실을:1:14:17, 사실:0:14:16]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[이해해주길:1:18:23, 이해:0:18:20]", tokens.toString());
+    assertEquals("[이:1:18:19]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[이해해주길:1:18:23, 이해:0:18:20, 해:0:19:20]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[바란다:1:24:27]", tokens.toString());
     tokens = generator.getNextEojeolTokens();

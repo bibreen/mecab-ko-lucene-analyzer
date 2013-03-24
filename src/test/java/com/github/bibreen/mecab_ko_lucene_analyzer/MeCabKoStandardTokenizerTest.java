@@ -65,7 +65,7 @@ public class MeCabKoStandardTokenizerTest {
     tokenizer.reset();
     tokenizer.setReader(new StringReader("소설 무궁화꽃이 피었습니다."));
     assertEquals(
-        "소설:1:0:2,무궁:1:3:5,무궁화:1:3:6,꽃이:1:6:8,꽃:0:6:7,피었습니다:1:9:14,",
+        "소설:1:0:2,무궁화:1:3:6,무궁:0:3:5,꽃이:1:6:8,꽃:0:6:7,피었습니다:1:9:14,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -76,7 +76,7 @@ public class MeCabKoStandardTokenizerTest {
         new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
         TokenGenerator.DEFAULT_DECOMPOUND);
     assertEquals(
-        "한국을:1:0:3,한국:0:0:2,최대:1:4:6,최대한:1:4:7,배려했다는:1:8:13," +
+        "한국을:1:0:3,한국:0:0:2,최대한:1:4:7,최대:0:4:6,배려했다는:1:8:13," +
         "배려:0:8:10,사실을:1:14:17,사실:0:14:16,이해해주길:1:18:23,이해:0:18:20," +
         "바란다:1:24:27,",
         tokenizerToString(tokenizer));
@@ -111,7 +111,7 @@ public class MeCabKoStandardTokenizerTest {
   public void testCompound() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("형태소"), TokenGenerator.DEFAULT_DECOMPOUND);
-    assertEquals("형태:1:0:2,형태소:1:0:3,", tokenizerToString(tokenizer));
+    assertEquals("형태소:1:0:3,형태:0:0:2,", tokenizerToString(tokenizer));
     tokenizer.close();
     
     tokenizer = createTokenizer(

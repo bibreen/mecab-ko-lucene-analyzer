@@ -15,9 +15,7 @@
  ******************************************************************************/
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 import org.chasen.mecab.Node;
 
@@ -106,17 +104,17 @@ public class TokenGenerator {
     int startOffset = pos.getStartOffset();
     for (int i = 0; i < nouns.length; ++i) {
       Pos noun = new Pos(nouns[i], PosId.N, startOffset);
-      if (i < nouns.length - 1) {
-        if (noun.getSurfaceLength() >= decompoundMinLength) {
-          decompoundedNounsQueue.add(noun);
-        }
-      } else {
-        if (noun.getSurfaceLength() >= decompoundMinLength) {
-          pos.setSamePositionPos(noun);
-        }
-        decompoundedNounsQueue.add(pos);
+      if (noun.getSurfaceLength() >= decompoundMinLength) {
+        decompoundedNounsQueue.add(noun);
       }
       startOffset = noun.getEndOffset();
+    }
+    if (!decompoundedNounsQueue.isEmpty()) {
+      LinkedList<Pos> nounList = (LinkedList<Pos>)decompoundedNounsQueue;
+      pos.setSamePositionPos(nounList.getLast());
+      nounList.set(nounList.size() - 1, pos);
+    } else {
+      decompoundedNounsQueue.add(pos);
     }
   }
   
