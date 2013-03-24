@@ -259,9 +259,31 @@ public class TokenGeneratorTest {
     tokens = generator.getNextEojeolTokens();
     assertEquals("[이:1:6:7]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[그림:1:7:9, 이그림:0:6:9]", tokens.toString());
+    assertEquals("[그림:1:7:9, 이:0:6:7, 이그림:0:6:9]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[같다:1:9:11]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  /**
+   * 떨어진 명사 파생 접미사 해결을 위한 코드 테스트.
+   */
+  @Test
+  public void testIsolatedJosaCase3() {
+    List<TokenInfo> tokens;
+    lattice.set_sentence("샤프 심이 뾰족하다.");
+    tagger.parse(lattice);
+    TokenGenerator generator = new TokenGenerator(
+            new StandardPosAppender(),
+            TokenGenerator.NO_DECOMPOUND,
+            lattice.bos_node());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[샤프:1:0:2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[심이:1:3:5, 심:0:3:4, 심이:0:3:5]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[뾰족하다:1:6:10, 뾰족:0:6:8]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }

@@ -205,6 +205,7 @@ public class TokenGenerator {
   /**
    * '떨어진 조사' 이슈에 대한 처리를 한다.
    * 참고: https://bitbucket.org/bibreen/mecab-ko-dic/issue/1/--------------------
+   * 추가: '떨어진 명사 파생 접미사(XSN)에도 같은 처리를 한다.
    */
   private void addIsolatedJosaToken(LinkedList<TokenInfo> result, Pos pos) {
     if (pos.getNode() == null || pos.getNode().getPrev() == null) {
@@ -213,6 +214,14 @@ public class TokenGenerator {
     Node prevNode = pos.getNode().getPrev();
     if (isIsolatedJosa(prevNode) && !pos.hasSpace()) {
       String prevSurface = prevNode.getSurface();
+      result.add(
+          new TokenInfo(
+              prevSurface,
+              PosId.N,
+              0,
+              new Offsets(
+                  pos.getStartOffset() - prevSurface.length(),
+                  pos.getStartOffset())));
       result.add(
           new TokenInfo(
               prevSurface + pos.getSurface(),
@@ -229,7 +238,8 @@ public class TokenGenerator {
   }
   
   private static boolean isIsolatedJosa(Node node) {
-    return node.getPosid() == PosId.J.getNum() &&
+    PosId posId = PosId.convertFrom(node.getPosid());
+    return (posId == PosId.J || posId == PosId.XSN) &&
         node.getRlength() - node.getLength() > 0;
   }
 
