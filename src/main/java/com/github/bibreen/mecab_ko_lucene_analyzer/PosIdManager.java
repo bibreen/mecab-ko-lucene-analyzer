@@ -30,7 +30,8 @@ public final class PosIdManager {
     E(100), IC(110), J(120), MAG(130), MAJ(131), MM(140), N(150), SF(160),
     SH(161), SL(162), SN(163), SP(164), SSC(165), SSO(166), SU(167), SY(168),
     VA(170), VCN(171), VCP(172), VV(173), VX(174), XPN(181), XR(182), XSA(183),
-    XSN(184), XSV(185);
+    XSN(184), XSV(185),
+    EOJEOL(900);
 
     private int num;
     
@@ -73,6 +74,7 @@ public final class PosIdManager {
       case 183: return PosId.XSA;
       case 184: return PosId.XSN;
       case 185: return PosId.XSV;
+      case 900: return PosId.EOJEOL;
       default:
         return PosId.UNKNOWN;
       }
@@ -84,7 +86,7 @@ public final class PosIdManager {
           return PosId.N;
         } else if (tagString.charAt(0) == 'J') {
           return PosId.J;
-        } else if (tagString.charAt(0) == 'E') {
+        } else if (tagString.charAt(0) == 'E' && tagString.charAt(1) != 'J') {
           return PosId.E;
         } else {
           return PosId.valueOf(tagString);

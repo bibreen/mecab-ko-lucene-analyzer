@@ -20,9 +20,7 @@ import java.io.Reader;
 import java.util.Queue;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.*;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
@@ -36,6 +34,7 @@ public class MeCabKoTokenizer extends Tokenizer {
   private CharTermAttribute charTermAtt;
   private PositionIncrementAttribute posIncrAtt;
   private OffsetAttribute offsetAtt;
+  private TypeAttribute typeAtt;
  
   private String document;
   private String mecabDicDir;
@@ -79,6 +78,7 @@ public class MeCabKoTokenizer extends Tokenizer {
     charTermAtt = addAttribute(CharTermAttribute.class);
     posIncrAtt = addAttribute(PositionIncrementAttribute.class);
     offsetAtt = addAttribute(OffsetAttribute.class);
+    typeAtt = addAttribute(TypeAttribute.class);
   }
 
   @Override
@@ -117,6 +117,7 @@ public class MeCabKoTokenizer extends Tokenizer {
         correctOffset(token.getOffsets().end));
     charTermAtt.copyBuffer(
         token.getTerm().toCharArray(), 0, token.getTerm().length());
+    typeAtt.setType(token.getPosTag());
   }
   
   @Override

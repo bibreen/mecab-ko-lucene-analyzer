@@ -15,24 +15,29 @@
  ******************************************************************************/
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
+import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
+
 /**
  * Tokenizer에서 사용될 토큰 정보를 갖는 클래스.
  * @author bibreen <bibreen@gmail.com>
  */
 public class TokenInfo {
   private String term;
+  private PosId posId;
   private int posIncr;
   private Offsets offsets;
 
-  public TokenInfo(String term, int posIncr, Offsets offsets) {
+  public TokenInfo(String term, PosId posId, int posIncr, Offsets offsets) {
     this.term = term;
+    this.posId = posId;
     this.posIncr = posIncr;
     this.offsets = offsets;
   }
-  
+
   public TokenInfo(Pos pos, int posIncr) {
     this(
         pos.getSurface(),
+        pos.getPosId(),
         posIncr,
         new Offsets(pos.getStartOffset(), pos.getEndOffset()));
   }
@@ -47,6 +52,10 @@ public class TokenInfo {
 
   public Offsets getOffsets() {
     return offsets;
+  }
+  
+  public String getPosTag() {
+    return posId.toString();
   }
 
   @Override

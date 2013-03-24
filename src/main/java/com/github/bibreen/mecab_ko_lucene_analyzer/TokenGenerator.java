@@ -166,7 +166,13 @@ public class TokenGenerator {
       str += pos.getSurface();
     }
     int endOffset = posList.get(posList.size() - 1).getEndOffset();
-    result.addFirst(new TokenInfo(str, 1, new Offsets(startOffset, endOffset)));
+    boolean isEojeol = posList.size() > 1;
+    if (isEojeol) {
+      result.addFirst(new TokenInfo(
+          str, PosId.EOJEOL, 1, new Offsets(startOffset, endOffset)));
+    } else {
+      result.addFirst(new TokenInfo(posList.get(0), 1));
+    }
     
     clearPosList();
     return result;
@@ -210,6 +216,7 @@ public class TokenGenerator {
       result.add(
           new TokenInfo(
               prevSurface + pos.getSurface(),
+              PosId.N,
               0,
               new Offsets(
                   pos.getStartOffset() - prevSurface.length(),

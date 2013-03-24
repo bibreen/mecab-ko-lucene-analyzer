@@ -20,9 +20,7 @@ import static org.junit.Assert.*;
 import java.io.StringReader;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.*;
 import org.junit.Test;
 
 public class MeCabKoStandardTokenizerTest {
@@ -33,9 +31,12 @@ public class MeCabKoStandardTokenizerTest {
         tokenizer.addAttribute(PositionIncrementAttribute.class);
     CharTermAttribute term =
         (CharTermAttribute)tokenizer.addAttribute(CharTermAttribute.class);
+    TypeAttribute type =
+        (TypeAttribute)tokenizer.addAttribute(TypeAttribute.class);
 
     while (tokenizer.incrementToken() == true) {
       result += new String(term.buffer(), 0, term.length()) + ":";
+      result += type.type() + ":";
       result += String.valueOf(posIncrAtt.getPositionIncrement()) + ":";
       result += String.valueOf(extOffset.startOffset()) + ":";
       result += String.valueOf(extOffset.endOffset());
@@ -59,13 +60,15 @@ public class MeCabKoStandardTokenizerTest {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("꽃배달 꽃망울 오토바이"), 2);
     assertEquals(
-        "꽃:1:0:1,배달:1:1:3,꽃망울:1:4:7,망울:0:5:7,오토바이:1:8:12,",
+        "꽃:N:1:0:1,배달:N:1:1:3,꽃망울:COMPOUND:1:4:7,망울:N:0:5:7," +
+        "오토바이:N:1:8:12,",
         tokenizerToString(tokenizer));
    
     tokenizer.reset();
     tokenizer.setReader(new StringReader("소설 무궁화꽃이 피었습니다."));
     assertEquals(
-        "소설:1:0:2,무궁화:1:3:6,무궁:0:3:5,꽃이:1:6:8,꽃:0:6:7,피었습니다:1:9:14,",
+        "소설:N:1:0:2,무궁화:COMPOUND:1:3:6,무궁:N:0:3:5,꽃이:EOJEOL:1:6:8," +
+        "꽃:N:0:6:7,피었습니다:EOJEOL:1:9:14,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -76,9 +79,10 @@ public class MeCabKoStandardTokenizerTest {
         new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
         TokenGenerator.DEFAULT_DECOMPOUND);
     assertEquals(
-        "한국을:1:0:3,한국:0:0:2,최대한:1:4:7,최대:0:4:6,배려했다는:1:8:13," +
-        "배려:0:8:10,사실을:1:14:17,사실:0:14:16,이해해주길:1:18:23,이해:0:18:20," +
-        "바란다:1:24:27,",
+        "한국을:EOJEOL:1:0:3,한국:N:0:0:2,최대한:COMPOUND:1:4:7,최대:N:0:4:6," +
+        "배려했다는:EOJEOL:1:8:13,배려:N:0:8:10,사실을:EOJEOL:1:14:17," + 
+        "사실:N:0:14:16,이해해주길:EOJEOL:1:18:23,이해:COMPOUND:0:18:20," +
+        "바란다:INFLECT:1:24:27,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -103,7 +107,7 @@ public class MeCabKoStandardTokenizerTest {
   public void testHanEnglish() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("한win"), TokenGenerator.DEFAULT_DECOMPOUND);
-    assertEquals("한:1:0:1,win:1:1:4,", tokenizerToString(tokenizer));
+    assertEquals("한:N:1:0:1,win:SL:1:1:4,", tokenizerToString(tokenizer));
     tokenizer.close();
   }
   
@@ -111,12 +115,15 @@ public class MeCabKoStandardTokenizerTest {
   public void testCompound() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("형태소"), TokenGenerator.DEFAULT_DECOMPOUND);
-    assertEquals("형태소:1:0:3,형태:0:0:2,", tokenizerToString(tokenizer));
+    assertEquals(
+        "형태소:COMPOUND:1:0:3,형태:N:0:0:2,", tokenizerToString(tokenizer));
     tokenizer.close();
     
     tokenizer = createTokenizer(
         new StringReader("가고문헌"), TokenGenerator.DEFAULT_DECOMPOUND);
-    assertEquals("가고:1:0:2,가고문헌:1:0:4,문헌:0:2:4,", tokenizerToString(tokenizer));
+    assertEquals(
+        "가고:N:1:0:2,가고문헌:COMPOUND:1:0:4,문헌:N:0:2:4,",
+        tokenizerToString(tokenizer));
     tokenizer.close();
   }
 }
