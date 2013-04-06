@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="lib/lucene-analyzers-common-4.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-core-4.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/apache-solr-core-4.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.9.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

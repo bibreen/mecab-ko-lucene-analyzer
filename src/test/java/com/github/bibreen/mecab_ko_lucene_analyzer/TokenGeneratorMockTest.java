@@ -21,24 +21,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Node;
-import org.chasen.mecab.Tagger;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
+import org.junit.*;
 
 public class TokenGeneratorMockTest {
-  private Tagger tagger;
-  private Lattice lattice;
 
   @Before
   public void setUp() throws Exception {
-    //tagger = mock(Tagger.class);
-    lattice = mock(Lattice.class);
   }
 
   @After
