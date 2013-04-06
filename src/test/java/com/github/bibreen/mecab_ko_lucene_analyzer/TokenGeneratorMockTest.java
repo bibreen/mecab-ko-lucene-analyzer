@@ -192,6 +192,7 @@ public class TokenGeneratorMockTest {
     assertEquals(null, tokens);
   }
   
+  @Test
   public void testSymbolOnlySentence() {
     // ".,;:~"
     Node symbolsNode = mockNodeFactory(
