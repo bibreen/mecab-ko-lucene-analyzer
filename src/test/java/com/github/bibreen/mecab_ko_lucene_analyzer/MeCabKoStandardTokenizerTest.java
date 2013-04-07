@@ -80,8 +80,8 @@ public class MeCabKoStandardTokenizerTest {
         TokenGenerator.DEFAULT_DECOMPOUND);
     assertEquals(
         "한국을:EOJEOL:1:0:3,한국:N:0:0:2,최대한:COMPOUND:1:4:7,최대:N:0:4:6," +
-        "배려했다는:EOJEOL:1:8:13,배려:N:0:8:10,사실을:EOJEOL:1:14:17," + 
-        "사실:N:0:14:16,이해해주길:EOJEOL:1:18:23,이해:COMPOUND:0:18:20," +
+        "배려했다는:EOJEOL:1:8:13,배려:N:0:8:10,사실을:EOJEOL:1:14:17," +
+        "사실:N:0:14:16,이해해주길:EOJEOL:1:18:23,이해:N:0:18:20," +
         "바란다:INFLECT:1:24:27,",
         tokenizerToString(tokenizer));
     tokenizer.close();

@@ -291,27 +291,34 @@ public class TokenGeneratorTest {
   @Test
   public void testDecompounMinLengthWith1() {
     List<TokenInfo> tokens;
-    lattice.set_sentence("한국을 최대한 배려했다는 사실을 이해해주길 바란다.");
+    lattice.set_sentence("그는 담배 생각이 날 때마다 한 개비씩 낱값을 주고 사서 핀다.");
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(
             new StandardPosAppender(), 1, lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[한국을:1:0:3, 한국:0:0:2]", tokens.toString());
+    assertEquals("[그는:1:0:2, 그:0:0:1]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[최대:1:4:6]", tokens.toString());
+    assertEquals("[담배:1:3:5]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[최대한:1:4:7, 한:0:6:7]", tokens.toString());
+    assertEquals("[생각이:1:6:9, 생각:0:6:8]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[배려했다는:1:8:13, 배려:0:8:10]", tokens.toString());
+    assertEquals("[날:1:10:11]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[사실을:1:14:17, 사실:0:14:16]", tokens.toString());
+    assertEquals("[때마다:1:12:15, 때:0:12:13]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[이:1:18:19]", tokens.toString());
+    assertEquals("[한:1:16:17]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals(
-        "[이해해주길:1:18:23, 이해:0:18:20, 해:0:19:20]", tokens.toString());
+    assertEquals("[개비씩:1:18:21, 개비:0:18:20]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[바란다:1:24:27]", tokens.toString());
+    assertEquals("[낱:1:22:23]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[낱값을:1:22:25, 낱값:0:22:24, 값:0:23:24]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[주고:1:26:28]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[사서:1:29:31]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[핀다:1:32:34]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
