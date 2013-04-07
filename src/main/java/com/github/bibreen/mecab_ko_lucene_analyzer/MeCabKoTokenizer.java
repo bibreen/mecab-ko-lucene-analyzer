@@ -30,7 +30,7 @@ import org.chasen.mecab.Tagger;
  * @author bibreen <bibreen@gmail.com>
  * @author amitabul <mousegood@gmail.com>
  */
-public class MeCabKoTokenizer extends Tokenizer {
+public final class MeCabKoTokenizer extends Tokenizer {
   private CharTermAttribute charTermAtt;
   private PositionIncrementAttribute posIncrAtt;
   private OffsetAttribute offsetAtt;
