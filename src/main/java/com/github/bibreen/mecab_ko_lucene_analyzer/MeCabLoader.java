@@ -19,8 +19,8 @@ import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Model;
 import org.chasen.mecab.Tagger;
 
-public final class MeCabManager {
-  private volatile static MeCabManager uniqueInstance;
+public final class MeCabLoader {
+  private volatile static MeCabLoader uniqueInstance;
   private static Model model;
   static {
     try {
@@ -33,18 +33,18 @@ public final class MeCabManager {
     }
   }
  
-  public static MeCabManager getInstance(String dicDir)
+  public static MeCabLoader getInstance(String dicDir)
       throws NullPointerException, RuntimeException {
     // DCL(Double-checking Locking) Singleton. thread-safe
     if (uniqueInstance == null) {
-      synchronized (MeCabManager.class){
-        uniqueInstance = new MeCabManager(dicDir);
+      synchronized (MeCabLoader.class){
+        uniqueInstance = new MeCabLoader(dicDir);
       }
     }
     return uniqueInstance;
   }
   
-  private MeCabManager(String dicDir) {
+  private MeCabLoader(String dicDir) {
     model = new Model("-d " + dicDir);
   }
 

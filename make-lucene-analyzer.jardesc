@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jardesc>
+    <jar path="mecab-ko-lucene-analyzer.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/mecab-ko-lucene-analyzer/make-mecab-ko-lucene-analyzer.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{StandardIndexTokenizerFactory.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{TokenGenerator.java"/>
+        <file path="/mecab-ko-lucene-analyzer/README.md"/>
+        <file path="/mecab-ko-lucene-analyzer/LICENSE"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{Offsets.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{PosIdManager.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{Appendable.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{MeCabKoTokenizer.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{StandardPosAppender.java"/>
+        <file path="/mecab-ko-lucene-analyzer/AUTHORS"/>
+        <file path="/mecab-ko-lucene-analyzer/CHANGES.md"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{PosAppender.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{StandardQueryTokenizerFactory.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{TokenInfo.java"/>
+        <javaElement handleIdentifier="=mecab-ko-lucene-analyzer/src\/main\/java&lt;com.github.bibreen.mecab_ko_lucene_analyzer{Pos.java"/>
+    </selectedElements>
+</jardesc>

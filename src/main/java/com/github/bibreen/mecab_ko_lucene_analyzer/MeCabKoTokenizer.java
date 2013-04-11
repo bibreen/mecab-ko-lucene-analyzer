@@ -38,7 +38,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
  
   private String document;
   private String mecabDicDir;
-  private MeCabManager mecabManager;
+  private MeCabLoader mecabLoader;
   private Lattice lattice;
   private Tagger tagger;
   private PosAppender posAppender;
@@ -69,9 +69,9 @@ public final class MeCabKoTokenizer extends Tokenizer {
   }
 
   private void setMeCab() {
-    mecabManager = MeCabManager.getInstance(mecabDicDir);
-    lattice = mecabManager.createLattice();
-    tagger = mecabManager.createTagger();
+    mecabLoader = MeCabLoader.getInstance(mecabDicDir);
+    lattice = mecabLoader.createLattice();
+    tagger = mecabLoader.createTagger();
   }
   
   private void setAttributes() {

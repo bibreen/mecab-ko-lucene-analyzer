@@ -31,10 +31,10 @@ public class TokenGeneratorTest {
   
   @Before
   public void setUp() throws Exception {
-    MeCabManager manager =
-        MeCabManager.getInstance("/usr/local/lib/mecab/dic/mecab-ko-dic");
-    tagger = manager.createTagger();
-    lattice = manager.createLattice();
+    MeCabLoader loader =
+        MeCabLoader.getInstance("/usr/local/lib/mecab/dic/mecab-ko-dic");
+    tagger = loader.createTagger();
+    lattice = loader.createLattice();
   }
 
   @After
