@@ -1,5 +1,9 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.9.5
+  - jar 패키지를 mecab-ko-mecab-loader.jar와 mecab-ko-lucene-analyzer.jar로 분리. (mecab-ko-mecab-loader.jar는 JNI 클래스를 포함하므로 System classpath에 위치해야 함)
+  - 위의 사항과 관련하여 README.md를 변경
+
 ## 0.9.4
 
   - TokenGenerator.decompoundNoun() 로직 변경 및 관련 유닛 테스트 수정.

@@ -10,6 +10,7 @@
   - 원어절 추출
 
 ## 특징
+
   - '무궁화꽃이피었습니다.'와 같이 띄어 쓰기가 잘못된 오류를 교정하여 형태소 분석이 가능합니다.
   - Standard[Index|Query]Tokenizer의 경우, 명사뿐 아니라 품사가 결합된 어절도 Token으로 뽑아냅니다.
     철수가 학교에 간다. -> 철수가, 철수, 학교에, 학교, 간다
@@ -20,7 +21,7 @@
 
 ### Mecab 설치
 
-[여기 (MeCab-0.994)](http://code.google.com/p/mecab/downloads/detail?name=mecab-0.994.tar.gz&can=1&q=) 에서 MeCab의 소스를 다운 받고 설치합니다.
+[여기 (MeCab-0.996)](http://code.google.com/p/mecab/downloads/detail?name=mecab-0.996.tar.gz&can=1&q=) 에서 MeCab의 소스를 다운 받고 설치합니다.
 
     $ tar zxfv mecab-XX.tar.gz
     $ cd mecab-XX
@@ -33,19 +34,22 @@
 MeCab 설치의 자세한 내용은 [MeCab 홈페이지](http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html)를 참조하시기 바랍니다.
 
 ### MeCab.jar와 libMeCab.so 설치
+Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
 
-[mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다. \(주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.\)
+[mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
+
+  - 주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.
+  - 주의: OpenJDK를 사용하시는 경우, 최적화 옵션을 -O나 -O1로 고쳐야 합니다. [mecab-ko-lucene-analyzer OpenJDK에서 사용하기](http://eunjeon.blogspot.kr/2013/04/mecab-ko-lucene-analyzer-openjdk.html) 참조
 
     $ tar zxvf mecab-java-XX.tar.gz
     $ mv mecab-java-XX.tar.gz mecab-XX/java
     $ cd mecab-XX/java
     $ make
-    $ cp MeCab.jar [solr 라이브러리 디렉터리]
+    $ cp MeCab.jar [solr 디렉터리]/example/lib/ext # JNI 클래스는 System classpath에 위치해야 합니다. Jetty는 기본값으로 $jetty.home/lib/ext에 추가적인 jar를 넣을 수 있습니다.
     $ su
     # cp libMeCab.so /usr/local/lib
 
 ### mecab-ko-dic 설치
-
 [mecab-ko-dic 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads) 에서 `mecab-ko-dic`의 최신 버전을 다운 받습니다. *반드시  mecab-ko-dic-1.1.0-XXXX 이상의 버전을 사용하여야 합니다.*
 
 tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 순서로 설치할 수 있습니다.
@@ -58,13 +62,16 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
     $ su
     # make install
 
-### mecab-ko-lucene-analyzer 다운로드
-[mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyze-XX.jar`의 최신 버전을 받아 solr library 디렉터리로 복사합니다.
+### mecab-ko-lucene-analyzer 다운로드 및 설치
+[mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyze-XX.tar.gz`의 최신 버전을 다운 받아 압축을 풀면 두개의 jar파일이 있습니다. 
+
+  - mecab-ko-mecab-loader-XX.jar: System classpath에 복사합니다. (ex: `[solr 디렉터리]/example/lib/ext`)
+  - mecab-ko-lucene-analyzer-XX.jar: Solr 라이브러리 디렉터리에 설치합니다. (ex: `[solr 디렉터리]/example/solr/lib`)
 
 ## 사용법
 
 ### solr 설정
-`solrconfig.xml` 에 `mecab-ko-lucene-analyzer-XX.jar` 와 `Mecab.jar` 가 있는 경로를 설정합니다.
+`solrconfig.xml` 에 `mecab-ko-lucene-analyzer-XX.jar`가 있는 경로를 설정합니다.
 
     <lib dir="../lib" regex=".*\.jar" />
 
