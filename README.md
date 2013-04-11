@@ -38,8 +38,9 @@ Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
 
 [mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
 
-  - 주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.
-  - 주의: OpenJDK를 사용하시는 경우, 최적화 옵션을 -O나 -O1로 고쳐야 합니다. [mecab-ko-lucene-analyzer OpenJDK에서 사용하기](http://eunjeon.blogspot.kr/2013/04/mecab-ko-lucene-analyzer-openjdk.html) 참조
+> 주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.
+
+> 주의: OpenJDK를 사용하시는 경우, 최적화 옵션을 -O나 -O1로 고쳐야 합니다. [mecab-ko-lucene-analyzer OpenJDK에서 사용하기](http://eunjeon.blogspot.kr/2013/04/mecab-ko-lucene-analyzer-openjdk.html) 참조
 
     $ tar zxvf mecab-java-XX.tar.gz
     $ mv mecab-java-XX.tar.gz mecab-XX/java
