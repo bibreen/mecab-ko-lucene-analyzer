@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.bibreen</groupId>
+  <artifactId>mecab-ko-lucene-analyzer</artifactId>
+  <version>0.9.5-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>mecab_ko_lucene_analyzer</name>
+  <url>https://github.com/bibreen/mecab-ko-lucene-analyzer</url>
+
+  <repositories>
+    <repository>
+      <id>mecab java - github maven repo </id>
+      <url>https://raw.github.com/buggycode/repo/master/releases</url>
+    </repository>
+  </repositories>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.solr</groupId>
+      <artifactId>solr-core</artifactId>
+      <version>4.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.chasen.mecab</groupId>
+      <artifactId>mecab-java</artifactId>
+      <version>0.996</version>
+    </dependency>
+  </dependencies>
+</project>
+
