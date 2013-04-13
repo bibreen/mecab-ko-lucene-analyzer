@@ -45,7 +45,6 @@ public class MeCabKoDicTest {
 
   @Test
   public void test() {
-    System.out.println(MeCab.VERSION);
     Tagger tagger = new Tagger("-d /usr/local/lib/mecab/dic/mecab-ko-dic");
     String str = "아버지가방에들어가신다.";
     //System.out.println(tagger.parse(str));

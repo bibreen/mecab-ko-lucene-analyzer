@@ -3,12 +3,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.bibreen</groupId>
-  <artifactId>mecab-ko-lucene-analyzer</artifactId>
+  <artifactId>mecab-ko</artifactId>
   <version>0.9.5-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <name>mecab_ko_lucene_analyzer</name>
   <url>https://github.com/bibreen/mecab-ko-lucene-analyzer</url>
+
+  <modules>
+    <module>mecab-loader</module>
+    <module>lucene-analyzer</module>
+  </modules>
 
   <repositories>
     <repository>
@@ -31,6 +36,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
       <version>4.2.0</version>
@@ -41,5 +51,17 @@
       <version>0.996</version>
     </dependency>
   </dependencies>
-</project>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <argLine>-Djava.library.path=/usr/local/lib</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

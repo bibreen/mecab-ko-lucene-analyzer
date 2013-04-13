@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.github.bibreen.mecab_ko_lucene_analyzer;
+package com.github.bibreen.mecab_ko_mecab_loader;
 
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Model;

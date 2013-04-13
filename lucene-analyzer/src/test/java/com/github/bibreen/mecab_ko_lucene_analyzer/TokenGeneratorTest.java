@@ -25,6 +25,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
+
 public class TokenGeneratorTest {
   private Tagger tagger;
   private Lattice lattice;

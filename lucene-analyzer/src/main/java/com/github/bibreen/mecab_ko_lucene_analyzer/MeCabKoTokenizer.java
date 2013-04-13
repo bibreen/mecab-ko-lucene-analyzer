@@ -24,6 +24,8 @@ import org.apache.lucene.analysis.tokenattributes.*;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
+import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
+
 /**
  * Lucene/Solr용 Tokenizer.
  * 

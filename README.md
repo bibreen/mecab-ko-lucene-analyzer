@@ -64,7 +64,7 @@ tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 �
     # make install
 
 ### mecab-ko-lucene-analyzer 다운로드 및 설치
-[mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyze-XX.tar.gz`의 최신 버전을 다운 받아 압축을 풀면 두개의 jar파일이 있습니다. 
+[mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyzer-XX.tar.gz`의 최신 버전을 다운 받아 압축을 풀면 두개의 jar파일이 있습니다. 
 
   - mecab-ko-mecab-loader-XX.jar: System classpath에 복사합니다. (ex: `[solr 디렉터리]/example/lib/ext`)
   - mecab-ko-lucene-analyzer-XX.jar: Solr 라이브러리 디렉터리에 설치합니다. (ex: `[solr 디렉터리]/example/solr/lib`)

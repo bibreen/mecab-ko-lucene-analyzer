@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.bibreen</groupId>
+    <artifactId>mecab-ko</artifactId>
+    <version>0.9.5-SNAPSHOT</version>
+  </parent>
+  <artifactId>mecab-ko-lucene-analyzer</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+     <groupId>com.github.bibreen</groupId>
+     <artifactId>mecab-ko-mecab-loader</artifactId>
+     <version>0.9.5-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+</project>
