@@ -2,11 +2,12 @@
 
 ## 소개
 
-[mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)는 [mecab-ko-dic](https://bitbucket.org/bibreen/mecab-ko-dic/src)을 사용한 lucene/solr용 한국어 형태소분석기입니다.
+[mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)는 [mecab-ko](https://bitbucket.org/bibreen/mecab-ko), [mecab-ko-dic](https://bitbucket.org/bibreen/mecab-ko-dic)을 사용한 lucene/solr용 한국어 형태소 분석기입니다.
 
 다음과 같은 기능들을 제공합니다.
+
   - 명사추출
-  - 합성명사 분해
+  - 복합명사 분해
   - 원어절 추출
 
 ## 특징
@@ -19,28 +20,14 @@
 
 ## 설치
 
-### Mecab 설치
+### mecab-ko(형태소 분석기 엔진)과 mecab-ko-dic(사전 파일) 설치
 
-[여기 (MeCab-0.996)](http://code.google.com/p/mecab/downloads/detail?name=mecab-0.996.tar.gz&can=1&q=) 에서 MeCab의 소스를 다운 받고 설치합니다.
-
-    $ tar zxfv mecab-XX.tar.gz
-    $ cd mecab-XX
-    $ ./configure 
-    $ make
-    $ make check
-    $ su
-    # make install
-
-MeCab 설치의 자세한 내용은 [MeCab 홈페이지](http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html)를 참조하시기 바랍니다.
+mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.org/bibreen/mecab-ko-dic)을 참조하시기 바랍니다.
 
 ### MeCab.jar와 libMeCab.so 설치
 Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
 
 [mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
-
-> 주의: Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.
-
-> 주의: OpenJDK를 사용하시는 경우, 최적화 옵션을 -O나 -O1로 고쳐야 합니다. [mecab-ko-lucene-analyzer OpenJDK에서 사용하기](http://eunjeon.blogspot.kr/2013/04/mecab-ko-lucene-analyzer-openjdk.html) 참조
 
     $ tar zxvf mecab-java-XX.tar.gz
     $ mv mecab-java-XX.tar.gz mecab-XX/java
@@ -50,18 +37,11 @@ Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
     $ su
     # cp libMeCab.so /usr/local/lib
 
-### mecab-ko-dic 설치
-[mecab-ko-dic 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads) 에서 `mecab-ko-dic`의 최신 버전을 다운 받습니다. *반드시  mecab-ko-dic-1.1.0-XXXX 이상의 버전을 사용하여야 합니다.*
+__주의 사항__
 
-tar.gz를 압축 해제하시고 일반적인 자유 소프트웨어와 같은 순서로 설치할 수 있습니다.
-기본으로 `/usr/local/lib/mecab/dic/mecab-ko-dic`에 설치됩니다.
-
-    $ tar zxfv mecab-ko-dic-XX.tar.gz
-    $ cd mecab-ko-dic-XX
-    $ ./configure 
-    $ make
-    $ su
-    # make install
+  - mecab-ko의 버전에 맞는 mecab-java-XX.tar.gz를 선택해야 합니다. mecab-0.996-ko.0.9.0 버전에서는 mecab-java-0.996을 사용해야 합니다.
+  - Makefile에서 INCLUDE 값을 자신의 환경에 맞게 변경해야 합니다.
+  - OpenJDK를 사용하시는 경우, 최적화 옵션을 -O나 -O1로 고쳐야 합니다. [mecab-ko-lucene-analyzer OpenJDK에서 사용하기](http://eunjeon.blogspot.kr/2013/04/mecab-ko-lucene-analyzer-openjdk.html) 참조
 
 ### mecab-ko-lucene-analyzer 다운로드 및 설치
 [mecab-ko-lucene-analyzer 다운로드 페이지](https://bitbucket.org/bibreen/mecab-ko-dic/downloads)에서 `mecab-ko-lucene-analyzer-XX.tar.gz`의 최신 버전을 다운 받아 압축을 풀면 두개의 jar파일이 있습니다. 
