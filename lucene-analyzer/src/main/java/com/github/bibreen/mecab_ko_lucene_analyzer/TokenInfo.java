@@ -18,27 +18,54 @@ package com.github.bibreen.mecab_ko_lucene_analyzer;
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
 /**
- * Tokenizer에서 사용될 토큰 정보를 갖는 클래스.
+ * Tokenizer에서 사용될 토큰 정보를 갖는 자료 전달 객체.
  * @author bibreen <bibreen@gmail.com>
  */
 public class TokenInfo {
   private String term;
   private PosId posId;
-  private int posIncr;
+  private int positionIncr;
+  private int positionLength;
   private Offsets offsets;
 
-  public TokenInfo(String term, PosId posId, int posIncr, Offsets offsets) {
+  public TokenInfo(
+      String term,
+      PosId posId,
+      int positionIncr,
+      int positionLength,
+      Offsets offsets) {
     this.term = term;
     this.posId = posId;
-    this.posIncr = posIncr;
+    this.positionIncr = positionIncr;
+    this.positionLength = positionLength;
     this.offsets = offsets;
   }
+  
+  public TokenInfo(
+      String term,
+      PosId posId,
+      int positionIncr,
+      int positionLength,
+      int startOffset) {
+    this(
+        term,
+        posId,
+        positionIncr,
+        positionLength,
+        new Offsets(startOffset, startOffset + term.length()));
+  }
+  
+//  public TokenInfo(
+//      String term, PosId posId, int positionIncr, Offsets offsets) {
+//    this(term, posId, positionIncr, 1, offsets);
+//  }
 
-  public TokenInfo(Pos pos, int posIncr) {
+  public TokenInfo(Pos pos, int positionIncr) {
     this(
         pos.getSurface(),
         pos.getPosId(),
-        posIncr,
+        positionIncr,
+        pos.getPositionLength(),
         new Offsets(pos.getStartOffset(), pos.getEndOffset()));
   }
 
@@ -46,8 +73,12 @@ public class TokenInfo {
     return term;
   }
 
-  public int getPosIncr() {
-    return posIncr;
+  public int getPositionIncr() {
+    return positionIncr;
+  }
+  
+  public int getPositionLength() {
+    return positionLength;
   }
 
   public Offsets getOffsets() {
@@ -57,10 +88,25 @@ public class TokenInfo {
   public String getPosTag() {
     return posId.toString();
   }
+  
+  public void setPositionIncr(int positionIncr) {
+    this.positionIncr = positionIncr;
+  }
+  
+  public void setOffsets(Offsets offsets) {
+    this.offsets = offsets;
+  }
+  
+  public void setStartOffset(int startOffset) {
+    this.offsets.start = startOffset;
+    this.offsets.end = startOffset + term.length();
+  }
 
   @Override
   public String toString() {
     return new String(
-        term + ":" + posIncr + ":" + offsets.start + ":" + offsets.end);
+        term + "/" + getPosTag() + "/" +
+        positionIncr + "/" + positionLength + "/" +
+        offsets.start + "/" + offsets.end);
   }
 }

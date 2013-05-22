@@ -29,17 +29,13 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  */
 public class TokenGenerator {
   public static final int NO_DECOMPOUND = 9999;
-  public static final int DEFAULT_DECOMPOUND = 2;
+  public static final int DEFAULT_COMPOUND_NOUN_MIN_LENGTH = 3;
   
   PosAppender appender;
+  private LinkedList<Pos> posList = new LinkedList<Pos>();
+  private ListIterator<Pos> posIter;
+  private int compoundNounMinLength;
   
-  private Node curNode;
-  private Pos lastPos = null;
-  private ArrayList<Pos> posList = new ArrayList<Pos>();
-  
-  private int decompoundMinLength;
-  private Queue<Pos> decompoundedNounsQueue;
- 
   /**
    * TokenGenerator 생성자
    * 
@@ -49,12 +45,22 @@ public class TokenGenerator {
    * @param beginNode
    */
   public TokenGenerator(
-      PosAppender appender, int decompoundMinLength, Node beginNode) {
-    if (beginNode != null)
-      this.curNode = beginNode.getNext();
+      PosAppender appender, int compoundNounMinLength, Node beginNode) {
     this.appender = appender;
-    this.decompoundMinLength = decompoundMinLength;
-    decompoundedNounsQueue = new LinkedList<Pos>();
+    this.compoundNounMinLength = compoundNounMinLength;
+    convertNodeListToPosList(beginNode);
+    posIter = posList.listIterator();
+  }
+  
+  private void convertNodeListToPosList(Node beginNode) {
+    Node node = beginNode.getNext();
+    Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0);
+    while (node != null) {
+      Pos curPos = new Pos(node, prevPos.getEndOffset());
+      posList.add(curPos);
+      prevPos = curPos;
+      node = node.getNext();
+    }
   }
   
   /**
@@ -62,196 +68,246 @@ public class TokenGenerator {
    * @return 반환 값이 null이면 generator 종료이다.
    */
   public LinkedList<TokenInfo> getNextEojeolTokens() {
-    while (curNode != null) {
-      Pos curPos;
-      if (decompoundedNounsQueue.isEmpty()) {
-        curPos = new Pos(curNode, getLastPosEndOffset());
-        curNode = curNode.getNext();
-        if (curPos.isPosIdOf(PosId.COMPOUND)) {
-          decompoundNoun(curPos);
-          continue;
-        }
-      } else {
-        curPos = decompoundedNounsQueue.poll();
-      }
-      
-      if (!append(curPos)) {
-        LinkedList<TokenInfo> tokens = makeTokens();
+    Eojeol eojeol = new Eojeol(appender);
+    while (posIter.hasNext()) {
+      Pos curPos = posIter.next();
+      if (!eojeol.append(curPos)) {
+        posIter.previous();
+        LinkedList<TokenInfo> tokens = makeTokens(eojeol);
         if (tokens != null) {
           return tokens;
         } else {
+          eojeol.clear();
           continue;
         }
       }
     }
     // return last tokens
-    return makeTokens();
+    return makeTokens(eojeol);
   }
 
-  private int getLastPosEndOffset() {
-    if (lastPos != null) {
-      return lastPos.getEndOffset();
-    } else {
-      return 0;
-    }
-  }
-  
-  private void decompoundNoun(Pos pos) {
-    String expression = pos.getExpression();
-    if (expression == null) return;
-   
-    String nouns[] = expression.split("\\+");
-    int startOffset = pos.getStartOffset();
-    for (int i = 0; i < nouns.length; ++i) {
-      Pos noun = new Pos(nouns[i], PosId.N, startOffset);
-      if (noun.getSurfaceLength() >= decompoundMinLength) {
-        decompoundedNounsQueue.add(noun);
-      }
-      startOffset = noun.getEndOffset();
-    }
-    if (!decompoundedNounsQueue.isEmpty()) {
-      LinkedList<Pos> nounList = (LinkedList<Pos>)decompoundedNounsQueue;
-      pos.setSamePositionPos(nounList.getLast());
-      nounList.set(nounList.size() - 1, pos);
-    } else {
-      decompoundedNounsQueue.add(pos);
-    }
-  }
-  
-  /**
-   * POS를 현재 어절에 포함시킬 수 있다면 포함시키고, true를 반환하고,
-   * 그렇지 않다면 false를 반환한다.
-   * 유닛 테스트 때문에 public이다.
-   */
-  public boolean append(Pos pos) {
-    if (posList.isEmpty() && lastPos != null) {
-      posList.add(lastPos);
-    }
-    
-    if (posList.isEmpty() || isAppendable(pos)) {
-      lastPos = pos;
-      posList.add(pos);
-      return true;
-    } else {
-      lastPos = pos;
-      return false;
-    }
-  }
-  
-  private boolean isAppendable(Pos curPos) {
-    Pos prevPos = posList.get(posList.size() - 1);
-    return appender.isAppendable(prevPos, curPos);
-  }
- 
   /**
    * posList에 있는 Pos를 조합하여, Token을 뽑아낸다.
    * @return token이 있을 경우 TokenInfo의 리스트를 반환하고, 뽑아낼 token이 없을 경우
    * null을 반환한다.
    */
-  private LinkedList<TokenInfo> makeTokens() {
-    if (posList.isEmpty()) {
-      return null;
-    }
-    
-    if (isSkippablePoses()) {
-      clearPosList();
+  private LinkedList<TokenInfo> makeTokens(Eojeol eojeol) {
+    if (eojeol.isSkippable()) {
       return null;
     }
     
     LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
-    int startOffset = posList.get(0).getStartOffset();
-    String str = "";
-    for (Pos pos: posList) {
-      addAdditinalToken(result, pos);
-      str += pos.getSurface();
-    }
-    int endOffset = posList.get(posList.size() - 1).getEndOffset();
-    boolean isEojeol = posList.size() > 1;
-    if (isEojeol) {
-      result.addFirst(new TokenInfo(
-          str, PosId.EOJEOL, 1, new Offsets(startOffset, endOffset)));
-    } else {
-      result.addFirst(new TokenInfo(posList.get(0), 1));
-    }
-    
-    clearPosList();
+    addAdditionalToken(result, eojeol);
+    result.addFirst(eojeol.createToken(1));
+    addDecompoundedNoun(result, eojeol);
     return result;
   }
 
-  private void addAdditinalToken(LinkedList<TokenInfo> result, Pos pos) {
-    addAbsolutePosToken(result, pos);
-    addSamePositionPosToken(result, pos);
-    addIsolatedJosaToken(result, pos);
+  /**
+   * output 리스트에 분해된 복합명사 토큰을 넣는다.
+   * 복합명사 분해와 token의 위치에 대해서는 다음의 문서를 참조하였다.
+   * http://www.slideshare.net/lucenerevolution/japanese-linguistics-in-lucene-and-solr
+   */
+  private void addDecompoundedNoun(
+      LinkedList<TokenInfo> output, Eojeol eojeol) {
+    for (Pos pos: eojeol.getPosList()) {
+      if (pos.isPosIdOf(PosId.COMPOUND) &&
+          pos.getSurfaceLength() >= compoundNounMinLength) {
+        LinkedList<TokenInfo> decompoundedTokens = decompoundToTokens(pos);
+        mergeDecompoundedTokensIntoEojeolTokens(output, decompoundedTokens);
+      }
+    }
+  }
+  
+  private LinkedList<TokenInfo> decompoundToTokens(Pos compoundNoun) {
+    LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
+    String exp = compoundNoun.getIndexExpression();
+    String[] nounStrs = exp.split("\\+");
+    if (nounStrs.length == 1) {
+      return result;
+    } else {
+      for (String nounStr: nounStrs) {
+        TokenInfo token = convertToToken(nounStr, 0);
+        result.add(token);
+      }
+      // 분해된 token의 offset 재계산
+      TokenInfo prevToken = null;
+      for (TokenInfo token: result) {
+        if (prevToken == null) {
+          token.setStartOffset(compoundNoun.getStartOffset());
+          prevToken = token;
+        } else {
+          if (token.getPositionIncr() == 0) {
+            token.setStartOffset(prevToken.getOffsets().start);
+          } else {
+            token.setStartOffset(prevToken.getOffsets().end);
+            prevToken = token;
+          }
+        }
+      }
+      return result;
+    }
+  }
+  
+  private TokenInfo convertToToken(String tokenExp, int startOffset) {
+    String[] datas = tokenExp.split("/");
+    String term = datas[0];
+    PosId posId = PosId.convertFrom(datas[1]);
+    int positionIncr = Integer.parseInt(datas[2]);
+    int positionLength = Integer.parseInt(datas[3]);
+    return new TokenInfo(
+        term, posId, positionIncr, positionLength, startOffset);
+  }
+  
+  private void mergeDecompoundedTokensIntoEojeolTokens(
+      LinkedList<TokenInfo> eojeolTokens,
+      LinkedList<TokenInfo> decompoundedTokens) {
+    LinkedList<TokenInfo> decompoundedTokensCopy = new LinkedList<TokenInfo>();
+    decompoundedTokensCopy.addAll(decompoundedTokens);
+    
+    ListIterator<TokenInfo> iter = eojeolTokens.listIterator();
+    while (iter.hasNext()) {
+      TokenInfo token = iter.next();
+      if (token.getPosTag().equalsIgnoreCase("COMPOUND")) {
+        iter.remove();
+      }
+      token.setPositionIncr(0);
+    }
+    
+    int compoundNounPosition = findTokenByTag(decompoundedTokens, "COMPOUND");
+    if (compoundNounPosition != -1) {
+      decompoundedTokensCopy.addAll(compoundNounPosition, eojeolTokens);
+    }
+    eojeolTokens.clear();
+    eojeolTokens.addAll(decompoundedTokensCopy);
+  }
+  
+  private int findTokenByTag(LinkedList<TokenInfo> tokens, String tag) {
+    int index = 0;
+    for (TokenInfo token: tokens) {
+      if (token.getPosTag().equalsIgnoreCase(tag)) {
+        return index;
+      }
+      ++index;
+    }
+    return -1;
+  }
+  
+  private void addAdditionalToken(LinkedList<TokenInfo> result, Eojeol eojeol) {
+    addAbsolutePosToken(result, eojeol);
   }
 
   /**
    * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
    */
-  private void addAbsolutePosToken(LinkedList<TokenInfo> result, Pos pos) {
-    if (posList.size() > 1 && isAbsolutePos(pos)) {
-      result.add(new TokenInfo(pos, 0));
-    }
-  }
-  
-  /**
-   * 같은 위치에 넣어야되는 품사가 있을 경우(복합명사의 경우), 해당 품사를 icrsPos=0으로
-   * 넣어둔다.
-   */
-  private void addSamePositionPosToken(LinkedList<TokenInfo> result, Pos pos) {
-    Pos samePositionPos = pos.getSamePositionPos();
-    if (samePositionPos != null) result.add(new TokenInfo(samePositionPos, 0));
-  }
-
-  /**
-   * '떨어진 조사' 이슈에 대한 처리를 한다.
-   * 참고: https://bitbucket.org/bibreen/mecab-ko-dic/issue/1/--------------------
-   * 추가: '떨어진 명사 파생 접미사(XSN)에도 같은 처리를 한다.
-   */
-  private void addIsolatedJosaToken(LinkedList<TokenInfo> result, Pos pos) {
-    if (pos.getNode() == null || pos.getNode().getPrev() == null) {
-      return;
-    }
-    Node prevNode = pos.getNode().getPrev();
-    if (isIsolatedJosa(prevNode) && !pos.hasSpace()) {
-      String prevSurface = prevNode.getSurface();
-      result.add(
-          new TokenInfo(
-              prevSurface,
-              PosId.N,
-              0,
-              new Offsets(
-                  pos.getStartOffset() - prevSurface.length(),
-                  pos.getStartOffset())));
-      result.add(
-          new TokenInfo(
-              prevSurface + pos.getSurface(),
-              PosId.N,
-              0,
-              new Offsets(
-                  pos.getStartOffset() - prevSurface.length(),
-                  pos.getEndOffset())));
+  private void addAbsolutePosToken(
+      LinkedList<TokenInfo> result, Eojeol eojeol) {
+    LinkedList<Pos> eojeolPosList = eojeol.getPosList();
+    if (eojeolPosList.size() <= 1) return;
+    for (Pos pos: eojeolPosList) {
+      if (isAbsolutePos(pos)) {
+        result.add(new TokenInfo(pos, 0));
+      }
     }
   }
   
   private boolean isAbsolutePos(Pos pos) {
     return appender.isAbsolutePos(pos);
   }
-  
-  private static boolean isIsolatedJosa(Node node) {
-    PosId posId = PosId.convertFrom(node.getPosid());
-    return (posId == PosId.J || posId == PosId.XSN) &&
-        node.getRlength() - node.getLength() > 0;
-  }
 
-  private void clearPosList() {
-    posList.clear();
-  }
-  
-  private boolean isSkippablePoses() {
-    if (posList.size() == 1) {
-      return appender.isSkippablePos(posList.get(0));
-    } else {
-      return false;
+  /**
+   * 품사 객체(Pos)를 받아서 어절을 구성하는 클래스.
+   * 
+   * @author bibreen <bibreen@gmail.com>
+   */
+  static private class Eojeol {
+    PosAppender appender;
+    private LinkedList<Pos> posList = new LinkedList<Pos>();
+    String term = "";
+    int positionLength = 0;
+    
+    Eojeol(PosAppender appender) {
+      this.appender = appender;
+    }
+    
+    public boolean append(Pos pos) {
+      if (isAppendable(pos)) {
+        posList.add(pos);
+        term += pos.getSurface();
+        if (isAbsolutePos(pos)) {
+          positionLength += pos.getPositionLength();
+        }
+        return true;
+      } else {
+        return false;
+      }
+    }
+    
+    private boolean isAppendable(Pos pos) {
+      if (posList.isEmpty()) {
+        return true;
+      } else {
+        return appender.isAppendable(posList.getLast(), pos);
+      }
+    }
+    
+    private boolean isAbsolutePos(Pos pos) {
+      return appender.isAbsolutePos(pos);
+    }
+    
+    public boolean isSkippable() {
+      if (posList.isEmpty()) {
+        return true;
+      }
+      if (posList.size() == 1) {
+        return appender.isSkippablePos(posList.get(0));
+      } else {
+        return false;
+      }
+    }
+    
+    public LinkedList<Pos> getPosList() {
+      return posList;
+    }
+    
+    public String getTerm() {
+      return term;
+    }
+    
+    public int getStartOffset() {
+      return posList.getFirst().getStartOffset();
+    }
+    
+    public int getPositionLength() {
+      if (positionLength == 0) {
+        return 1;
+      } else {
+        return positionLength;
+      }
+    }
+    
+    public TokenInfo createToken(int positionIncr) {
+      if (posList.size() > 1) {
+        return new TokenInfo(
+            getTerm(),
+            PosId.EOJEOL,
+            positionIncr,
+            getPositionLength(),
+            getStartOffset());
+      } else {
+        return new TokenInfo(posList.get(0), 1);
+      }
+    }
+    
+    public void clear() {
+      posList.clear();
+      term = "";
+      positionLength = 0;
+    }
+   
+    @Override
+    public String toString() {
+      return posList.toString();
     }
   }
 }

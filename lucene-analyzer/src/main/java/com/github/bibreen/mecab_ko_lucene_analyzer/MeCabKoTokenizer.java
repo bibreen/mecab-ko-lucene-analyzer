@@ -35,6 +35,7 @@ import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 public final class MeCabKoTokenizer extends Tokenizer {
   private CharTermAttribute charTermAtt;
   private PositionIncrementAttribute posIncrAtt;
+  private PositionLengthAttribute posLenAtt;
   private OffsetAttribute offsetAtt;
   private TypeAttribute typeAtt;
  
@@ -44,7 +45,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private Lattice lattice;
   private Tagger tagger;
   private PosAppender posAppender;
-  private int decompoundMinLength;
+  private int compoundNounMinLength;
   private TokenGenerator generator;
   private Queue<TokenInfo> tokensQueue;
 
@@ -54,18 +55,18 @@ public final class MeCabKoTokenizer extends Tokenizer {
    * @param input
    * @param dicDir mecab 사전 디렉터리 경로
    * @param appender PosAppender
-   * @param decompoundMinLength 복합명사 분해를 하기위한 복합명사의 최소 길이.
+   * @param compoundNounMinLength 분해를 해야하는 복합명사의 최소 길이.
    * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
    */
   protected MeCabKoTokenizer(
       Reader input,
       String dicDir,
       PosAppender appender,
-      int decompoundMinLength) {
+      int compoundNounMinLength) {
     super(input);
     posAppender = appender;
     mecabDicDir = dicDir;
-    this.decompoundMinLength = decompoundMinLength;
+    this.compoundNounMinLength = compoundNounMinLength;
     setMeCab();
     setAttributes();
   }
@@ -79,6 +80,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private void setAttributes() {
     charTermAtt = addAttribute(CharTermAttribute.class);
     posIncrAtt = addAttribute(PositionIncrementAttribute.class);
+    posLenAtt = addAttribute(PositionLengthAttribute.class);
     offsetAtt = addAttribute(OffsetAttribute.class);
     typeAtt = addAttribute(TypeAttribute.class);
   }
@@ -109,11 +111,12 @@ public final class MeCabKoTokenizer extends Tokenizer {
     lattice.set_sentence(document);
     tagger.parse(lattice);
     this.generator = new TokenGenerator(
-        posAppender, decompoundMinLength, lattice.bos_node());
+        posAppender, compoundNounMinLength, lattice.bos_node());
   }
   
   private void setAttributes(TokenInfo token) {
-    posIncrAtt.setPositionIncrement(token.getPosIncr());
+    posIncrAtt.setPositionIncrement(token.getPositionIncr());
+    posLenAtt.setPositionLength(token.getPositionLength());
     offsetAtt.setOffset(
         correctOffset(token.getOffsets().start),
         correctOffset(token.getOffsets().end));

@@ -26,7 +26,6 @@ public class TokenGeneratorTestCase {
   public static Node mockNodeListFactory(String[] posStrings) {
     Node nextNode = null;
     for (int i = posStrings.length - 1; i >= 0; --i) {
-      System.out.println(posStrings[i]);
       Node node = mockNodeFactory(posStrings[i], nextNode);
       nextNode = node;
     }
@@ -35,6 +34,9 @@ public class TokenGeneratorTestCase {
   
   public static Node mockNodeFactory(String posString, Node next) {
     String[] surfaceAndFeature = posString.split("\t");
+    if (surfaceAndFeature.length != 2) {
+      throw new IllegalArgumentException("Invalid POS string");
+    }
     String surface = surfaceAndFeature[0].trim();
     String feature = surfaceAndFeature[1].trim();
     
@@ -66,9 +68,9 @@ public class TokenGeneratorTestCase {
     String[] features = feature.split(",");
     String tag = features[TAG_POSITION];
     String type = features[TYPE_POSITION];
-    if (type == "Compound") {
+    if (type.equals("Compound")) {
       return PosId.COMPOUND.getNum();
-    } else if (type == "Inflect") {
+    } else if (type.equals("Inflect")) {
       return PosId.INFLECT.getNum();
     } else {
       return PosId.convertFrom(tag).getNum();

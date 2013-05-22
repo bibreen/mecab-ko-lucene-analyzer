@@ -142,7 +142,7 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(
         new StandardPosAppender(),
-        TokenGenerator.DEFAULT_DECOMPOUND,
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH,
         lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[삼성:1:0:2]", tokens.toString());
@@ -159,7 +159,7 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(
         new StandardPosAppender(),
-        TokenGenerator.DEFAULT_DECOMPOUND,
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH,
         lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[삼성:1:0:2]", tokens.toString());
@@ -279,7 +279,7 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(
         new StandardPosAppender(),
-        TokenGenerator.DEFAULT_DECOMPOUND,
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH,
         lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
@@ -292,7 +292,7 @@ public class TokenGeneratorTest {
     tagger.parse(lattice);
     TokenGenerator generator = new TokenGenerator(
         new StandardPosAppender(),
-        TokenGenerator.DEFAULT_DECOMPOUND,
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH,
         lattice.bos_node());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);

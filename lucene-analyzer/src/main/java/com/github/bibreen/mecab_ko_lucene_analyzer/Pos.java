@@ -26,20 +26,21 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 public class Pos {
   private String surface;
   private int startOffset;
+  private int positionLength;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
-  private String expression = null;
-  /// 복합명사 분해과정에서 복합명사와 같은 위치에 인덱싱 되어야할 품사를 저장하기 위한 변수
-  private Pos samePositionPos = null;
+  private String expression;
+  private String indexExpression;
   private Node node;
   
-  public Pos(String surface, PosId posId, int startOffset) {
+  public Pos(String surface, PosId posId, int startOffset, int positionLength) {
     this.surface = surface;
     this.posId = posId;
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
+    this.positionLength = positionLength;
   }
   
   /**
@@ -52,7 +53,8 @@ public class Pos {
     this(
         node.getSurface(),
         PosId.convertFrom(node.getPosid()),
-        prevEndOffset + node.getRlength() - node.getLength());
+        prevEndOffset + node.getRlength() - node.getLength(),
+        1);
     this.node = node;
     if (posId == PosId.COMPOUND || posId == PosId.INFLECT) {
       parseFeatureString();
@@ -63,23 +65,37 @@ public class Pos {
     final int startPosPosition = 4;
     final int endPosPosition = 5;
     final int expressionPosition = 6;
+    final int indexExpressionPosition = 7;
     
     String feature = node.getFeature();
     String items[] = feature.split(",");
+    if (items.length < indexExpressionPosition + 1) {
+      throw new IllegalArgumentException(
+          "Please, use higher version of mecab-ko-dic.");
+    }
     if (posId == PosId.INFLECT) {
       startPosId = PosId.convertFrom(items[startPosPosition].toUpperCase());
       endPosId = PosId.convertFrom(items[endPosPosition].toUpperCase());
     } else if (posId == PosId.COMPOUND){
       startPosId = PosId.N;
       endPosId = PosId.N;
+      positionLength =
+          getCompoundNounPositionLength(items[indexExpressionPosition]);
     } else {
       this.startPosId = posId;
       this.endPosId = posId;
     }
     expression = items[expressionPosition];
+    indexExpression = items[indexExpressionPosition];
   }
   
-  public Node getNode()  {
+  private int getCompoundNounPositionLength(String indexExpression) {
+    String firstToken = indexExpression.split("\\+")[1];
+    final int postionLengthPosition = 3;
+    return Integer.parseInt(firstToken.split("/")[postionLengthPosition]);
+  }
+  
+  public Node getNode() {
     return node;
   }
   
@@ -107,12 +123,20 @@ public class Pos {
     return expression;
   }
   
+  public String getIndexExpression() {
+    return indexExpression;
+  }
+  
   public int getStartOffset() {
     return startOffset;
   }
   
   public int getEndOffset() {
     return startOffset + surface.length();
+  }
+  
+  public int getPositionLength() {
+    return positionLength;
   }
   
   public int getSpaceLength() {
@@ -132,17 +156,10 @@ public class Pos {
     return getSpaceLength() > 0;
   }
  
-  public Pos getSamePositionPos() {
-    return samePositionPos;
-  }
-
-  public void setSamePositionPos(Pos pos) {
-    samePositionPos = pos;
-  }
-
   @Override
   public String toString() {
-    return surface + "/" + posId +
-        "/" + startPosId + "," + endPosId + "(" + expression + ")";
+    return surface + "/" + posId + "(" + startPosId + "," + endPosId + ")" +
+        "/" + Integer.toString(startOffset) + "," +
+        Integer.toString(positionLength) + "/" + expression;
   }
 }

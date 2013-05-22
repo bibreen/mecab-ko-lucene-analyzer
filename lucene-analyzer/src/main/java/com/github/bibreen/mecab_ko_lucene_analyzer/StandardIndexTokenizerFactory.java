@@ -25,7 +25,7 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
 /**
  * 표준 index용 tokenizer 팩토리 생성자. 다음과 같은 파라미터를 받는다.
  *   - mecabDicDir: mecab-ko-dic 사전 경로. 디폴트 경로는 /usr/local/lib/mecab/dic/mecab-ko-dic 이다.
- *   - decompoundMinLength: 복합명사 분해 최소 길이. 디폴트 값은 2이다.
+ *   - compoundNounMinLength: 분해를 해야하는 복합명사의 최소 길이. 디폴트 값은 3이다.
  * 
  * <pre>
  * {@code
@@ -33,7 +33,7 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
  *   <analyzer type="index">
  *     <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory"
  *                mecabDicDir="/usr/local/lib/mecab/dic/mecab-ko-dic"
- *                decompoundMinLength="2"/>
+ *                compoundNounMinLength="3"/>
  *   </analyzer>
  * </fieldType>
  * }
@@ -43,12 +43,13 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
  */
 public class StandardIndexTokenizerFactory extends TokenizerFactory {
   private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
-  private int decompoundMinLength = TokenGenerator.DEFAULT_DECOMPOUND;
+  private int compoundNounMinLength =
+      TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH;
   @Override
   public void init(Map<String, String> args) {
     super.init(args);
     setMeCabDicDir();
-    setDecompoundMinLength();
+    setCompoundNounMinLength();
   }
 
   private void setMeCabDicDir() {
@@ -62,16 +63,16 @@ public class StandardIndexTokenizerFactory extends TokenizerFactory {
     }
   }
   
-  private void setDecompoundMinLength() {
-    String v = getArgs().get("decompoundMinLength");
+  private void setCompoundNounMinLength() {
+    String v = getArgs().get("compoundNounMinLength");
     if (v != null) {
-      decompoundMinLength = Integer.valueOf(v);
+      compoundNounMinLength = Integer.valueOf(v);
     }
   }
 
   @Override
   public Tokenizer create(Reader input) {
     return new MeCabKoTokenizer(
-        input, mecabDicDir, new StandardPosAppender(), decompoundMinLength);
+        input, mecabDicDir, new StandardPosAppender(), compoundNounMinLength);
   }
 }

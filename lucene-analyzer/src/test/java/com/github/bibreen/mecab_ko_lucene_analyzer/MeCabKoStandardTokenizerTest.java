@@ -77,7 +77,7 @@ public class MeCabKoStandardTokenizerTest {
   public void test1() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
-        TokenGenerator.DEFAULT_DECOMPOUND);
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
         "한국을:EOJEOL:1:0:3,한국:N:0:0:2,최대한:COMPOUND:1:4:7,최대:N:0:4:6," +
         "배려했다는:EOJEOL:1:8:13,배려:N:0:8:10,사실을:EOJEOL:1:14:17," +
@@ -90,7 +90,7 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testEmptyQuery() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader(""), TokenGenerator.DEFAULT_DECOMPOUND);
+        new StringReader(""), TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
@@ -98,7 +98,8 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testEmptyMorphemes() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("!@#$%^&*"), TokenGenerator.DEFAULT_DECOMPOUND);
+        new StringReader("!@#$%^&*"),
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
@@ -106,7 +107,8 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testHanEnglish() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("한win"), TokenGenerator.DEFAULT_DECOMPOUND);
+        new StringReader("한win"),
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals("한:N:1:0:1,win:SL:1:1:4,", tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -114,13 +116,15 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testCompound() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("형태소"), TokenGenerator.DEFAULT_DECOMPOUND);
+        new StringReader("형태소"),
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
         "형태소:COMPOUND:1:0:3,형태:N:0:0:2,", tokenizerToString(tokenizer));
     tokenizer.close();
     
     tokenizer = createTokenizer(
-        new StringReader("가고문헌"), TokenGenerator.DEFAULT_DECOMPOUND);
+        new StringReader("가고문헌"),
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
         "가고:N:1:0:2,가고문헌:COMPOUND:1:0:4,문헌:N:0:2:4,",
         tokenizerToString(tokenizer));
