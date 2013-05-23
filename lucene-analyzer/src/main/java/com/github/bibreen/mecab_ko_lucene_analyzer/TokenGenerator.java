@@ -57,14 +57,35 @@ public class TokenGenerator {
     Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0);
     while (node != null) {
       Pos curPos = new Pos(node, prevPos.getEndOffset());
-      posList.add(curPos);
+      if (curPos.getPosId() == PosId.PREANALYSIS) {
+        posList.addAll(getAnalyzedPoses(curPos));
+      } else {
+        posList.add(curPos);
+      }
       prevPos = curPos;
       node = node.getNext();
     }
   }
   
+  private LinkedList<Pos> getAnalyzedPoses(Pos pos) {
+    LinkedList<Pos> output = new LinkedList<Pos>();
+    String indexExp = pos.getIndexExpression();
+    String[] posExps = indexExp.split("\\+");
+    if (posExps.length == 1) {
+      output.add(pos);
+    } else {
+      int startOffset = pos.getStartOffset();
+      for (String exp: posExps) {
+        Pos newPos = new Pos(exp, startOffset);
+        output.add(newPos);
+        startOffset += newPos.getSurfaceLength();
+      }
+    }
+    return output;
+  }
+  
   /**
-   * 다음 Token들을 반환한다.
+   * 다음 어절의 Token들을 반환한다.
    * @return 반환 값이 null이면 generator 종료이다.
    */
   public LinkedList<TokenInfo> getNextEojeolTokens() {
@@ -96,11 +117,11 @@ public class TokenGenerator {
       return null;
     }
     
-    LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
-    addAdditionalToken(result, eojeol);
-    result.addFirst(eojeol.createToken(1));
-    addDecompoundedNoun(result, eojeol);
-    return result;
+    LinkedList<TokenInfo> output = new LinkedList<TokenInfo>();
+    addAdditionalToken(output, eojeol);
+    output.addFirst(eojeol.createToken(1));
+    addDecompoundedNoun(output, eojeol);
+    return output;
   }
 
   /**
@@ -126,8 +147,8 @@ public class TokenGenerator {
     if (nounStrs.length == 1) {
       return result;
     } else {
-      for (String nounStr: nounStrs) {
-        TokenInfo token = convertToToken(nounStr, 0);
+      for (String tokenExp: nounStrs) {
+        TokenInfo token = new TokenInfo(tokenExp, 0);
         result.add(token);
       }
       // 분해된 token의 offset 재계산
@@ -147,16 +168,6 @@ public class TokenGenerator {
       }
       return result;
     }
-  }
-  
-  private TokenInfo convertToToken(String tokenExp, int startOffset) {
-    String[] datas = tokenExp.split("/");
-    String term = datas[0];
-    PosId posId = PosId.convertFrom(datas[1]);
-    int positionIncr = Integer.parseInt(datas[2]);
-    int positionLength = Integer.parseInt(datas[3]);
-    return new TokenInfo(
-        term, posId, positionIncr, positionLength, startOffset);
   }
   
   private void mergeDecompoundedTokensIntoEojeolTokens(
@@ -193,20 +204,20 @@ public class TokenGenerator {
     return -1;
   }
   
-  private void addAdditionalToken(LinkedList<TokenInfo> result, Eojeol eojeol) {
-    addAbsolutePosToken(result, eojeol);
+  private void addAdditionalToken(LinkedList<TokenInfo> output, Eojeol eojeol) {
+    addAbsolutePosToken(output, eojeol);
   }
 
   /**
    * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
    */
   private void addAbsolutePosToken(
-      LinkedList<TokenInfo> result, Eojeol eojeol) {
+      LinkedList<TokenInfo> output, Eojeol eojeol) {
     LinkedList<Pos> eojeolPosList = eojeol.getPosList();
     if (eojeolPosList.size() <= 1) return;
     for (Pos pos: eojeolPosList) {
       if (isAbsolutePos(pos)) {
-        result.add(new TokenInfo(pos, 0));
+        output.add(new TokenInfo(pos, 0));
       }
     }
   }

@@ -26,26 +26,26 @@ import org.junit.Test;
 
 public class TokenGeneratorWithStandardPosAppenderTest
     extends TokenGeneratorTestCase {
-	@Before
-	public void setUp() throws Exception {
-	}
+  @Before
+  public void setUp() throws Exception {
+  }
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	@Test
-	public void testBasicHangulSentence() {
-		Node node = mockNodeListFactory(new String[] {
-		    "진달래\tNN,F,진달래,*,*,*,*,*",
-		    " 꽃\tNN,T,꽃,*,*,*,*,*",
-		    "이\tJKS,F,이,*,*,*,*,*",
-		    " 피\tVV,F,피,*,*,*,*,*",
-		    "었\tEP,T,었,*,*,*,*,*",
-		    "습니다\tEF,F,습니다,*,*,*,*,*",
-		    ".\tSF,*,*,*,*,*,*,*"
-		});
-	
+  @After
+  public void tearDown() throws Exception {
+  }
+  
+  @Test
+  public void testBasicHangulSentence() {
+    Node node = mockNodeListFactory(new String[] {
+        "진달래\tNN,F,진달래,*,*,*,*,*",
+        " 꽃\tNN,T,꽃,*,*,*,*,*",
+        "이\tJKS,F,이,*,*,*,*,*",
+        " 피\tVV,F,피,*,*,*,*,*",
+        "었\tEP,T,었,*,*,*,*,*",
+        "습니다\tEF,F,습니다,*,*,*,*,*",
+        ".\tSF,*,*,*,*,*,*,*"
+    });
+  
     TokenGenerator generator = new TokenGenerator(
         new StandardPosAppender(), TokenGenerator.NO_DECOMPOUND, node);
     List<TokenInfo> tokens;
@@ -57,13 +57,13 @@ public class TokenGeneratorWithStandardPosAppenderTest
     assertEquals("[피었습니다/EOJEOL/1/1/7/12]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
-	@Test
-	public void testDecompound() {
-		Node node = mockNodeListFactory(new String[] {
-		    "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1"
-		});
+  }
+  
+  @Test
+  public void testDecompound() {
+    Node node = mockNodeListFactory(new String[] {
+        "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1"
+    });
     TokenGenerator generator =
         new TokenGenerator(new StandardPosAppender(), 1, node);
     
@@ -74,13 +74,13 @@ public class TokenGeneratorWithStandardPosAppenderTest
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
-	@Test
-	public void testNoDecompound() {
-		Node node = mockNodeListFactory(new String[] {
-		    "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/NN/0/2+전자/NN/1/1"
-		});
+  }
+  
+  @Test
+  public void testNoDecompound() {
+    Node node = mockNodeListFactory(new String[] {
+        "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/NN/0/2+전자/NN/1/1"
+    });
     TokenGenerator generator =
         new TokenGenerator(
             new StandardPosAppender(), TokenGenerator.NO_DECOMPOUND, node);
@@ -90,13 +90,13 @@ public class TokenGeneratorWithStandardPosAppenderTest
     assertEquals("[삼성전자/COMPOUND/1/2/0/4]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
-	@Test
-	public void testCompoundNounMinLength4() {
-		Node node = mockNodeListFactory(new String[] {
-		    "무궁화\tNN,F,무궁화,Compound,*,*,무궁+화,무궁/NN/1/1+무궁화/NN/0/2+화/NN/1/1"
-		});
+  }
+  
+  @Test
+  public void testCompoundNounMinLength4() {
+    Node node = mockNodeListFactory(new String[] {
+        "무궁화\tNN,F,무궁화,Compound,*,*,무궁+화,무궁/NN/1/1+무궁화/NN/0/2+화/NN/1/1"
+    });
     TokenGenerator generator =
         new TokenGenerator(
             new StandardPosAppender(), 4, node);
@@ -107,9 +107,9 @@ public class TokenGeneratorWithStandardPosAppenderTest
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
     
-		node = mockNodeListFactory(new String[] {
-		    "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1"
-		});
+    node = mockNodeListFactory(new String[] {
+        "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1"
+    });
     generator = new TokenGenerator(new StandardPosAppender(), 4, node);
     
     tokens = generator.getNextEojeolTokens();
@@ -118,23 +118,23 @@ public class TokenGeneratorWithStandardPosAppenderTest
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
-	@Test
-	public void testSentenceWithDecompoundAll() {
-		Node node = mockNodeListFactory(new String[] {
-		    "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1",
-		    "는\tJX,T,는,*,*,*,*,*",
-		    " 대표\tNN,F,대표,*,*,*,*,*",
-		    "적\tXSN,T,적,*,*,*,*,*",
-		    "인\tVCP+ETM,T,인,Inflect,VCP,ETM,이/VCP+ㄴ/ETM,*",
-		    " 복합\tNN,T,복합,*,*,*,*,*",
-		    "명사\tNN,F,명사,*,*,*,*,*",
-		    "이\tVCP,F,이,*,*,*,*,*",
-		    "다\tEF,F,다,*,*,*,*,*",
-		    ".\tSF,*,*,*,*,*,*,*"
-		});
-		
+  }
+  
+  @Test
+  public void testSentenceWithDecompoundAll() {
+    Node node = mockNodeListFactory(new String[] {
+        "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/COMPOUND/0/2+전자/NN/1/1",
+        "는\tJX,T,는,*,*,*,*,*",
+        " 대표\tNN,F,대표,*,*,*,*,*",
+        "적\tXSN,T,적,*,*,*,*,*",
+        "인\tVCP+ETM,T,인,Inflect,VCP,ETM,이/VCP+ㄴ/ETM,*",
+        " 복합\tNN,T,복합,*,*,*,*,*",
+        "명사\tNN,F,명사,*,*,*,*,*",
+        "이\tVCP,F,이,*,*,*,*,*",
+        "다\tEF,F,다,*,*,*,*,*",
+        ".\tSF,*,*,*,*,*,*,*"
+    });
+  	
     TokenGenerator generator =
         new TokenGenerator(new StandardPosAppender(), 1, node);
     
@@ -157,56 +157,56 @@ public class TokenGeneratorWithStandardPosAppenderTest
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
+  }
 
-	@Test
-	public void testSentenceWithDecompoundMinLength2() {
-		Node node = mockNodeListFactory(new String[] {
-		    "나\tNP,F,나,*,*,*,*,*",
-		    "의\tJKG,F,의,*,*,*,*,*",
-		    "무궁화\tNN,F,무궁화,Compound,*,*,무궁+화,무궁/NN/1/1+무궁화/NN/0/2+화/NN/1/1",
-		    "꽃\tNN,T,꽃,*,*,*,*,*",
-		    "을\tJKO,T,을,*,*,*,*,*",
-		    "보\tVV,F,보,*,*,*,*,*",
-		    "아라\tEF,F,아라,*,*,*,*,*",
-		    ".\tSF,*,*,*,*,*,*,*"
-		});
-		
+  @Test
+  public void testSentenceWithCompoundNounMinLength4() {
+    Node node = mockNodeListFactory(new String[] {
+        "나\tNP,F,나,*,*,*,*,*",
+        "의\tJKG,F,의,*,*,*,*,*",
+        "무궁화\tNN,F,무궁화,Compound,*,*,무궁+화,무궁/NN/1/1+무궁화/NN/0/2+화/NN/1/1",
+        "꽃\tNN,T,꽃,*,*,*,*,*",
+        "을\tJKO,T,을,*,*,*,*,*",
+        "보\tVV,F,보,*,*,*,*,*",
+        "아라\tEF,F,아라,*,*,*,*,*",
+        ".\tSF,*,*,*,*,*,*,*"
+    });
+  	
     TokenGenerator generator =
-        new TokenGenerator(new StandardPosAppender(), 2, node);
+        new TokenGenerator(new StandardPosAppender(), 4, node);
     
     List<TokenInfo> tokens;
     tokens = generator.getNextEojeolTokens();
     assertEquals("[나의/EOJEOL/1/1/0/2, 나/N/0/1/0/1]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(
-        "[무궁/N/1/1/2/4, 무궁화/N/0/2/2/5, 화/N/1/1/4/5]", tokens.toString());
+        "[무궁화/COMPOUND/1/2/2/5]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[꽃을/EOJEOL/1/1/5/7, 꽃/N/0/1/5/6]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[보아라/EOJEOL/1/1/7/10]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
-	@Test
-	public void testSentenceWithEnglishAndSymbols() {
-		Node node = mockNodeListFactory(new String[] {
-		    "영어\tNN,F,영어,*,*,*,*,*",
-		    "(\tSSO,*,*,*,*,*,*,*",
-		    "english\tSL,*,*,*,*,*,*,*",
-		    ")\tSSC,*,*,*,*,*,*,*",
-		    "를\tJKO,T,를,*,*,*,*,*",
-		    "study\tSL,*,*,*,*,*,*,*",
-		    "하\tXSV,F,하,*,*,*,*,*",
-		    "는\tETM,T,는,*,*,*,*,*",
-		    "것\tNNB,T,것,*,*,*,*,*",
-		    "은\tJX,T,은,*,*,*,*,*",
-		    "어렵\tVA,T,어렵,*,*,*,*,*",
-		    "다\tEF,F,다,*,*,*,*,*",
-		    ".\tSF,*,*,*,*,*,*,*"
-		});
-		
+  }
+  
+  @Test
+  public void testSentenceWithEnglishAndSymbols() {
+    Node node = mockNodeListFactory(new String[] {
+        "영어\tNN,F,영어,*,*,*,*,*",
+        "(\tSSO,*,*,*,*,*,*,*",
+        "english\tSL,*,*,*,*,*,*,*",
+        ")\tSSC,*,*,*,*,*,*,*",
+        "를\tJKO,T,를,*,*,*,*,*",
+        "study\tSL,*,*,*,*,*,*,*",
+        "하\tXSV,F,하,*,*,*,*,*",
+        "는\tETM,T,는,*,*,*,*,*",
+        "것\tNNB,T,것,*,*,*,*,*",
+        "은\tJX,T,은,*,*,*,*,*",
+        "어렵\tVA,T,어렵,*,*,*,*,*",
+        "다\tEF,F,다,*,*,*,*,*",
+        ".\tSF,*,*,*,*,*,*,*"
+    });
+  	
     TokenGenerator generator =
         new TokenGenerator(new StandardPosAppender(), 2, node);
     
@@ -227,14 +227,63 @@ public class TokenGeneratorWithStandardPosAppenderTest
     assertEquals("[어렵다/EOJEOL/1/1/21/24]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
-	}
-	
+  }
+
+  @Test
+  public void testPreanaysis() {
+    Node node = mockNodeListFactory(new String[] {
+        "은전한닢\tNN+NR+NN,T,은전한닢,Preanalysis,NN,NN,은전+한+닢,은전/NN/1/1+한/NR/1/1+닢/NN/1/1"
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<TokenInfo> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[은전/N/1/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[한/N/1/1/2/3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[닢/N/1/1/3/4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
+  public void testPreanaysisSentence() {
+    Node node = mockNodeListFactory(new String[] {
+        "은전한닢\tNN+NR+NN,T,은전한닢,Preanalysis,NN,NN,은전+한+닢,은전/NN/1/1+한/NR/1/1+닢/NN/1/1",
+        "은\tJX,T,은,*,*,*,*,*",
+        "오픈\tNN,T,오픈,*,*,*,*,*",
+        "소스\tNN,F,소스,*,*,*,*,*",
+        "이\tVCP,F,이,*,*,*,*,*",
+        "다\tEF,F,다,*,*,*,*,*"
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<TokenInfo> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[은전/N/1/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[한/N/1/1/2/3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[닢은/EOJEOL/1/1/3/5, 닢/N/0/1/3/4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[오픈/N/1/1/5/7]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[소스이다/EOJEOL/1/1/7/11, 소스/N/0/1/7/9]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
   @Test
   public void testSymbolOnlySentence() {
-		Node node = mockNodeListFactory(new String[] {
-		    "!@#$%^&*()\tSY,*,*,*,*,*,*,*"
-		});
-		
+    Node node = mockNodeListFactory(new String[] {
+        "!@#$%^&*()\tSY,*,*,*,*,*,*,*"
+    });
+  	
     TokenGenerator generator =
         new TokenGenerator(
             new StandardPosAppender(),

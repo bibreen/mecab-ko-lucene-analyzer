@@ -26,7 +26,7 @@ public final class PosIdManager {
    */
   public enum PosId {
     UNKNOWN(0),
-    COMPOUND(1), INFLECT(2),
+    COMPOUND(1), INFLECT(2), PREANALYSIS(3),
     E(100), IC(110), J(120), MAG(130), MAJ(131), MM(140), N(150), SF(160),
     SH(161), SL(162), SN(163), SP(164), SSC(165), SSO(166), SU(167), SY(168),
     VA(170), VCN(171), VCP(172), VV(173), VX(174), XPN(181), XR(182), XSA(183),
@@ -48,6 +48,7 @@ public final class PosIdManager {
       case 0: return PosId.UNKNOWN;
       case 1: return PosId.COMPOUND;
       case 2: return PosId.INFLECT;
+      case 3: return PosId.PREANALYSIS;
       case 100: return PosId.E;
       case 110: return PosId.IC;
       case 120: return PosId.J;
@@ -81,6 +82,7 @@ public final class PosIdManager {
     }
     
     public static PosId convertFrom(String tagString) {
+      tagString = tagString.toUpperCase();
       try {
         if (tagString.charAt(0) == 'N') {
           return PosId.N;

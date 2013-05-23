@@ -72,6 +72,8 @@ public class TokenGeneratorTestCase {
       return PosId.COMPOUND.getNum();
     } else if (type.equals("Inflect")) {
       return PosId.INFLECT.getNum();
+    } else if (type.equals("Preanalysis")) {
+      return PosId.PREANALYSIS.getNum();
     } else {
       return PosId.convertFrom(tag).getNum();
     }

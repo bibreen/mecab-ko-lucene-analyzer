@@ -6,9 +6,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-  MeCabKoDicTest.class,
   MeCabKoStandardTokenizerTest.class,
   PosIdManagerTest.class,
-  TokenGeneratorTest.class})
+  TokenGeneratorTest.class,
+  TokenGeneratorWithStandardPosAppenderTest.class})
 public class AllTests {
 }

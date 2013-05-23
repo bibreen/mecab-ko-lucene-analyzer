@@ -56,9 +56,28 @@ public class Pos {
         prevEndOffset + node.getRlength() - node.getLength(),
         1);
     this.node = node;
-    if (posId == PosId.COMPOUND || posId == PosId.INFLECT) {
+    if (posId == PosId.COMPOUND ||
+        posId == PosId.INFLECT ||
+        posId == PosId.PREANALYSIS) {
       parseFeatureString();
     }
+  }
+  
+  /**
+   * Pos를 표현하는 문자열을 받는 Pos 생성자.
+   * expression은 다음과 같이 구성된다.
+   * '<surface>/<tag>/<position_incr>/<position_length>'
+   * ex) 명사/NN/1/1
+   */
+  public Pos(String expression, int startOffset) {
+    String[] datas = expression.split("/");
+    this.surface = datas[TokenInfo.Expression.TERM_INDEX];
+    this.posId = PosId.convertFrom(datas[TokenInfo.Expression.TAG_INDEX]);
+    startPosId = posId;
+    endPosId = posId;
+    this.startOffset = startOffset;
+    this.positionLength =
+        Integer.parseInt(datas[TokenInfo.Expression.POSITION_LENGTH_INDEX]);
   }
   
   private void parseFeatureString() {
@@ -73,7 +92,7 @@ public class Pos {
       throw new IllegalArgumentException(
           "Please, use higher version of mecab-ko-dic.");
     }
-    if (posId == PosId.INFLECT) {
+    if (posId == PosId.INFLECT || posId == PosId.PREANALYSIS) {
       startPosId = PosId.convertFrom(items[startPosPosition].toUpperCase());
       endPosId = PosId.convertFrom(items[endPosPosition].toUpperCase());
     } else if (posId == PosId.COMPOUND){
@@ -155,7 +174,7 @@ public class Pos {
   public boolean hasSpace() {
     return getSpaceLength() > 0;
   }
- 
+  
   @Override
   public String toString() {
     return surface + "/" + posId + "(" + startPosId + "," + endPosId + ")" +

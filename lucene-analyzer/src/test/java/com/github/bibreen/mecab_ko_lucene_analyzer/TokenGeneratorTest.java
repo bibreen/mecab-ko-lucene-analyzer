@@ -27,6 +27,8 @@ import org.junit.Test;
 
 import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 
+// TODO: 간단하게 실제 mecab-ko-dic을 테스트 하는 유닛 테스트로 바뀌어야 함
+// 이름도 바꿔야 한다.
 public class TokenGeneratorTest {
   private Tagger tagger;
   private Lattice lattice;
@@ -42,7 +44,7 @@ public class TokenGeneratorTest {
   @After
   public void tearDown() throws Exception {
   }
-  
+
   @Test
   public void testHangulSentence() {
     List<TokenInfo> tokens;

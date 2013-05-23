@@ -27,6 +27,13 @@ public class TokenInfo {
   private int positionIncr;
   private int positionLength;
   private Offsets offsets;
+  
+  public static class Expression {
+    final static int TERM_INDEX = 0;
+    final static int TAG_INDEX = 1;
+    final static int POSITION_INCR_INDEX = 2;
+    final static int POSITION_LENGTH_INDEX = 3;
+  }
 
   public TokenInfo(
       String term,
@@ -40,7 +47,7 @@ public class TokenInfo {
     this.positionLength = positionLength;
     this.offsets = offsets;
   }
-  
+
   public TokenInfo(
       String term,
       PosId posId,
@@ -54,11 +61,6 @@ public class TokenInfo {
         positionLength,
         new Offsets(startOffset, startOffset + term.length()));
   }
-  
-//  public TokenInfo(
-//      String term, PosId posId, int positionIncr, Offsets offsets) {
-//    this(term, posId, positionIncr, 1, offsets);
-//  }
 
   public TokenInfo(Pos pos, int positionIncr) {
     this(
@@ -69,6 +71,21 @@ public class TokenInfo {
         new Offsets(pos.getStartOffset(), pos.getEndOffset()));
   }
 
+  /**
+   * Token을 표현하는 문자열을 사용하여 TokenInfo를 생성한다.
+   * @param expression 표현 문자열
+   * @param startOffset Token의 startOffset
+   */
+  public TokenInfo(String expression, int startOffset) {
+    String[] datas = expression.split("/");
+    this.term = datas[Expression.TERM_INDEX];
+    this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
+    this.positionIncr = Integer.parseInt(datas[Expression.POSITION_INCR_INDEX]);
+    this.positionLength = Integer.parseInt(
+        datas[Expression.POSITION_LENGTH_INDEX]);
+    this.offsets = new Offsets(startOffset, startOffset + term.length());
+  }
+  
   public String getTerm() {
     return term;
   }
