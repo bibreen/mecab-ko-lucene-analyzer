@@ -25,21 +25,34 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  */
 public class Pos {
   private String surface;
-  private int startOffset;
-  private int positionLength;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
-  private String expression;
+  private int startOffset;
+  private int positionIncr;
+  private int positionLength;
   private String indexExpression;
   private Node node;
   
-  public Pos(String surface, PosId posId, int startOffset, int positionLength) {
+  public static class Expression {
+    final static int TERM_INDEX = 0;
+    final static int TAG_INDEX = 1;
+    final static int POSITION_INCR_INDEX = 2;
+    final static int POSITION_LENGTH_INDEX = 3;
+  }
+  
+  public Pos(
+      String surface,
+      PosId posId,
+      int startOffset,
+      int positionIncr,
+      int positionLength) {
     this.surface = surface;
     this.posId = posId;
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
+    this.positionIncr = positionIncr;
     this.positionLength = positionLength;
   }
   
@@ -54,7 +67,7 @@ public class Pos {
         node.getSurface(),
         PosId.convertFrom(node.getPosid()),
         prevEndOffset + node.getRlength() - node.getLength(),
-        1);
+        1, 1);
     this.node = node;
     if (posId == PosId.COMPOUND ||
         posId == PosId.INFLECT ||
@@ -71,19 +84,20 @@ public class Pos {
    */
   public Pos(String expression, int startOffset) {
     String[] datas = expression.split("/");
-    this.surface = datas[TokenInfo.Expression.TERM_INDEX];
-    this.posId = PosId.convertFrom(datas[TokenInfo.Expression.TAG_INDEX]);
+    this.surface = datas[Expression.TERM_INDEX];
+    this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
+    this.positionIncr=
+        Integer.parseInt(datas[Expression.POSITION_INCR_INDEX]);
     this.positionLength =
-        Integer.parseInt(datas[TokenInfo.Expression.POSITION_LENGTH_INDEX]);
+        Integer.parseInt(datas[Expression.POSITION_LENGTH_INDEX]);
   }
   
   private void parseFeatureString() {
     final int startPosPosition = 4;
     final int endPosPosition = 5;
-    final int expressionPosition = 6;
     final int indexExpressionPosition = 7;
     
     String feature = node.getFeature();
@@ -104,7 +118,6 @@ public class Pos {
       this.startPosId = posId;
       this.endPosId = posId;
     }
-    expression = items[expressionPosition];
     indexExpression = items[indexExpressionPosition];
   }
   
@@ -138,10 +151,6 @@ public class Pos {
     return surface.length();
   }
   
-  public String getExpression() {
-    return expression;
-  }
-  
   public String getIndexExpression() {
     return indexExpression;
   }
@@ -152,6 +161,10 @@ public class Pos {
   
   public int getEndOffset() {
     return startOffset + surface.length();
+  }
+  
+  public int getPositionIncr() {
+    return positionIncr;
   }
   
   public int getPositionLength() {
@@ -175,10 +188,19 @@ public class Pos {
     return getSpaceLength() > 0;
   }
   
+  public void setStartOffset(int val) {
+    startOffset = val;
+  }
+  
+  public void setPositionIncr(int val) {
+    positionIncr = val;
+  }
+  
   @Override
   public String toString() {
-    return surface + "/" + posId + "(" + startPosId + "," + endPosId + ")" +
-        "/" + Integer.toString(startOffset) + "," +
-        Integer.toString(positionLength) + "/" + expression;
+    return new String(
+        surface + "/" + posId + "/" +
+        positionIncr + "/" + positionLength + "/" +
+        getStartOffset() + "/" + getEndOffset());
   }
 }

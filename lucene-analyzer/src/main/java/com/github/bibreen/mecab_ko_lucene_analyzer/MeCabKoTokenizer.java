@@ -47,7 +47,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private PosAppender posAppender;
   private int compoundNounMinLength;
   private TokenGenerator generator;
-  private Queue<TokenInfo> tokensQueue;
+  private Queue<Pos> tokensQueue;
 
   /**
    * MeCabKoTokenizer 생성자.
@@ -98,7 +98,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
         return false;
       }
     }
-    TokenInfo token = tokensQueue.poll();
+    Pos token = tokensQueue.poll();
     setAttributes(token);
     return true;
   }
@@ -114,15 +114,15 @@ public final class MeCabKoTokenizer extends Tokenizer {
         posAppender, compoundNounMinLength, lattice.bos_node());
   }
   
-  private void setAttributes(TokenInfo token) {
+  private void setAttributes(Pos token) {
     posIncrAtt.setPositionIncrement(token.getPositionIncr());
     posLenAtt.setPositionLength(token.getPositionLength());
     offsetAtt.setOffset(
-        correctOffset(token.getOffsets().start),
-        correctOffset(token.getOffsets().end));
+        correctOffset(token.getStartOffset()),
+        correctOffset(token.getEndOffset()));
     charTermAtt.copyBuffer(
-        token.getTerm().toCharArray(), 0, token.getTerm().length());
-    typeAtt.setType(token.getPosTag());
+        token.getSurface().toCharArray(), 0, token.getSurfaceLength());
+    typeAtt.setType(token.getPosId().toString());
   }
   
   @Override

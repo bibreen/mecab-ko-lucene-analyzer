@@ -22,7 +22,7 @@ import org.chasen.mecab.Node;
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
 /**
- * MeCab의 node를 받아서 Lucene tokenizer에 사용될 TokenInfo 리스트를 생성하는 클래스.
+ * MeCab의 node를 받아서 Lucene tokenizer에 사용될 Pos 리스트를 생성하는 클래스.
  * 
  * @author bibreen <bibreen@gmail.com>
  * @author amitabul <mousegood@gmail.com>
@@ -54,7 +54,7 @@ public class TokenGenerator {
   
   private void convertNodeListToPosList(Node beginNode) {
     Node node = beginNode.getNext();
-    Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0);
+    Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0, 0);
     while (node != null) {
       Pos curPos = new Pos(node, prevPos.getEndOffset());
       if (curPos.getPosId() == PosId.PREANALYSIS) {
@@ -85,145 +85,26 @@ public class TokenGenerator {
   }
   
   /**
-   * 다음 어절의 Token들을 반환한다.
+   * 다음 어절의 Pos들을 반환한다.
    * @return 반환 값이 null이면 generator 종료이다.
    */
-  public LinkedList<TokenInfo> getNextEojeolTokens() {
-    Eojeol eojeol = new Eojeol(appender);
+  public LinkedList<Pos> getNextEojeolTokens() {
+    Eojeol eojeol = new Eojeol(appender, compoundNounMinLength);
     while (posIter.hasNext()) {
       Pos curPos = posIter.next();
       if (!eojeol.append(curPos)) {
         posIter.previous();
-        LinkedList<TokenInfo> tokens = makeTokens(eojeol);
-        if (tokens != null) {
-          return tokens;
+        LinkedList<Pos> poses = eojeol.generateTokens();
+        if (poses != null) {
+          return poses;
         } else {
           eojeol.clear();
           continue;
         }
       }
     }
-    // return last tokens
-    return makeTokens(eojeol);
-  }
-
-  /**
-   * posList에 있는 Pos를 조합하여, Token을 뽑아낸다.
-   * @return token이 있을 경우 TokenInfo의 리스트를 반환하고, 뽑아낼 token이 없을 경우
-   * null을 반환한다.
-   */
-  private LinkedList<TokenInfo> makeTokens(Eojeol eojeol) {
-    if (eojeol.isSkippable()) {
-      return null;
-    }
-    
-    LinkedList<TokenInfo> output = new LinkedList<TokenInfo>();
-    addAdditionalToken(output, eojeol);
-    output.addFirst(eojeol.createToken(1));
-    addDecompoundedNoun(output, eojeol);
-    return output;
-  }
-
-  /**
-   * output 리스트에 분해된 복합명사 토큰을 넣는다.
-   * 복합명사 분해와 token의 위치에 대해서는 다음의 문서를 참조하였다.
-   * http://www.slideshare.net/lucenerevolution/japanese-linguistics-in-lucene-and-solr
-   */
-  private void addDecompoundedNoun(
-      LinkedList<TokenInfo> output, Eojeol eojeol) {
-    for (Pos pos: eojeol.getPosList()) {
-      if (pos.isPosIdOf(PosId.COMPOUND) &&
-          pos.getSurfaceLength() >= compoundNounMinLength) {
-        LinkedList<TokenInfo> decompoundedTokens = decompoundToTokens(pos);
-        mergeDecompoundedTokensIntoEojeolTokens(output, decompoundedTokens);
-      }
-    }
-  }
-  
-  private LinkedList<TokenInfo> decompoundToTokens(Pos compoundNoun) {
-    LinkedList<TokenInfo> result = new LinkedList<TokenInfo>();
-    String exp = compoundNoun.getIndexExpression();
-    String[] nounStrs = exp.split("\\+");
-    if (nounStrs.length == 1) {
-      return result;
-    } else {
-      for (String tokenExp: nounStrs) {
-        TokenInfo token = new TokenInfo(tokenExp, 0);
-        result.add(token);
-      }
-      // 분해된 token의 offset 재계산
-      TokenInfo prevToken = null;
-      for (TokenInfo token: result) {
-        if (prevToken == null) {
-          token.setStartOffset(compoundNoun.getStartOffset());
-          prevToken = token;
-        } else {
-          if (token.getPositionIncr() == 0) {
-            token.setStartOffset(prevToken.getOffsets().start);
-          } else {
-            token.setStartOffset(prevToken.getOffsets().end);
-            prevToken = token;
-          }
-        }
-      }
-      return result;
-    }
-  }
-  
-  private void mergeDecompoundedTokensIntoEojeolTokens(
-      LinkedList<TokenInfo> eojeolTokens,
-      LinkedList<TokenInfo> decompoundedTokens) {
-    LinkedList<TokenInfo> decompoundedTokensCopy = new LinkedList<TokenInfo>();
-    decompoundedTokensCopy.addAll(decompoundedTokens);
-    
-    ListIterator<TokenInfo> iter = eojeolTokens.listIterator();
-    while (iter.hasNext()) {
-      TokenInfo token = iter.next();
-      if (token.getPosTag().equalsIgnoreCase("COMPOUND")) {
-        iter.remove();
-      }
-      token.setPositionIncr(0);
-    }
-    
-    int compoundNounPosition = findTokenByTag(decompoundedTokens, "COMPOUND");
-    if (compoundNounPosition != -1) {
-      decompoundedTokensCopy.addAll(compoundNounPosition, eojeolTokens);
-    }
-    eojeolTokens.clear();
-    eojeolTokens.addAll(decompoundedTokensCopy);
-  }
-  
-  private int findTokenByTag(LinkedList<TokenInfo> tokens, String tag) {
-    int index = 0;
-    for (TokenInfo token: tokens) {
-      if (token.getPosTag().equalsIgnoreCase(tag)) {
-        return index;
-      }
-      ++index;
-    }
-    return -1;
-  }
-  
-  private void addAdditionalToken(LinkedList<TokenInfo> output, Eojeol eojeol) {
-    addAbsolutePosToken(output, eojeol);
-  }
-
-  /**
-   * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
-   */
-  private void addAbsolutePosToken(
-      LinkedList<TokenInfo> output, Eojeol eojeol) {
-    LinkedList<Pos> eojeolPosList = eojeol.getPosList();
-    if (eojeolPosList.size() <= 1) return;
-    for (Pos pos: eojeolPosList) {
-      if (isAbsolutePos(pos)) {
-        output.add(new TokenInfo(pos, 0));
-      }
-    }
-  }
-  
-  private boolean isAbsolutePos(Pos pos) {
-    return appender.isAbsolutePos(pos);
+    // return last eojeol tokens
+    return eojeol.generateTokens();
   }
 
   /**
@@ -233,12 +114,15 @@ public class TokenGenerator {
    */
   static private class Eojeol {
     PosAppender appender;
+    int compoundNounMinLength;
+    
     private LinkedList<Pos> posList = new LinkedList<Pos>();
     String term = "";
     int positionLength = 0;
     
-    Eojeol(PosAppender appender) {
+    Eojeol(PosAppender appender, int compoundNounMinLength) {
       this.appender = appender;
+      this.compoundNounMinLength = compoundNounMinLength;
     }
     
     public boolean append(Pos pos) {
@@ -266,6 +150,22 @@ public class TokenGenerator {
       return appender.isAbsolutePos(pos);
     }
     
+    /**
+     * Eojeol에 있는 Pos를 조합하여, Token이 되어야 하는 Pos를 생성한다.
+     * @return token이 있을 경우 Pos의 리스트를 반환하고, 뽑아낼 token이 없을 경우
+     * null을 반환한다.
+     */
+    private LinkedList<Pos> generateTokens() {
+      if (isSkippable()) {
+        return null;
+      }
+      LinkedList<Pos> output = new LinkedList<Pos>();
+      addAdditionalToken(output);
+      output.addFirst(createPos(1));
+      addDecompoundedNoun(output);
+      return output;
+    }
+    
     public boolean isSkippable() {
       if (posList.isEmpty()) {
         return true;
@@ -274,6 +174,101 @@ public class TokenGenerator {
         return appender.isSkippablePos(posList.get(0));
       } else {
         return false;
+      }
+    }
+    
+    /**
+     * output 리스트에 분해된 복합명사 토큰을 넣는다.
+     * 복합명사 분해와 token의 위치에 대해서는 다음의 문서를 참조하였다.
+     * http://www.slideshare.net/lucenerevolution/japanese-linguistics-in-lucene-and-solr
+     */
+    private void addDecompoundedNoun(LinkedList<Pos> output) {
+      for (Pos pos: getPosList()) {
+        if (pos.isPosIdOf(PosId.COMPOUND) &&
+            pos.getSurfaceLength() >= compoundNounMinLength) {
+          LinkedList<Pos> decompoundedTokens = decompound(pos);
+          mergeDecompoundedTokensIntoEojeolTokens(output, decompoundedTokens);
+        }
+      }
+    }
+    
+    private LinkedList<Pos> decompound(Pos compoundNoun) {
+      LinkedList<Pos> result = new LinkedList<Pos>();
+      String exp = compoundNoun.getIndexExpression();
+      String[] nounStrs = exp.split("\\+");
+      if (nounStrs.length == 1) {
+        return result;
+      } else {
+        for (String posExp: nounStrs) {
+          result.add(new Pos(posExp, 0));
+        }
+        // 분해된 POS의 offset 재계산
+        Pos prevPos = null;
+        for (Pos pos: result) {
+          if (prevPos == null) {
+            pos.setStartOffset(compoundNoun.getStartOffset());
+            prevPos = pos;
+          } else {
+            if (pos.getPositionIncr() == 0) {
+              pos.setStartOffset(prevPos.getStartOffset());
+            } else {
+              pos.setStartOffset(prevPos.getEndOffset());
+              prevPos = pos;
+            }
+          }
+        }
+        return result;
+      }
+    }
+    
+    private void mergeDecompoundedTokensIntoEojeolTokens(
+        LinkedList<Pos> eojeolTokens, LinkedList<Pos> decompoundedTokens) {
+      LinkedList<Pos> decompoundedTokensCopy = new LinkedList<Pos>();
+      decompoundedTokensCopy.addAll(decompoundedTokens);
+      
+      ListIterator<Pos> iter = eojeolTokens.listIterator();
+      while (iter.hasNext()) {
+        Pos pos = iter.next();
+        if (pos.getPosId() == PosId.COMPOUND) {
+          iter.remove();
+        }
+        pos.setPositionIncr(0);
+      }
+      
+      int compoundNounPosition =
+          findPositionByPosId(decompoundedTokens, PosId.COMPOUND);
+      if (compoundNounPosition != -1) {
+        decompoundedTokensCopy.addAll(compoundNounPosition, eojeolTokens);
+      }
+      eojeolTokens.clear();
+      eojeolTokens.addAll(decompoundedTokensCopy);
+    }
+    
+    private int findPositionByPosId(LinkedList<Pos> poses, PosId id) {
+      int index = 0;
+      for (Pos token: poses) {
+        if (token.getPosId() == id) {
+          return index;
+        }
+        ++index;
+      }
+      return -1;
+    }
+    
+    private void addAdditionalToken(LinkedList<Pos> output) {
+      addAbsolutePosToken(output);
+    }
+    
+    /**
+     * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
+     */
+    private void addAbsolutePosToken(LinkedList<Pos> output) {
+      if (posList.size() <= 1) return;
+      for (Pos pos: posList) {
+        if (isAbsolutePos(pos)) {
+          pos.setPositionIncr(0);
+          output.add(pos);
+        }
       }
     }
     
@@ -297,16 +292,16 @@ public class TokenGenerator {
       }
     }
     
-    public TokenInfo createToken(int positionIncr) {
+    public Pos createPos(int positionIncr) {
       if (posList.size() > 1) {
-        return new TokenInfo(
+        return new Pos(
             getTerm(),
             PosId.EOJEOL,
+            getStartOffset(),
             positionIncr,
-            getPositionLength(),
-            getStartOffset());
+            getPositionLength());
       } else {
-        return new TokenInfo(posList.get(0), 1);
+        return posList.getFirst();
       }
     }
     
