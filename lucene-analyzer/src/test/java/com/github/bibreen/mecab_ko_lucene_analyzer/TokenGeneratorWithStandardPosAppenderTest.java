@@ -77,6 +77,24 @@ public class TokenGeneratorWithStandardPosAppenderTest
   }
   
   @Test
+  public void testComplexDecompound() {
+    Node node = mockNodeListFactory(new String[] {
+        "아질산나트륨\tNN,T,아질산나트륨,Compound,*,*,아질산+나트륨," +
+        "아/NN/1/1+아질산나트륨/Compound/0/3+아질산/NN/0/2+질산/NN/1/1+나트륨/NN/1/1"
+    });
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 1, node);
+    
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[아/N/1/1/0/1, 아질산나트륨/COMPOUND/0/3/0/6, 아질산/N/0/2/0/3, 질산/N/1/1/1/3, 나트륨/N/1/1/3/6]",
+        tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
   public void testNoDecompound() {
     Node node = mockNodeListFactory(new String[] {
         "삼성전자\tNN,F,삼성전자,Compound,*,*,삼성+전자,삼성/NN/1/1+삼성전자/Compound/0/2+전자/NN/1/1"
@@ -154,6 +172,33 @@ public class TokenGeneratorWithStandardPosAppenderTest
     tokens = generator.getNextEojeolTokens();
     assertEquals(
         "[명사이다/EOJEOL/1/1/13/17, 명사/N/0/1/13/15]",
+        tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
+  public void testSentenceWithDecompoundComplexCompoundNoun() {
+    Node node = mockNodeListFactory(new String[] {
+        "아질산나트륨\tNN,T,아질산나트륨,Compound,*,*," +
+        "아질산+나트륨,아/NN/1/1+아질산나트륨/Compound/0/3+아질산/NN/0/2+질산/NN/1/1+나트륨/NN/1/1",
+        "이란\tJX,T,이란,*,*,*,*,*",
+        "무엇\tNP,T,무엇,*,*,*,*,*",
+        "인가요\tVCP+EF,F,인가요,Inflect,VCP,EF,이/VCP+ㄴ가요/EF,*",
+        "?\tSF,*,*,*,*,*,*,*",
+    });
+    
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 1, node);
+    
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[아/N/1/1/0/1, 아질산나트륨이란/EOJEOL/0/3/0/8, 아질산나트륨/COMPOUND/0/3/0/6, 아질산/N/0/2/0/3, 질산/N/1/1/1/3, 나트륨/N/1/1/3/6]",
+        tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[무엇인가요/EOJEOL/1/1/8/13, 무엇/N/0/1/8/10]",
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
