@@ -1,5 +1,11 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.10.0
+  - 복합명사 처리 로직 재작성
+  - 기분석 사전 처리 로직 추가
+  - StandardIndexTokenizerFactory에서 decompoundMinLength 속성 제거
+  - StandardIndexTokenizerFactory에서 compoundNounMinLength 속성 추가. 해당 길이 보다 짧은 복합명사는 분해하지 않음. 기본값은 3.
+
 ## 0.9.5
   - jar 패키지를 mecab-ko-mecab-loader.jar와 mecab-ko-lucene-analyzer.jar로 분리. (mecab-ko-mecab-loader.jar는 JNI 클래스를 포함하므로 System classpath에 위치해야 함)
   - 위의 사항과 관련하여 README.md를 변경
