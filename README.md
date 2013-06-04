@@ -82,7 +82,7 @@ __주의 사항__
 ##### index, query 모두 복합명사 분해를 하는 경우
 
     <!-- StandardIndexTokenizerFactory는 compoundNounMinLength를 속성으로 받을 수 있습니다.
-         분해를 하는 복합명사의 최소 길이를 뜻하면 기본 값은 3입니다. 이 경우, 길이가 3미만인 복합명사는 분해하지 않습니다.
+         분해를 하는 복합명사의 최소 길이를 뜻하며 기본 값은 3입니다. 이 경우, 길이가 3미만인 복합명사는 분해하지 않습니다.
     -->
     <!-- Korean -->
     <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
