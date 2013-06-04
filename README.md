@@ -16,7 +16,6 @@
   - Standard[Index|Query]Tokenizer의 경우, 명사뿐 아니라 품사가 결합된 어절도 Token으로 뽑아냅니다.
 
         철수가 학교에 간다. -> 철수가, 철수, 학교에, 학교, 간다
-
   - 문장의 끝에 문장의 끝을 알리는 기호 "`.!?`"가 있으면 더 자연스럽게 형태소 분석이 됩니다.
   - Apache Lucene/Solr 4.0 버전 기준으로 작성되었습니다.
 
@@ -51,14 +50,24 @@ __주의 사항__
   - mecab-ko-mecab-loader-XX.jar: System classpath에 복사합니다. (ex: `[solr 디렉터리]/example/lib/ext`)
   - mecab-ko-lucene-analyzer-XX.jar: Solr 라이브러리 디렉터리에 설치합니다. (ex: `[solr 디렉터리]/example/solr/lib`)
 
+#### mecab-ko-lucene-analyzer 버전별 mecab-ko-dic 지원 버전
+  - 0.10.x: mecab-ko-dic-1.3.0 or higher
+  - 0.9.x: mecab-ko-dic-1.1.0 or higher
+
+
 ## 사용법
 
 ### solr 설정
+
+#### solrconfig.xml 설정
 `solrconfig.xml` 에 `mecab-ko-lucene-analyzer-XX.jar`가 있는 경로를 설정합니다.
 
     <lib dir="../lib" regex=".*\.jar" />
 
+#### schema.xml 설정
 `schema.xml` 에 `fieldType` 을 설정합니다.
+
+##### query에서는 복합명사 분해를 하지 않는 경우
 
     <!-- Korean -->
     <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
@@ -67,6 +76,18 @@ __주의 사항__
       </analyzer>
       <analyzer type="query">
         <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardQueryTokenizerFactory"/>
+      </analyzer>
+    </fieldType>
+
+##### index, query 모두 복합명사 분해를 하는 경우
+
+    <!-- StandardIndexTokenizerFactory는 compoundNounMinLength를 속성으로 받을 수 있습니다.
+         분해를 하는 복합명사의 최소 길이를 뜻하면 기본 값은 3입니다. 이 경우, 길이가 3미만인 복합명사는 분해하지 않습니다.
+    -->
+    <!-- Korean -->
+    <fieldType name="text_ko" class="solr.TextField" positionIncrementGap="100">
+      <analyzer>
+        <tokenizer class="com.github.bibreen.mecab_ko_lucene_analyzer.StandardIndexTokenizerFactory" compoundNounMinLength="3"/>
       </analyzer>
     </fieldType>
 
