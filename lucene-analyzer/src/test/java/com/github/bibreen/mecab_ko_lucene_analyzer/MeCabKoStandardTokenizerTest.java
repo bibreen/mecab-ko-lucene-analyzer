@@ -29,6 +29,8 @@ public class MeCabKoStandardTokenizerTest {
     OffsetAttribute extOffset = tokenizer.addAttribute(OffsetAttribute.class);
     PositionIncrementAttribute posIncrAtt = 
         tokenizer.addAttribute(PositionIncrementAttribute.class);
+    PositionLengthAttribute posLengthAtt = 
+        tokenizer.addAttribute(PositionLengthAttribute.class);
     CharTermAttribute term =
         (CharTermAttribute)tokenizer.addAttribute(CharTermAttribute.class);
     TypeAttribute type =
@@ -38,6 +40,7 @@ public class MeCabKoStandardTokenizerTest {
       result += new String(term.buffer(), 0, term.length()) + ":";
       result += type.type() + ":";
       result += String.valueOf(posIncrAtt.getPositionIncrement()) + ":";
+      result += String.valueOf(posLengthAtt.getPositionLength()) + ":";
       result += String.valueOf(extOffset.startOffset()) + ":";
       result += String.valueOf(extOffset.endOffset());
       result += ",";
@@ -77,15 +80,15 @@ public class MeCabKoStandardTokenizerTest {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("꽃배달 꽃망울 오토바이"), 2);
     assertEquals(
-        "꽃:N:1:0:1,배달:N:1:1:3,꽃:N:1:4:5,꽃망울:COMPOUND:0:4:7,망울:N:1:5:7," +
-        "오토바이:N:1:8:12,",
+        "꽃:N:1:1:0:1,배달:N:1:1:1:3,꽃:N:1:1:4:5,꽃망울:COMPOUND:0:2:4:7," +
+        "망울:N:1:1:5:7,오토바이:N:1:1:8:12,",
         tokenizerToString(tokenizer));
    
     tokenizer.reset();
     tokenizer.setReader(new StringReader("소설 무궁화꽃이 피었습니다."));
     assertEquals(
-        "소설:N:1:0:2,무궁:N:1:3:5,무궁화:COMPOUND:0:3:6,화:N:1:5:6," +
-        "꽃이:EOJEOL:1:6:8,꽃:N:0:6:7,피었습니다:EOJEOL:1:9:14,",
+        "소설:N:1:1:0:2,무궁:N:1:1:3:5,무궁화:COMPOUND:0:2:3:6,화:N:1:1:5:6," +
+        "꽃이:EOJEOL:1:1:6:8,꽃:N:0:1:6:7,피었습니다:EOJEOL:1:1:9:14,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -96,10 +99,11 @@ public class MeCabKoStandardTokenizerTest {
         new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
-        "한국을:EOJEOL:1:0:3,한국:N:0:0:2,최대:N:1:4:6,최대한:COMPOUND:0:4:7," +
-        "한:N:1:6:7,배려했다는:EOJEOL:1:8:13,배려:N:0:8:10," +
-        "사실을:EOJEOL:1:14:17,사실:N:0:14:16,이해해주길:EOJEOL:1:18:23," +
-        "이해:N:0:18:20,바란다:INFLECT:1:24:27,",
+        "한국을:EOJEOL:1:1:0:3,한국:N:0:1:0:2," +
+        "최대:N:1:1:4:6,최대한:COMPOUND:0:2:4:7,한:N:1:1:6:7," +
+        "배려했다는:EOJEOL:1:1:8:13,배려:N:0:1:8:10," +
+        "사실을:EOJEOL:1:1:14:17,사실:N:0:1:14:16," +
+        "이해해주길:EOJEOL:1:1:18:23,이해:N:0:1:18:20,바란다:INFLECT:1:1:24:27,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -109,17 +113,17 @@ public class MeCabKoStandardTokenizerTest {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("한win"),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
-    assertEquals("한:N:1:0:1,win:SL:1:1:4,", tokenizerToString(tokenizer));
+    assertEquals("한:N:1:1:0:1,win:SL:1:1:1:4,", tokenizerToString(tokenizer));
     tokenizer.close();
   }
   
   @Test
-  public void testCompound() throws Exception {
+  public void testDecompound() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("형태소"),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
-        "형태:N:1:0:2,형태소:COMPOUND:0:0:3,소:N:1:2:3,",
+        "형태:N:1:1:0:2,형태소:COMPOUND:0:2:0:3,소:N:1:1:2:3,",
         tokenizerToString(tokenizer));
     tokenizer.close();
     
@@ -127,7 +131,26 @@ public class MeCabKoStandardTokenizerTest {
         new StringReader("가고문헌"),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
-        "가고:N:1:0:2,가고문헌:COMPOUND:0:0:4,문헌:N:1:2:4,",
+        "가고:N:1:1:0:2,가고문헌:COMPOUND:0:2:0:4,문헌:N:1:1:2:4,",
+        tokenizerToString(tokenizer));
+    tokenizer.close();
+  }
+  
+  @Test
+  public void testNoDecompound() throws Exception {
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("형태소"),
+        TokenGenerator.NO_DECOMPOUND);
+    assertEquals(
+        "형태소:COMPOUND:1:2:0:3,",
+        tokenizerToString(tokenizer));
+    tokenizer.close();
+    
+    tokenizer = createTokenizer(
+        new StringReader("가고문헌"),
+        TokenGenerator.NO_DECOMPOUND);
+    assertEquals(
+        "가고문헌:COMPOUND:1:2:0:4,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -138,9 +161,9 @@ public class MeCabKoStandardTokenizerTest {
         new StringReader("은전한닢 프로젝트는 오픈소스이다."),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
-        "은전:N:1:0:2,한:N:1:2:3,닢:N:1:3:4," +
-        "프로젝트는:EOJEOL:1:5:10,프로젝트:N:0:5:9," +
-        "오픈:N:1:11:13,소스이다:EOJEOL:1:13:17,소스:N:0:13:15,",
+        "은전:N:1:1:0:2,한:N:1:1:2:3,닢:N:1:1:3:4," +
+        "프로젝트는:EOJEOL:1:1:5:10,프로젝트:N:0:1:5:9," +
+        "오픈:N:1:1:11:13,소스이다:EOJEOL:1:1:13:17,소스:N:0:1:13:15,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
