@@ -51,27 +51,11 @@ __주의 사항__
 
 #### mecab-ko-lucene-analyzer 버전별 mecab-ko-dic, Lucene/Solr 지원 버전
 
-<table border="0" style="border-width:1px;border-color:#999999;border-collapse:collapse;border-style:solid;">
-<tr style="background:#DDDDDD;">
-<td style="padding:0 1em;" align="center"><strong>mecab-ko-lucene-analyzer</strong></td>
-<td style="padding:0 1em;" align="center"><strong>mecab-ko-dic</strong></td>
-<td style="padding:0 1em;" align="center"><strong>Lucene/Solr</strong></td>
-</tr>
-<tr>
-<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.11.x</font></strong></td>
-<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.3.0 or higher</font></td>
-<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.3.x</font></td>
-</tr>
-<tr>
-<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.10.x</font></strong></td>
-<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.3.0 or higher</font></td>
-<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.1.x - 4.2.x</font></td>
-</tr>
-<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.9.x</font></strong></td>
-<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.1.0 or higher</font></td>
-<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.1.x - 4.2.x</font></td>
-</tr>
-</table>
+| mecab-ko-lucene-analyzer | mecab-ko-dic                 | Lucene/Solr               |
+| ------------------------ | ----------------------------:| -------------------------:|
+| 0.11.x                   | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.3.x         |
+| 0.10.x                   | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.1.x - 4.2.x |
+| 0.9.x                    | mecab-ko-dic-1.1.0 or higher | Lucene/Solr 4.1.x - 4.2.x |
 
 ## 사용법
 
