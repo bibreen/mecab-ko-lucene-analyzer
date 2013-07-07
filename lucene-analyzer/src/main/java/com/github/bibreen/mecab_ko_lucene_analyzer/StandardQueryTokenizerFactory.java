@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
+import org.apache.lucene.util.AttributeSource.AttributeFactory;
 import org.apache.solr.core.SolrResourceLoader;
 
 /**
@@ -40,15 +41,23 @@ import org.apache.solr.core.SolrResourceLoader;
  * @author bibreen <bibreen@gmail.com>
  */
 public class StandardQueryTokenizerFactory extends TokenizerFactory {
-  private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
-  @Override
-  public void init(Map<String, String> args) {
-    super.init(args);
-    setMeCabDicDir();
+  public static final String DEFAULT_MECAB_DIC_DIR =
+      "/usr/local/lib/mecab/dic/mecab-ko-dic";
+  private String mecabDicDir;
+  
+  public StandardQueryTokenizerFactory(Map<String,String> args) {
+    super(args);
+    setMeCabDicDir(args);
+    if (!args.isEmpty()) {
+      throw new IllegalArgumentException("Unknown parameters: " + args);
+    }
   }
 
-  private void setMeCabDicDir() {
-    String path = getArgs().get("mecabDicDir");
+  private void setMeCabDicDir(Map<String,String> args) {
+    String path = get(
+        args,
+        "mecabDicDir",
+        StandardIndexTokenizerFactory.DEFAULT_MECAB_DIC_DIR);
     if (path != null) {
       if (path.startsWith("/")) {
         mecabDicDir = path;
@@ -57,10 +66,11 @@ public class StandardQueryTokenizerFactory extends TokenizerFactory {
       }
     }
   }
-
+  
   @Override
-  public Tokenizer create(Reader input) {
+  public Tokenizer create(AttributeFactory factory, Reader input) {
     return new MeCabKoTokenizer(
+        factory,
         input,
         mecabDicDir,
         new StandardPosAppender(),

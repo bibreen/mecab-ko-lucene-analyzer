@@ -48,9 +48,10 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private int compoundNounMinLength;
   private TokenGenerator generator;
   private Queue<Pos> tokensQueue;
-
+  
   /**
    * MeCabKoTokenizer 생성자.
+   * Default AttributeFactory 사용.
    * 
    * @param input
    * @param dicDir mecab 사전 디렉터리 경로
@@ -63,7 +64,31 @@ public final class MeCabKoTokenizer extends Tokenizer {
       String dicDir,
       PosAppender appender,
       int compoundNounMinLength) {
-    super(input);
+    this(
+        AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY,
+        input,
+        dicDir,
+        appender,
+        compoundNounMinLength);
+  }
+
+  /**
+   * MeCabKoTokenizer 생성자.
+   * 
+   * @param factory the AttributeFactory to use
+   * @param input
+   * @param dicDir mecab 사전 디렉터리 경로
+   * @param appender PosAppender
+   * @param compoundNounMinLength 분해를 해야하는 복합명사의 최소 길이.
+   * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
+   */
+  protected MeCabKoTokenizer(
+      AttributeFactory factory,
+      Reader input,
+      String dicDir,
+      PosAppender appender,
+      int compoundNounMinLength) {
+    super(factory, input);
     posAppender = appender;
     mecabDicDir = dicDir;
     this.compoundNounMinLength = compoundNounMinLength;

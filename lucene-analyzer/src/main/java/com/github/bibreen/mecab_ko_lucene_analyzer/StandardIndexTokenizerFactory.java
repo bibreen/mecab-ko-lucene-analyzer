@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.solr.core.SolrResourceLoader;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.util.TokenizerFactory;
+import org.apache.lucene.util.AttributeSource.AttributeFactory;
 
 /**
  * 표준 index용 tokenizer 팩토리 생성자. 다음과 같은 파라미터를 받는다.
@@ -42,18 +43,25 @@ import org.apache.lucene.analysis.util.TokenizerFactory;
  * @author bibreen <bibreen@gmail.com>
  */
 public class StandardIndexTokenizerFactory extends TokenizerFactory {
-  private String mecabDicDir = "/usr/local/lib/mecab/dic/mecab-ko-dic";
-  private int compoundNounMinLength =
-      TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH;
-  @Override
-  public void init(Map<String, String> args) {
-    super.init(args);
-    setMeCabDicDir();
-    setCompoundNounMinLength();
+  public static final String DEFAULT_MECAB_DIC_DIR =
+      "/usr/local/lib/mecab/dic/mecab-ko-dic";
+  private String mecabDicDir;
+  private int compoundNounMinLength;
+  
+  public StandardIndexTokenizerFactory(Map<String,String> args) {
+    super(args);
+    setMeCabDicDir(args);
+    setCompoundNounMinLength(args);
+    if (!args.isEmpty()) {
+      throw new IllegalArgumentException("Unknown parameters: " + args);
+    }
   }
 
-  private void setMeCabDicDir() {
-    String path = getArgs().get("mecabDicDir");
+  private void setMeCabDicDir(Map<String,String> args) {
+    String path = get(
+        args,
+        "mecabDicDir",
+        StandardIndexTokenizerFactory.DEFAULT_MECAB_DIC_DIR);
     if (path != null) {
       if (path.startsWith("/")) {
         mecabDicDir = path;
@@ -63,16 +71,20 @@ public class StandardIndexTokenizerFactory extends TokenizerFactory {
     }
   }
   
-  private void setCompoundNounMinLength() {
-    String v = getArgs().get("compoundNounMinLength");
-    if (v != null) {
-      compoundNounMinLength = Integer.valueOf(v);
-    }
+  private void setCompoundNounMinLength(Map<String,String> args) {
+    compoundNounMinLength = getInt(
+        args,
+        "compoundNounMinLength",
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
   }
 
   @Override
-  public Tokenizer create(Reader input) {
+  public Tokenizer create(AttributeFactory factory, Reader input) {
     return new MeCabKoTokenizer(
-        input, mecabDicDir, new StandardPosAppender(), compoundNounMinLength);
+        factory,
+        input,
+        mecabDicDir,
+        new StandardPosAppender(),
+        compoundNounMinLength);
   }
 }

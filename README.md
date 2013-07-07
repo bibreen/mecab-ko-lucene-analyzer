@@ -17,7 +17,7 @@
 
         철수가 학교에 간다. -> 철수가, 철수, 학교에, 학교, 간다
   - 문장의 끝에 문장의 끝을 알리는 기호 "`.!?`"가 있으면 더 자연스럽게 형태소 분석이 됩니다.
-  - Apache Lucene/Solr 4.0 버전 기준으로 작성되었습니다.
+  - Apache Lucene/Solr 4.3.X 버전 기준으로 작성되었습니다.
 
 ## 설치
 
@@ -49,10 +49,29 @@ __주의 사항__
   - mecab-ko-mecab-loader-XX.jar: System classpath에 복사합니다. (ex: `[solr 디렉터리]/example/lib/ext`)
   - mecab-ko-lucene-analyzer-XX.jar: Solr 라이브러리 디렉터리에 설치합니다. (ex: `[solr 디렉터리]/example/solr/lib`)
 
-#### mecab-ko-lucene-analyzer 버전별 mecab-ko-dic 지원 버전
-  - 0.10.x: mecab-ko-dic-1.3.0 or higher
-  - 0.9.x: mecab-ko-dic-1.1.0 or higher
+#### mecab-ko-lucene-analyzer 버전별 mecab-ko-dic, Lucene/Solr 지원 버전
 
+<table border="0" style="border-width:1px;border-color:#999999;border-collapse:collapse;border-style:solid;">
+<tr style="background:#DDDDDD;">
+<td style="padding:0 1em;" align="center"><strong>mecab-ko-lucene-analyzer</strong></td>
+<td style="padding:0 1em;" align="center"><strong>mecab-ko-dic</strong></td>
+<td style="padding:0 1em;" align="center"><strong>Lucene/Solr</strong></td>
+</tr>
+<tr>
+<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.11.x</font></strong></td>
+<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.3.0 or higher</font></td>
+<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.3.x</font></td>
+</tr>
+<tr>
+<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.10.x</font></strong></td>
+<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.3.0 or higher</font></td>
+<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.1.x - 4.2.x</font></td>
+</tr>
+<td style="padding:0 1em;"><strong><font face="monospace" size="-1">0.9.x</font></strong></td>
+<td style="padding:0 1em;"><font size="-1">mecab-ko-dc-1.1.0 or higher</font></td>
+<td style="padding:0 1em;"><font size="-1">Lucene/Solr 4.1.x - 4.2.x</font></td>
+</tr>
+</table>
 
 ## 사용법
 

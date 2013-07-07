@@ -1,5 +1,8 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.11.0
+  - Apache Lucene/Solr 4.3.1 버전에 맞춰 코드 수정.
+
 ## 0.10.0
   - 복합명사 처리 로직 재작성
   - 기분석 사전 처리 로직 추가
