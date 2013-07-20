@@ -77,7 +77,11 @@ public final class PosIdManager {
       case 185: return PosId.XSV;
       case 900: return PosId.EOJEOL;
       default:
-        return PosId.UNKNOWN;
+        if (200 <= posIdNum && posIdNum < 300) {
+          return PosId.INFLECT;
+        } else {
+          return PosId.UNKNOWN;
+        }
       }
     }
     

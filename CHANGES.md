@@ -1,5 +1,8 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.12.0
+  - mecab-ko-dic-1.4.0을 위한 코드 추가
+
 ## 0.11.0
   - Apache Lucene/Solr 4.3.1 버전에 맞춰 코드 수정.
 
