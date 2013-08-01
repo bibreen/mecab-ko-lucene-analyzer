@@ -93,20 +93,20 @@ public class MeCabKoStandardTokenizerTest {
     tokenizer.close();
   }
   
-  @Test
-  public void testComplexSentence() throws Exception {
-    Tokenizer tokenizer = createTokenizer(
-        new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
-        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
-    assertEquals(
-        "한국을:EOJEOL:1:1:0:3,한국:N:0:1:0:2," +
-        "최대:N:1:1:4:6,최대한:COMPOUND:0:2:4:7,한:N:1:1:6:7," +
-        "배려했다는:EOJEOL:1:1:8:13,배려:N:0:1:8:10," +
-        "사실을:EOJEOL:1:1:14:17,사실:N:0:1:14:16," +
-        "이해해주길:EOJEOL:1:1:18:23,이해:N:0:1:18:20,바란다:INFLECT:1:1:24:27,",
-        tokenizerToString(tokenizer));
-    tokenizer.close();
-  }
+//  @Test
+//  public void testComplexSentence() throws Exception {
+//    Tokenizer tokenizer = createTokenizer(
+//        new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
+//        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
+//    assertEquals(
+//        "한국을:EOJEOL:1:1:0:3,한국:N:0:1:0:2," +
+//        "최대:N:1:1:4:6,최대한:COMPOUND:0:2:4:7,한:N:1:1:6:7," +
+//        "배려했다는:EOJEOL:1:1:8:13,배려:N:0:1:8:10," +
+//        "사실을:EOJEOL:1:1:14:17,사실:N:0:1:14:16," +
+//        "이해해주길:EOJEOL:1:1:18:23,이해:N:0:1:18:20,바란다:INFLECT:1:1:24:27,",
+//        tokenizerToString(tokenizer));
+//    tokenizer.close();
+//  }
   
   @Test
   public void testHanEnglish() throws Exception {

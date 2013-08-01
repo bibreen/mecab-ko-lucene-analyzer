@@ -7,13 +7,18 @@
     <artifactId>mecab-ko</artifactId>
     <version>0.13.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mecab-ko-lucene-analyzer</artifactId>
+  <artifactId>elasticsearch-analysis-mecab-ko</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
      <groupId>com.github.bibreen</groupId>
      <artifactId>mecab-ko-mecab-loader</artifactId>
+     <version>0.13.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+     <groupId>com.github.bibreen</groupId>
+     <artifactId>mecab-ko-lucene-analyzer</artifactId>
      <version>0.13.0-SNAPSHOT</version>
     </dependency>
   </dependencies>

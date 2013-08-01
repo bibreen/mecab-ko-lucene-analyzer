@@ -59,7 +59,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
    * @param compoundNounMinLength 분해를 해야하는 복합명사의 최소 길이.
    * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
    */
-  protected MeCabKoTokenizer(
+  public MeCabKoTokenizer(
       Reader input,
       String dicDir,
       PosAppender appender,
@@ -82,7 +82,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
    * @param compoundNounMinLength 분해를 해야하는 복합명사의 최소 길이.
    * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
    */
-  protected MeCabKoTokenizer(
+  public MeCabKoTokenizer(
       AttributeFactory factory,
       Reader input,
       String dicDir,
