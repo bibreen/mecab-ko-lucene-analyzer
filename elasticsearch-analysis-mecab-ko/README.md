@@ -3,6 +3,18 @@ mecab-ko Analysis Plugin은 [mecab-ko-lucene-analyzer](https://github.com/bibree
 
 이 플러그인은 `mecab_ko_standard_tokenizer`를 포함하고 있습니다.
 
+## 설명
+
+### mecab_ko_standard_tokenizer
+mecab-ko Analysis Plugin의 기본 tokenizer.
+
+`mecab_ko_standard_tokenizer`에 세팅할 수 있는 것들은 다음과 같다.
+
+| 세팅                         |  설명                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| **mecab_dic_dir**            | mecab-ko-dic 사전 경로. 기본 경로는 '/usr/local/lib/mecab/dic/mecab-ko-dic' |
+| **compound_noun_min_length** | 분해를 해야하는 복합명사의 최소 길이. 기본 값은 3                             |
+
 ## 설치
 
 ### mecab-ko(형태소 분석기 엔진)과 mecab-ko-dic(사전 파일) 설치
@@ -25,11 +37,11 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     $ ./elasticsearch -f -Djava.library.path=/usr/local/lib
 
 ## 테스트 스크립트
+### index, query 모두 복합명사 분해를 하는 경우
     #!/bin/bash
-
+    
     ES='http://localhost:9200'
     ESIDX='eunjeon'
-    ESTYPE='test'
 
     curl -XDELETE $ES/$ESIDX
 
@@ -49,6 +61,42 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     }'
 
     curl -XGET $ES/$ESIDX/_analyze?analyzer=korean\&pretty=true -d '은전한닢 프로젝트'
+
+### query에서는 복합명사 분해를 하지 않는 경우
+    #!/bin/bash
+  
+    ES='http://localhost:9200'
+    ESIDX='eunjeon'
+  
+    curl -XDELETE $ES/$ESIDX
+  
+    curl -XPUT $ES/$ESIDX/ -d '{
+      "settings": {
+        "index": {
+          "analysis": {
+            "analyzer": {
+              "korean_index": {
+                "type": "custom",
+                "tokenizer": "mecab_ko_standard_tokenizer"
+              },
+              "korean_query": {
+                "type": "custom",
+                "tokenizer": "korean_query_tokenizer"
+              }
+            },
+            "tokenizer": {
+              "korean_query_tokenizer": {
+                "type": "mecab_ko_standard_tokenizer",
+                "compound_noun_min_length": 100
+              }
+            }
+          }
+        }
+      }
+    }'
+
+    curl -XGET $ES/$ESIDX/_analyze?analyzer=korean_index\&pretty=true -d '무궁화 꽃'
+    curl -XGET $ES/$ESIDX/_analyze?analyzer=korean_query\&pretty=true -d '무궁화 꽃'
 
 ## 라이센스
 Copyright 2013 Yongwoon Lee, Yungho Yu.

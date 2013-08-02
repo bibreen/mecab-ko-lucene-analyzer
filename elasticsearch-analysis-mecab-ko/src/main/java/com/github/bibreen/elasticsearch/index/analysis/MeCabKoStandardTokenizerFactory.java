@@ -63,7 +63,7 @@ public class MeCabKoStandardTokenizerFactory extends AbstractTokenizerFactory {
       try {
         mecabDicDir = env.homeFile().getCanonicalPath() + "/" + path;
       } catch (IOException e) {
-        e.printStackTrace();
+        mecabDicDir = path;
       }
     }
   }
