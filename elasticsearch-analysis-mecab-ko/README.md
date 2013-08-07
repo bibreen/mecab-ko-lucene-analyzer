@@ -31,7 +31,7 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     $ sudo cp libMeCab.so /usr/local/lib
 
 ### ElasticSearch Plugin 설치
-    bin/plugin --install analysis-mecab-ko-0.13.0 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.13.0.rc1.zip
+    bin/plugin --install analysis-mecab-ko-0.13.0 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.13.0.rc2.zip
 
 ### ElasticSearch 실행
     $ ./elasticsearch -f -Djava.library.path=/usr/local/lib
