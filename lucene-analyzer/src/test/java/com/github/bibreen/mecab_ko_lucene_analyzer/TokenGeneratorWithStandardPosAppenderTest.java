@@ -33,7 +33,7 @@ public class TokenGeneratorWithStandardPosAppenderTest
   @After
   public void tearDown() throws Exception {
   }
-  
+
   @Test
   public void testBasicHangulSentence() {
     Node node = mockNodeListFactory(new String[] {

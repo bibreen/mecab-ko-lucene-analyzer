@@ -66,19 +66,39 @@ public class TokenGenerator {
       node = node.getNext();
     }
   }
-  
-  private LinkedList<Pos> getAnalyzedPoses(Pos pos) {
+ 
+  /**
+   * mecab-ko-dic의 인덱스 표현 문자열을 해석하여 품사(Pos) 리스트를 반환한다.
+   */
+  static public LinkedList<Pos> getAnalyzedPoses(Pos pos) {
     LinkedList<Pos> output = new LinkedList<Pos>();
     String indexExp = pos.getIndexExpression();
+    if (indexExp == null) {
+      output.add(pos);
+      return output;
+    }
     String[] posExps = indexExp.split("\\+");
     if (posExps.length == 1) {
       output.add(pos);
-    } else {
-      int startOffset = pos.getStartOffset();
-      for (String exp: posExps) {
-        Pos newPos = new Pos(exp, startOffset);
-        output.add(newPos);
-        startOffset += newPos.getSurfaceLength();
+      return output;
+    }
+    
+    for (String posExp: posExps) {
+      output.add(new Pos(posExp, 0));
+    }
+    // 분해된 POS의 offset 재계산
+    Pos prevPos = null;
+    for (Pos curPos: output) {
+      if (prevPos == null) {
+        curPos.setStartOffset(pos.getStartOffset());
+        prevPos = curPos;
+      } else {
+        if (curPos.getPositionIncr() == 0) {
+          curPos.setStartOffset(prevPos.getStartOffset());
+        } else {
+          curPos.setStartOffset(prevPos.getEndOffset());
+          prevPos = curPos;
+        }
       }
     }
     return output;
@@ -192,33 +212,8 @@ public class TokenGenerator {
       }
     }
     
-    private LinkedList<Pos> decompound(Pos compoundNoun) {
-      LinkedList<Pos> result = new LinkedList<Pos>();
-      String exp = compoundNoun.getIndexExpression();
-      String[] nounStrs = exp.split("\\+");
-      if (nounStrs.length == 1) {
-        return result;
-      } else {
-        for (String posExp: nounStrs) {
-          result.add(new Pos(posExp, 0));
-        }
-        // 분해된 POS의 offset 재계산
-        Pos prevPos = null;
-        for (Pos pos: result) {
-          if (prevPos == null) {
-            pos.setStartOffset(compoundNoun.getStartOffset());
-            prevPos = pos;
-          } else {
-            if (pos.getPositionIncr() == 0) {
-              pos.setStartOffset(prevPos.getStartOffset());
-            } else {
-              pos.setStartOffset(prevPos.getEndOffset());
-              prevPos = pos;
-            }
-          }
-        }
-        return result;
-      }
+    static private LinkedList<Pos> decompound(Pos pos) {
+      return TokenGenerator.getAnalyzedPoses(pos);
     }
     
     private void mergeDecompoundedTokensIntoEojeolTokens(

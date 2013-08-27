@@ -96,14 +96,18 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testComplexSentence() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("한국을 최대한 배려했다는 사실을 이해해주길 바란다."),
+        new StringReader(
+            "지금보다 어리고 민감하던 시절 아버지가 충고를 한마디 했는데 " +
+            "아직도 그 말이 기억난다."),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
     assertEquals(
-        "한국을:EOJEOL:1:1:0:3,한국:N:0:1:0:2," +
-        "최대:N:1:1:4:6,최대한:COMPOUND:0:2:4:7,한:N:1:1:6:7," +
-        "배려했다는:EOJEOL:1:1:8:13,배려:N:0:1:8:10," +
-        "사실을:EOJEOL:1:1:14:17,사실:N:0:1:14:16," +
-        "이해해주길:EOJEOL:1:1:18:23,이해:N:0:1:18:20,바란다:INFLECT:1:1:24:27,",
+        "지금보다:EOJEOL:1:1:0:4,지금:N:0:1:0:2,어리고:EOJEOL:1:1:5:8," +
+        "민감하던:EOJEOL:1:1:9:13,민감:XR:0:1:9:11,시절:N:1:1:14:16," +
+        "아버지가:EOJEOL:1:1:17:21,아버지:N:0:1:17:20,충고를:EOJEOL:1:1:22:25," +
+        "충고:N:0:1:22:24,한:N:1:1:26:27,한마디:COMPOUND:0:2:26:29," +
+        "마디:N:1:1:27:29,했는데:EOJEOL:1:1:30:33,아직도:EOJEOL:1:1:34:37," +
+        "아직:MAG:0:1:34:36,그:MM:1:1:38:39,말이:EOJEOL:1:1:40:42," +
+        "말:N:0:1:40:41,기억난다:INFLECT:1:1:43:47,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }
@@ -111,9 +115,9 @@ public class MeCabKoStandardTokenizerTest {
   @Test
   public void testHanEnglish() throws Exception {
     Tokenizer tokenizer = createTokenizer(
-        new StringReader("한win"),
+        new StringReader("한글win"),
         TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
-    assertEquals("한:N:1:1:0:1,win:SL:1:1:1:4,", tokenizerToString(tokenizer));
+    assertEquals("한글:N:1:1:0:2,win:SL:1:1:2:5,", tokenizerToString(tokenizer));
     tokenizer.close();
   }
   
