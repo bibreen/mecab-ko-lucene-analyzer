@@ -1,5 +1,9 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.13.0
+  - ElasticSearch plugin 추가
+  - 어미와 보조 용언을 어절로 결합하는 규칙 제거
+
 ## 0.12.0
   - mecab-ko-dic-1.4.0을 위한 코드 추가
 

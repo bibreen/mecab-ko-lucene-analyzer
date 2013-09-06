@@ -1,7 +1,8 @@
 # mecab-ko analysis for ElasticSearch
 mecab-ko Analysis Plugin은 [mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)를 elasticsearch에서 사용하는 플러그인 입니다.
 
-이 플러그인은 `mecab_ko_standard_tokenizer`를 포함하고 있습니다.
+  - 이 플러그인은 `mecab_ko_standard_tokenizer`를 포함하고 있습니다.
+  - elasticsearch 0.90.3 버전 기준으로 작성되었습니다.
 
 ## 설명
 
@@ -10,10 +11,10 @@ mecab-ko Analysis Plugin의 기본 tokenizer.
 
 `mecab_ko_standard_tokenizer`에 세팅할 수 있는 것들은 다음과 같다.
 
-| 세팅                         |  설명                                                                         |
-| ---------------------------- | ------------------------------------------------------------------------------ |
+| 세팅                         |  설명                                                                       |
+| ---------------------------- | --------------------------------------------------------------------------- |
 | **mecab_dic_dir**            | mecab-ko-dic 사전 경로. 기본 경로는 '/usr/local/lib/mecab/dic/mecab-ko-dic' |
-| **compound_noun_min_length** | 분해를 해야하는 복합명사의 최소 길이. 기본 값은 3                             |
+| **compound_noun_min_length** | 분해를 해야하는 복합명사의 최소 길이. 기본 값은 3                           |
 
 ## 설치
 
@@ -31,7 +32,7 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     $ sudo cp libMeCab.so /usr/local/lib
 
 ### ElasticSearch Plugin 설치
-    bin/plugin --install analysis-mecab-ko-0.13.0 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.13.0.rc2.zip
+    bin/plugin --install analysis-mecab-ko-0.13.0 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.13.0.zip
 
 ### ElasticSearch 실행
     $ ./elasticsearch -f -Djava.library.path=/usr/local/lib

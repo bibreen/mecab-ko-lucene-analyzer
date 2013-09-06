@@ -10,6 +10,8 @@
   - 복합명사 분해
   - 원어절 추출
 
+[ElasticSearch](http://www.elasticsearch.org/)용 형태소 분석기의 사용 설명서는 [mecab-ko analysis for ElasticSearch](https://github.com/bibreen/mecab-ko-lucene-analyzer/tree/master/elasticsearch-analysis-mecab-ko)에서 보실 수 있습니다.
+
 ## 특징
 
   - '무궁화꽃이피었습니다.'와 같이 띄어 쓰기가 잘못된 오류를 교정하여 형태소 분석이 가능합니다.
@@ -53,6 +55,7 @@ __주의 사항__
 
 | mecab-ko-lucene-analyzer | mecab-ko-dic                 | Lucene/Solr               |
 | ------------------------ | ---------------------------- | ------------------------- |
+| **0.13.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x         |
 | **0.12.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x         |
 | **0.11.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.3.x         |
 | **0.10.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.1.x - 4.2.x |
