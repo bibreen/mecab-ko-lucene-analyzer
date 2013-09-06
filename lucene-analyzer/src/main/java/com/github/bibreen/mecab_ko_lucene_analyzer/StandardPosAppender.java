@@ -72,8 +72,6 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.XSN, PosId.J));
     // 어미(E) + 조사(J) - 어미가 명사형 전성 어미인 경우
     appendableSet.add(new Appendable(PosId.E, PosId.J));
-    // 어미(E) + 보조 용언(VX)
-    appendableSet.add(new Appendable(PosId.E, PosId.VX));
     // 부사(MAG) + 조사(J)
     appendableSet.add(new Appendable(PosId.MAG, PosId.J));
     // 조사(J) + 조사(J)
