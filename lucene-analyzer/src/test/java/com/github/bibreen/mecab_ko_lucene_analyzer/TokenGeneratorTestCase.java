@@ -21,8 +21,18 @@ import static org.mockito.Mockito.when;
 import org.chasen.mecab.Node;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
+import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 
 public class TokenGeneratorTestCase {
+  MeCabLoader mecabLoader;
+  public TokenGeneratorTestCase() {
+    /* TokenGenerator에서 MeCab의 JNI를 사용하는 부분이 있기때문에, MeCab를 미리
+     * 적재한다.
+     */
+    mecabLoader =
+        MeCabLoader.getInstance("/usr/local/lib/mecab/dic/mecab-ko-dic");
+  }
+  
   public static Node mockNodeListFactory(String[] posStrings) {
     Node nextNode = null;
     for (int i = posStrings.length - 1; i >= 0; --i) {

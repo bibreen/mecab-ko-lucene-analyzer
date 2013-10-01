@@ -33,9 +33,12 @@ public class StandardPosAppender extends PosAppender {
     appendableSet = new HashSet<Appendable>();
    
     // Appenable HashSet 구성
+    // 사전에 없는 단어(UNKNOWN)은 체언이라고 가정한다.
+    
     // 체언접두사(XPN) + 체언(N*)
     appendableSet.add(new Appendable(PosId.XPN, PosId.N));
     appendableSet.add(new Appendable(PosId.XPN, PosId.COMPOUND));
+    appendableSet.add(new Appendable(PosId.XPN, PosId.UNKNOWN));
     // 어미(E) + 어미(E)
     appendableSet.add(new Appendable(PosId.E, PosId.E));
     // 어근(XR) + E [+ E]*
@@ -51,23 +54,28 @@ public class StandardPosAppender extends PosAppender {
     // 체언(N*) + 명사 파생 접미사(XSN)
     appendableSet.add(new Appendable(PosId.N, PosId.XSN));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSN));
+    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.XSN));
     // 체언(N*)|일반부사(MAG)|어근(XR) + 동사 파생 접미사(XSV)
     appendableSet.add(new Appendable(PosId.N, PosId.XSV));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSV));
     appendableSet.add(new Appendable(PosId.MAG, PosId.XSV));
     appendableSet.add(new Appendable(PosId.XR, PosId.XSV));
+    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.XSV));
     // 체언(N*)|일반부사(MAG)|어근(XR) + 형용사 파생 접미사(XSA)
     appendableSet.add(new Appendable(PosId.N, PosId.XSA));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSA));
     appendableSet.add(new Appendable(PosId.MAG, PosId.XSA));
     appendableSet.add(new Appendable(PosId.XR, PosId.XSA));
+    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.XSA));
     // 체언(N*)|명사 파생 접미사(XSN) + 긍정지정사(VCP)
     appendableSet.add(new Appendable(PosId.N, PosId.VCP));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.VCP));
     appendableSet.add(new Appendable(PosId.XSN, PosId.VCP));
+    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.VCP));
     // 체언(N*) + 조사 [+ 조사]*
     appendableSet.add(new Appendable(PosId.N, PosId.J));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.J));
+    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.J));
     // 명사 파생 접미사(XSN) + 조사(J)
     appendableSet.add(new Appendable(PosId.XSN, PosId.J));
     // 어미(E) + 조사(J) - 어미가 명사형 전성 어미인 경우
@@ -103,7 +111,8 @@ public class StandardPosAppender extends PosAppender {
         pos.isPosIdOf(PosId.N) ||
         pos.isPosIdOf(PosId.XR) ||
         pos.isPosIdOf(PosId.SH) ||
-        pos.isPosIdOf(PosId.SL)
+        pos.isPosIdOf(PosId.SL) ||
+        pos.isPosIdOf(PosId.UNKNOWN)
         );
   }
 
@@ -111,8 +120,7 @@ public class StandardPosAppender extends PosAppender {
   public boolean isSkippablePos(Pos pos) {
     // 단독으로 쓰인 심볼과 UNKNOWN은 token 생성 제외한다.
     PosId posId = pos.getPosId();
-    if (posId == PosId.UNKNOWN ||
-        posId == PosId.SF ||
+    if (posId == PosId.SF ||
         posId.in(PosId.SP, PosId.SY)) {
       return true;
     } else {

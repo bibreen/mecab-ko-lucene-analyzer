@@ -65,7 +65,7 @@ public class MeCabKoStandardTokenizerTest {
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
-
+  
   @Test
   public void testEmptyMorphemes() throws Exception {
     Tokenizer tokenizer = createTokenizer(
@@ -168,6 +168,17 @@ public class MeCabKoStandardTokenizerTest {
         "은전:N:1:1:0:2,한:N:1:1:2:3,닢:N:1:1:3:4," +
         "프로젝트는:EOJEOL:1:1:5:10,프로젝트:N:0:1:5:9," +
         "오픈:N:1:1:11:13,소스이다:EOJEOL:1:1:13:17,소스:N:0:1:13:15,",
+        tokenizerToString(tokenizer));
+    tokenizer.close();
+  }
+  
+  @Test
+  public void testUnknownSurface() throws Exception {
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("걀꿀 없는 단어"),
+        TokenGenerator.DEFAULT_COMPOUND_NOUN_MIN_LENGTH);
+    assertEquals(
+        "걀꿀:UNKNOWN:1:1:0:2,없는:EOJEOL:1:1:3:5,단어:N:1:1:6:8,",
         tokenizerToString(tokenizer));
     tokenizer.close();
   }

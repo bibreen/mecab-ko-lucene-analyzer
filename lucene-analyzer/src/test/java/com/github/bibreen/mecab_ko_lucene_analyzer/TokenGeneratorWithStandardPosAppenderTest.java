@@ -324,6 +324,29 @@ public class TokenGeneratorWithStandardPosAppenderTest
   }
   
   @Test
+  public void testUnknownSurface() {
+    Node node = mockNodeListFactory(new String[] {
+        "걀꿀\tUNKNOWN,*,*,*,*,*,*,*",
+        "없\tVA,T,없,*,*,*,*,*",
+        "는\tETM,T,는,*,*,*,*,*",
+        "단어\tNN,F,단어,*,*,*,*,*"
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[걀꿀/UNKNOWN/1/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[없는/EOJEOL/1/1/2/4]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[단어/N/1/1/4/6]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+  
+  @Test
   public void testSymbolOnlySentence() {
     Node node = mockNodeListFactory(new String[] {
         "!@#$%^&*()\tSY,*,*,*,*,*,*,*"

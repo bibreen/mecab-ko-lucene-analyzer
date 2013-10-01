@@ -18,6 +18,7 @@ package com.github.bibreen.mecab_ko_lucene_analyzer;
 import java.util.*;
 
 import org.chasen.mecab.Node;
+import org.chasen.mecab.MeCab;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 
@@ -55,7 +56,7 @@ public class TokenGenerator {
   private void convertNodeListToPosList(Node beginNode) {
     Node node = beginNode.getNext();
     Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0, 0);
-    while (node != null) {
+    while (!isEosNode(node)) {
       Pos curPos = new Pos(node, prevPos.getEndOffset());
       if (curPos.getPosId() == PosId.PREANALYSIS) {
         posList.addAll(getAnalyzedPoses(curPos));
@@ -64,6 +65,15 @@ public class TokenGenerator {
       }
       prevPos = curPos;
       node = node.getNext();
+    }
+  }
+  
+  static private boolean isEosNode(Node node) {
+    if (node == null ||
+        node.getStat() == MeCab.MECAB_EOS_NODE) {
+      return true;
+    } else {
+      return false;
     }
   }
  
