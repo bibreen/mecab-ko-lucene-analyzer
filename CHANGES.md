@@ -1,5 +1,8 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.13.1
+  - UNKNOWN 형태소(사전에 없는 형태소)가 인덱스에서 제외되는 오류 수정
+
 ## 0.13.0
   - ElasticSearch plugin 추가
   - 어미와 보조 용언을 어절로 결합하는 규칙 제거
