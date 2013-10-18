@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
+import java.util.LinkedList;
+
 /**
  * TokenGenerator에서 token으로 뽑는 품사와 품사의 연접과 token으로 뽑는 품사의 선택
  * 알고리즘을 담당하는 추상 클래스.
@@ -27,12 +29,14 @@ public abstract class PosAppender {
    */
   public abstract boolean isAppendable(Pos left, Pos right);
   /**
-   * 해당 Pos가 단독으로 Token으로 뽑힐 수 있는 품사일 경우 true, 아니면 false를
-   * 반환한다.
-   */
-  public abstract boolean isAbsolutePos(Pos pos);
-  /**
    * 해당 Pos가 단독 Token으로 생성될 수 없는 품사인 경우 true, 아니면 false를 반환한다.
    */
   public abstract boolean isSkippablePos(Pos pos);
+  /**
+   * 추가적인 Pos가 Token으로 뽑혀야 하는 경우 해당 Pos 리스트를 반환한다.
+   *
+   * @param eojeolTokens 어절을 구성하는 Pos 리스트
+   */
+  public abstract LinkedList<Pos> getAdditionalPoses(
+      LinkedList<Pos> eojeolTokens);
 }

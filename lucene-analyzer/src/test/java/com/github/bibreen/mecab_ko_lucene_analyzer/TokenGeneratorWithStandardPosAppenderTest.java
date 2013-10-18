@@ -163,7 +163,7 @@ public class TokenGeneratorWithStandardPosAppenderTest
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(
-        "[대표적인/EOJEOL/1/1/6/10, 대표/N/0/1/6/8]",
+        "[대표적인/EOJEOL/1/1/6/10, 대표/N/0/1/6/8, 대표적/N/0/1/6/9]",
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(
@@ -359,6 +359,46 @@ public class TokenGeneratorWithStandardPosAppenderTest
             node);
     
     List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+
+  @Test
+  public void testXsn() {
+    Node node = mockNodeListFactory(new String[] {
+        "의대\tNN,F,의대,*,*,*,*,*",
+        "생\tXSN,T,생,*,*,*,*,*"
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[의대생/EOJEOL/1/1/0/3, 의대/N/0/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
+
+  @Test
+  public void testSentenceWithXsn() {
+    Node node = mockNodeListFactory(new String[] {
+        "공대\tNN,F,공대,*,*,*,*,*",
+        "생\tXSN,T,생,*,*,*,*,*",
+        "은\tJX,T,은,*,*,*,*,*",
+        "바쁘\tVA,F,바쁘,*,*,*,*,*",
+        "다\tEF,F,다,*,*,*,*,*",
+        ".\tSF,*,*,*,*,*,*,*",
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[공대생은/EOJEOL/1/1/0/4, 공대/N/0/1/0/2, 공대생/N/0/1/0/3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[바쁘다/EOJEOL/1/1/4/7]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }

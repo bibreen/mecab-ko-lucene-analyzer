@@ -195,7 +195,11 @@ public class Pos {
   public void setPositionIncr(int val) {
     positionIncr = val;
   }
-  
+
+  public void setPositionLength(int val) {
+    positionLength = val;
+  }
+
   @Override
   public String toString() {
     return new String(

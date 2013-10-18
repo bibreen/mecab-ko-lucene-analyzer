@@ -16,6 +16,7 @@
 package com.github.bibreen.mecab_ko_lucene_analyzer;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
@@ -100,25 +101,8 @@ public class StandardPosAppender extends PosAppender {
   }
 
   @Override
-  /**
-   * 단독으로 쓰일 수 있는 형태소인지를 판단한다.
-   * 
-   * @param Pos pos 형태소.
-   */
-  public boolean isAbsolutePos(Pos pos) {
-    return (pos.isPosIdOf(PosId.COMPOUND) ||
-        pos.isPosIdOf(PosId.MAG) ||
-        pos.isPosIdOf(PosId.N) ||
-        pos.isPosIdOf(PosId.XR) ||
-        pos.isPosIdOf(PosId.SH) ||
-        pos.isPosIdOf(PosId.SL) ||
-        pos.isPosIdOf(PosId.UNKNOWN)
-        );
-  }
-
-  @Override
   public boolean isSkippablePos(Pos pos) {
-    // 단독으로 쓰인 심볼과 UNKNOWN은 token 생성 제외한다.
+    // 단독으로 쓰인 심볼은 token 생성 제외한다.
     PosId posId = pos.getPosId();
     if (posId == PosId.SF ||
         posId.in(PosId.SP, PosId.SY)) {
@@ -126,5 +110,40 @@ public class StandardPosAppender extends PosAppender {
     } else {
       return false;
     }
+  }
+
+  @Override
+  public LinkedList<Pos> getAdditionalPoses(LinkedList<Pos> eojeolTokens) {
+    LinkedList<Pos> output = new LinkedList<Pos>();
+    Pos prevPos = null;
+    for (Pos pos: eojeolTokens) {
+      if (isAbsolutePos(pos)) {
+        pos.setPositionIncr(0);
+        output.add(pos);
+      }
+      if (pos.isPosIdOf(PosId.XSN) && prevPos != null) {
+        String term = prevPos.getSurface() + pos.getSurface();
+        Pos compoundPos = new Pos(term, PosId.N, prevPos.getStartOffset(), 0, 1);
+        output.add(compoundPos);
+      }
+      prevPos = pos;
+    }
+    return output;
+  }
+
+  /**
+   * 단독으로 쓰일 수 있는 형태소인지를 판단한다.
+   *
+   * @param pos 형태소 품사.
+   */
+  private boolean isAbsolutePos(Pos pos) {
+    return (pos.isPosIdOf(PosId.COMPOUND) ||
+        pos.isPosIdOf(PosId.MAG) ||
+        pos.isPosIdOf(PosId.N) ||
+        pos.isPosIdOf(PosId.XR) ||
+        pos.isPosIdOf(PosId.SH) ||
+        pos.isPosIdOf(PosId.SL) ||
+        pos.isPosIdOf(PosId.UNKNOWN)
+    );
   }
 }

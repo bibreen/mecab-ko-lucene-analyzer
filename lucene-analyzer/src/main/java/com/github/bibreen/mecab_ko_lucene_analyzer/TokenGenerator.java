@@ -41,9 +41,9 @@ public class TokenGenerator {
    * TokenGenerator 생성자
    * 
    * @param appender PosAppender
-   * @param decompoundMinLength 복합명사에서 분해할 명사의 최소길이.
+   * @param compoundNounMinLength 복합명사에서 분해할 명사의 최소길이.
    * 복합명사 분해가 필요없는 경우, TokenGenerator.NO_DECOMPOUND를 입력한다.
-   * @param beginNode
+   * @param beginNode 시작 노드
    */
   public TokenGenerator(
       PosAppender appender, int compoundNounMinLength, Node beginNode) {
@@ -69,12 +69,7 @@ public class TokenGenerator {
   }
   
   static private boolean isEosNode(Node node) {
-    if (node == null ||
-        node.getStat() == MeCab.MECAB_EOS_NODE) {
-      return true;
-    } else {
-      return false;
-    }
+    return node == null || node.getStat() == MeCab.MECAB_EOS_NODE;
   }
  
   /**
@@ -129,7 +124,6 @@ public class TokenGenerator {
           return poses;
         } else {
           eojeol.clear();
-          continue;
         }
       }
     }
@@ -143,13 +137,12 @@ public class TokenGenerator {
    * @author bibreen <bibreen@gmail.com>
    */
   static private class Eojeol {
-    PosAppender appender;
-    int compoundNounMinLength;
+    private PosAppender appender;
+    private int compoundNounMinLength;
     
     private LinkedList<Pos> posList = new LinkedList<Pos>();
-    String term = "";
-    int positionLength = 0;
-    
+    private String term = "";
+
     Eojeol(PosAppender appender, int compoundNounMinLength) {
       this.appender = appender;
       this.compoundNounMinLength = compoundNounMinLength;
@@ -159,9 +152,6 @@ public class TokenGenerator {
       if (isAppendable(pos)) {
         posList.add(pos);
         term += pos.getSurface();
-        if (isAbsolutePos(pos)) {
-          positionLength += pos.getPositionLength();
-        }
         return true;
       } else {
         return false;
@@ -169,15 +159,7 @@ public class TokenGenerator {
     }
     
     private boolean isAppendable(Pos pos) {
-      if (posList.isEmpty()) {
-        return true;
-      } else {
-        return appender.isAppendable(posList.getLast(), pos);
-      }
-    }
-    
-    private boolean isAbsolutePos(Pos pos) {
-      return appender.isAbsolutePos(pos);
+      return posList.isEmpty() || appender.isAppendable(posList.getLast(), pos);
     }
     
     /**
@@ -189,13 +171,16 @@ public class TokenGenerator {
       if (isSkippable()) {
         return null;
       }
-      LinkedList<Pos> output = new LinkedList<Pos>();
-      addAdditionalToken(output);
-      output.addFirst(createPos(1));
+      LinkedList<Pos> output = appender.getAdditionalPoses(posList);
+      Pos eojeolPos = addEojeolPos(output);
       addDecompoundedNoun(output);
+      if (output.size() == 1) {
+        return output;
+      }
+      eojeolPos.setPositionLength(recalcEojeolPositionLength(output));
       return output;
     }
-    
+
     public boolean isSkippable() {
       if (posList.isEmpty()) {
         return true;
@@ -206,7 +191,44 @@ public class TokenGenerator {
         return false;
       }
     }
-    
+
+    private Pos addEojeolPos(LinkedList<Pos> eojeolTokens) {
+      Pos eojeolPos;
+      if (posList.size() == 1) {
+        if (eojeolTokens.isEmpty()) {
+          eojeolTokens.add(posList.getFirst());
+        }
+        eojeolPos = eojeolTokens.getFirst();
+        eojeolPos.setPositionIncr(1);
+      } else {
+        eojeolPos = new Pos(getTerm(), PosId.EOJEOL, getStartOffset(), 1, 1);
+        removeDuplicatedPos(eojeolTokens, eojeolPos);
+        eojeolTokens.addFirst(eojeolPos);
+      }
+      return eojeolPos;
+    }
+
+    private int recalcEojeolPositionLength(LinkedList<Pos> eojeolTokens) {
+      int positionLength = 0;
+      for (Pos pos: eojeolTokens) {
+        positionLength += pos.getPositionIncr();
+      }
+      return positionLength;
+    }
+
+    private void removeDuplicatedPos(
+        LinkedList<Pos> eojeolTokens, Pos eojeolPos) {
+      // 한 어절 안에서 길이가 같은 pos는 중복된 pos로 간주한다.
+      int eojeolLength = eojeolPos.getSurfaceLength();
+      ListIterator<Pos> iter = eojeolTokens.listIterator();
+      while (iter.hasNext()) {
+        Pos pos = iter.next();
+        if (eojeolLength == pos.getSurfaceLength()) {
+          iter.remove();
+        }
+      }
+    }
+
     /**
      * output 리스트에 분해된 복합명사 토큰을 넣는다.
      * 복합명사 분해와 token의 위치에 대해서는 다음의 문서를 참조하였다.
@@ -230,7 +252,7 @@ public class TokenGenerator {
         LinkedList<Pos> eojeolTokens, LinkedList<Pos> decompoundedTokens) {
       LinkedList<Pos> decompoundedTokensCopy = new LinkedList<Pos>();
       decompoundedTokensCopy.addAll(decompoundedTokens);
-      
+
       ListIterator<Pos> iter = eojeolTokens.listIterator();
       while (iter.hasNext()) {
         Pos pos = iter.next();
@@ -260,23 +282,6 @@ public class TokenGenerator {
       return -1;
     }
     
-    private void addAdditionalToken(LinkedList<Pos> output) {
-      addAbsolutePosToken(output);
-    }
-    
-    /**
-     * 독립적인 Token이 되어야 하는 품사는 incrPos=0 으로 미리 넣어둔다.
-     */
-    private void addAbsolutePosToken(LinkedList<Pos> output) {
-      if (posList.size() <= 1) return;
-      for (Pos pos: posList) {
-        if (isAbsolutePos(pos)) {
-          pos.setPositionIncr(0);
-          output.add(pos);
-        }
-      }
-    }
-    
     public LinkedList<Pos> getPosList() {
       return posList;
     }
@@ -289,31 +294,9 @@ public class TokenGenerator {
       return posList.getFirst().getStartOffset();
     }
     
-    public int getPositionLength() {
-      if (positionLength == 0) {
-        return 1;
-      } else {
-        return positionLength;
-      }
-    }
-    
-    public Pos createPos(int positionIncr) {
-      if (posList.size() > 1) {
-        return new Pos(
-            getTerm(),
-            PosId.EOJEOL,
-            getStartOffset(),
-            positionIncr,
-            getPositionLength());
-      } else {
-        return posList.getFirst();
-      }
-    }
-    
     public void clear() {
       posList.clear();
       term = "";
-      positionLength = 0;
     }
    
     @Override
