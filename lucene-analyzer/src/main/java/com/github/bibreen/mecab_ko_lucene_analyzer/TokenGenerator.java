@@ -31,8 +31,8 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
 public class TokenGenerator {
   public static final int NO_DECOMPOUND = 9999;
   public static final int DEFAULT_COMPOUND_NOUN_MIN_LENGTH = 3;
-  
-  PosAppender appender;
+
+  private final PosAppender appender;
   private LinkedList<Pos> posList = new LinkedList<Pos>();
   private ListIterator<Pos> posIter;
   private int compoundNounMinLength;
@@ -174,22 +174,15 @@ public class TokenGenerator {
       LinkedList<Pos> output = appender.getAdditionalPoses(posList);
       Pos eojeolPos = addEojeolPos(output);
       addDecompoundedNoun(output);
-      if (output.size() == 1) {
-        return output;
+      if (output.size() > 1) {
+        eojeolPos.setPositionLength(recalcEojeolPositionLength(output));
       }
-      eojeolPos.setPositionLength(recalcEojeolPositionLength(output));
       return output;
     }
 
     public boolean isSkippable() {
-      if (posList.isEmpty()) {
-        return true;
-      }
-      if (posList.size() == 1) {
-        return appender.isSkippablePos(posList.get(0));
-      } else {
-        return false;
-      }
+      return posList.isEmpty() ||
+              (posList.size() == 1 && appender.isSkippablePos(posList.get(0)));
     }
 
     private Pos addEojeolPos(LinkedList<Pos> eojeolTokens) {
