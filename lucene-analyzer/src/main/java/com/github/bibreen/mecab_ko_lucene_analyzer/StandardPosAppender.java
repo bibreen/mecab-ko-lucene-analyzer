@@ -104,19 +104,15 @@ public class StandardPosAppender extends PosAppender {
   public boolean isSkippablePos(Pos pos) {
     // 단독으로 쓰인 심볼은 token 생성 제외한다.
     PosId posId = pos.getPosId();
-    if (posId == PosId.SF ||
-        posId.in(PosId.SP, PosId.SY)) {
-      return true;
-    } else {
-      return false;
-    }
+    return posId == PosId.SF ||
+        posId.in(PosId.SP, PosId.SY);
   }
 
   @Override
-  public LinkedList<Pos> getAdditionalPoses(LinkedList<Pos> eojeolTokens) {
+  public LinkedList<Pos> extractAdditionalPoses(LinkedList<Pos> poses) {
     LinkedList<Pos> output = new LinkedList<Pos>();
     Pos prevPos = null;
-    for (Pos pos: eojeolTokens) {
+    for (Pos pos: poses) {
       if (isAbsolutePos(pos)) {
         pos.setPositionIncr(0);
         output.add(pos);

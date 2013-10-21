@@ -171,7 +171,7 @@ public class TokenGenerator {
       if (isSkippable()) {
         return null;
       }
-      LinkedList<Pos> output = appender.getAdditionalPoses(posList);
+      LinkedList<Pos> output = appender.extractAdditionalPoses(posList);
       Pos eojeolPos = addEojeolPos(output);
       addDecompoundedNoun(output);
       if (output.size() > 1) {

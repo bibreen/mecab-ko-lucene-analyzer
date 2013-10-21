@@ -25,18 +25,18 @@ import java.util.LinkedList;
  */
 public abstract class PosAppender {
   /**
-   * left PosId와 right PosId가 붙을 수 있는 품사인지 여부를 반환한다.
+   * left PosId와 right PosId가 어절의 형태로 붙을 수 있는 품사인지 여부를 반환한다.
    */
   public abstract boolean isAppendable(Pos left, Pos right);
   /**
-   * 해당 Pos가 단독 Token으로 생성될 수 없는 품사인 경우 true, 아니면 false를 반환한다.
+   * 해당 POS가 인덱싱에서 제외되는 POS인 경우 true, 아니면 false를 반환한다.
    */
   public abstract boolean isSkippablePos(Pos pos);
   /**
-   * 추가적인 Pos가 Token으로 뽑혀야 하는 경우 해당 Pos 리스트를 반환한다.
+   * 어절을 구성하는 POS 리스트에서 추가적인 POS가 token으로 뽑혀야 하는 경우, 해당
+   * POS 리스트를 반환한다.
    *
-   * @param eojeolTokens 어절을 구성하는 Pos 리스트
+   * @param poses 어절을 구성하는 POS 리스트
    */
-  public abstract LinkedList<Pos> getAdditionalPoses(
-      LinkedList<Pos> eojeolTokens);
+  public abstract LinkedList<Pos> extractAdditionalPoses(LinkedList<Pos> poses);
 }
