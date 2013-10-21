@@ -195,7 +195,6 @@ public class TokenGenerator {
         eojeolPos.setPositionIncr(1);
       } else {
         eojeolPos = new Pos(getTerm(), PosId.EOJEOL, getStartOffset(), 1, 1);
-        removeDuplicatedPos(eojeolTokens, eojeolPos);
         eojeolTokens.addFirst(eojeolPos);
       }
       return eojeolPos;
@@ -207,19 +206,6 @@ public class TokenGenerator {
         positionLength += pos.getPositionIncr();
       }
       return positionLength;
-    }
-
-    private void removeDuplicatedPos(
-        LinkedList<Pos> eojeolTokens, Pos eojeolPos) {
-      // 한 어절 안에서 길이가 같은 pos는 중복된 pos로 간주한다.
-      int eojeolLength = eojeolPos.getSurfaceLength();
-      ListIterator<Pos> iter = eojeolTokens.listIterator();
-      while (iter.hasNext()) {
-        Pos pos = iter.next();
-        if (eojeolLength == pos.getSurfaceLength()) {
-          iter.remove();
-        }
-      }
     }
 
     /**

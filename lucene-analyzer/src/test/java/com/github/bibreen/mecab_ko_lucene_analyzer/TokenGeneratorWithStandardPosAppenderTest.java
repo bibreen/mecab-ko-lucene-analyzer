@@ -163,7 +163,11 @@ public class TokenGeneratorWithStandardPosAppenderTest
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(
-        "[대표적인/EOJEOL/1/1/6/10, 대표/N/0/1/6/8, 대표적/N/0/1/6/9]",
+        "[대표/N/1/1/6/8]",
+        tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(
+        "[적인/EOJEOL/1/1/8/10, 적/XSN/0/1/8/9]",
         tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(
@@ -375,7 +379,9 @@ public class TokenGeneratorWithStandardPosAppenderTest
 
     List<Pos> tokens;
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[의대생/EOJEOL/1/1/0/3, 의대/N/0/1/0/2]", tokens.toString());
+    assertEquals("[의대/N/1/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[생/XSN/1/1/2/3]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
@@ -396,7 +402,9 @@ public class TokenGeneratorWithStandardPosAppenderTest
 
     List<Pos> tokens;
     tokens = generator.getNextEojeolTokens();
-    assertEquals("[공대생은/EOJEOL/1/1/0/4, 공대/N/0/1/0/2, 공대생/N/0/1/0/3]", tokens.toString());
+    assertEquals("[공대/N/1/1/0/2]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[생은/EOJEOL/1/1/2/4, 생/XSN/0/1/2/3]", tokens.toString());
     tokens = generator.getNextEojeolTokens();
     assertEquals("[바쁘다/EOJEOL/1/1/4/7]", tokens.toString());
     tokens = generator.getNextEojeolTokens();

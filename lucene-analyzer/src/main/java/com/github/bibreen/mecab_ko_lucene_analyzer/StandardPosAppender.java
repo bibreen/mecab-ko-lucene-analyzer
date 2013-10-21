@@ -52,10 +52,6 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.VCN, PosId.E));
     appendableSet.add(new Appendable(PosId.XSV, PosId.E));
     appendableSet.add(new Appendable(PosId.XSA, PosId.E));
-    // 체언(N*) + 명사 파생 접미사(XSN)
-    appendableSet.add(new Appendable(PosId.N, PosId.XSN));
-    appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSN));
-    appendableSet.add(new Appendable(PosId.UNKNOWN, PosId.XSN));
     // 체언(N*)|일반부사(MAG)|어근(XR) + 동사 파생 접미사(XSV)
     appendableSet.add(new Appendable(PosId.N, PosId.XSV));
     appendableSet.add(new Appendable(PosId.COMPOUND, PosId.XSV));
@@ -111,18 +107,11 @@ public class StandardPosAppender extends PosAppender {
   @Override
   public LinkedList<Pos> extractAdditionalPoses(LinkedList<Pos> poses) {
     LinkedList<Pos> output = new LinkedList<Pos>();
-    Pos prevPos = null;
     for (Pos pos: poses) {
       if (isAbsolutePos(pos)) {
         pos.setPositionIncr(0);
         output.add(pos);
       }
-      if (pos.isPosIdOf(PosId.XSN) && prevPos != null) {
-        String term = prevPos.getSurface() + pos.getSurface();
-        Pos compoundPos = new Pos(term, PosId.N, prevPos.getStartOffset(), 0, 1);
-        output.add(compoundPos);
-      }
-      prevPos = pos;
     }
     return output;
   }
@@ -139,7 +128,8 @@ public class StandardPosAppender extends PosAppender {
         pos.isPosIdOf(PosId.XR) ||
         pos.isPosIdOf(PosId.SH) ||
         pos.isPosIdOf(PosId.SL) ||
-        pos.isPosIdOf(PosId.UNKNOWN)
+        pos.isPosIdOf(PosId.UNKNOWN) ||
+        pos.isPosIdOf(PosId.XSN)
     );
   }
 }
