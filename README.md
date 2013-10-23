@@ -53,13 +53,13 @@ __주의 사항__
 
 #### mecab-ko-lucene-analyzer 버전별 mecab-ko-dic, Lucene/Solr 지원 버전
 
-| mecab-ko-lucene-analyzer | mecab-ko-dic                 | Lucene/Solr               |
-| ------------------------ | ---------------------------- | ------------------------- |
-| **0.13.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x         |
-| **0.12.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x         |
-| **0.11.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.3.x         |
-| **0.10.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.1.x - 4.2.x |
-| **0.9.x**                | mecab-ko-dic-1.1.0 or higher | Lucene/Solr 4.1.x - 4.2.x |
+| mecab-ko-lucene-analyzer | mecab-ko-dic                 | Lucene/Solr                 |
+| ------------------------ | ---------------------------- | --------------------------- |
+| **0.13.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x or higher |
+| **0.12.x**               | mecab-ko-dic-1.4.0 or higher | Lucene/Solr 4.3.x           |
+| **0.11.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.3.x           |
+| **0.10.x**               | mecab-ko-dic-1.3.0 or higher | Lucene/Solr 4.1.x - 4.2.x   |
+| **0.9.x**                | mecab-ko-dic-1.1.0 or higher | Lucene/Solr 4.1.x - 4.2.x   |
 
 ## 사용법
 
