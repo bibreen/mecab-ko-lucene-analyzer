@@ -36,10 +36,6 @@ public class StandardPosAppender extends PosAppender {
     // Appenable HashSet 구성
     // 사전에 없는 단어(UNKNOWN)은 체언이라고 가정한다.
     
-    // 체언접두사(XPN) + 체언(N*)
-    appendableSet.add(new Appendable(PosId.XPN, PosId.N));
-    appendableSet.add(new Appendable(PosId.XPN, PosId.COMPOUND));
-    appendableSet.add(new Appendable(PosId.XPN, PosId.UNKNOWN));
     // 어미(E) + 어미(E)
     appendableSet.add(new Appendable(PosId.E, PosId.E));
     // 어근(XR) + E [+ E]*
@@ -129,6 +125,7 @@ public class StandardPosAppender extends PosAppender {
         pos.isPosIdOf(PosId.SH) ||
         pos.isPosIdOf(PosId.SL) ||
         pos.isPosIdOf(PosId.UNKNOWN) ||
+        pos.isPosIdOf(PosId.XPN) ||
         pos.isPosIdOf(PosId.XSN)
     );
   }

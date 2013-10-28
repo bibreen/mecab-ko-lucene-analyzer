@@ -1,5 +1,8 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.13.3
+  - StandardPosAppender에서 체언 접두사(XPN) 인덱싱 방식 변경. (독립적인 토큰이 되도록 변경)
+
 ## 0.13.2
   - StandardPosAppender에서 명사 파생 접미사(XSN) 인덱싱 방식 변경. (독립적인 토큰이 되도록 변경)
 

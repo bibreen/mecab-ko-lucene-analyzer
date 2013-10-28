@@ -410,4 +410,23 @@ public class TokenGeneratorWithStandardPosAppenderTest
     tokens = generator.getNextEojeolTokens();
     assertEquals(null, tokens);
   }
+
+  @Test
+  public void testXpn() {
+    Node node = mockNodeListFactory(new String[] {
+        "왕\tXPN,T,왕,*,*,*,*,*",
+        "게임\tNN,T,게임,*,*,*,*,*"
+    });
+
+    TokenGenerator generator =
+        new TokenGenerator(new StandardPosAppender(), 4, node);
+
+    List<Pos> tokens;
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[왕/XPN/1/1/0/1]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals("[게임/N/1/1/1/3]", tokens.toString());
+    tokens = generator.getNextEojeolTokens();
+    assertEquals(null, tokens);
+  }
 }
