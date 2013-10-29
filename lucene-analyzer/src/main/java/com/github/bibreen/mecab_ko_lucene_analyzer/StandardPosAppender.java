@@ -73,6 +73,11 @@ public class StandardPosAppender extends PosAppender {
     appendableSet.add(new Appendable(PosId.XSN, PosId.J));
     // 어미(E) + 조사(J) - 어미가 명사형 전성 어미인 경우
     appendableSet.add(new Appendable(PosId.E, PosId.J));
+    // 어미(E) + 보조 용언(VX) - 어미가 연결 어미인 경우
+    // '보조 용언은 띄어 씀을 원칙으로 하되, 경우에 따라 붙여 씀도 허용한다.'
+    // (http://www.korean.go.kr/09_new/dic/rule/rule01_0503.jsp)
+    // 위와 같은 이유로 어미와 보조 용언는 붙이지 않는다.
+    // appendableSet.add(new Appendable(PosId.E, PosId.VX));
     // 부사(MAG) + 조사(J)
     appendableSet.add(new Appendable(PosId.MAG, PosId.J));
     // 조사(J) + 조사(J)
