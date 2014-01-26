@@ -25,6 +25,7 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  */
 public class Pos {
   private String surface;
+  private String semantic;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
@@ -37,23 +38,34 @@ public class Pos {
   public static class Expression {
     final static int TERM_INDEX = 0;
     final static int TAG_INDEX = 1;
-    final static int POSITION_INCR_INDEX = 2;
-    final static int POSITION_LENGTH_INDEX = 3;
+    final static int SEMANTIC_INDEX = 2;
+    final static int POSITION_INCR_INDEX = 3;
+    final static int POSITION_LENGTH_INDEX = 4;
+  }
+  
+  public static class NodeIndex {
+    final static int SEMANTIC = 1;
+    final static int START_POS = 5;
+    final static int END_POS = 6;
+    final static int INDEX_EXPRESSION = 8;
   }
   
   public Pos(
       String surface,
+      String semantic,
       PosId posId,
       int startOffset,
       int positionIncr,
       int positionLength) {
     this.surface = surface;
+    this.semantic = semantic;
     this.posId = posId;
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
     this.positionIncr = positionIncr;
     this.positionLength = positionLength;
+
   }
   
   /**
@@ -65,6 +77,7 @@ public class Pos {
   public Pos(Node node, int prevEndOffset) {
     this(
         node.getSurface(),
+        convertSemantic(node.getFeature().split(",")[NodeIndex.SEMANTIC]),
         PosId.convertFrom(node.getPosid()),
         prevEndOffset + node.getRlength() - node.getLength(),
         1, 1);
@@ -83,9 +96,11 @@ public class Pos {
    * ex) 명사/NN/1/1
    */
   public Pos(String expression, int startOffset) {
+    System.out.println("expression:" + expression);
     String[] datas = expression.split("/");
     this.surface = datas[Expression.TERM_INDEX];
     this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
+    this.semantic = datas[Expression.SEMANTIC_INDEX];
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
@@ -96,32 +111,30 @@ public class Pos {
   }
   
   private void parseFeatureString() {
-    final int startPosPosition = 4;
-    final int endPosPosition = 5;
-    final int indexExpressionPosition = 7;
-    
     String feature = node.getFeature();
     String items[] = feature.split(",");
-    if (items.length < indexExpressionPosition + 1) {
+    if (items.length < NodeIndex.INDEX_EXPRESSION + 1) {
       throw new IllegalArgumentException(
           "Please, use higher version of mecab-ko-dic.");
     }
+    this.semantic = convertSemantic(items[NodeIndex.SEMANTIC]);
     if (posId == PosId.INFLECT || posId == PosId.PREANALYSIS) {
-      startPosId = PosId.convertFrom(items[startPosPosition].toUpperCase());
-      endPosId = PosId.convertFrom(items[endPosPosition].toUpperCase());
+      this.startPosId = PosId.convertFrom(items[NodeIndex.START_POS].toUpperCase());
+      this.endPosId = PosId.convertFrom(items[NodeIndex.END_POS].toUpperCase());
     } else if (posId == PosId.COMPOUND){
-      startPosId = PosId.N;
-      endPosId = PosId.N;
-      positionLength =
-          getCompoundNounPositionLength(items[indexExpressionPosition]);
+      this.startPosId = PosId.N;
+      this.endPosId = PosId.N;
+      this.positionLength =
+          getCompoundNounPositionLength(items[NodeIndex.INDEX_EXPRESSION]);
     } else {
       this.startPosId = posId;
       this.endPosId = posId;
     }
-    indexExpression = items[indexExpressionPosition];
+    indexExpression = items[NodeIndex.INDEX_EXPRESSION];
   }
   
   private int getCompoundNounPositionLength(String indexExpression) {
+    System.out.println(indexExpression);
     String firstToken = indexExpression.split("\\+")[1];
     final int postionLengthPosition = 3;
     return Integer.parseInt(firstToken.split("/")[postionLengthPosition]);
@@ -149,6 +162,10 @@ public class Pos {
   
   public int getSurfaceLength() {
     return surface.length();
+  }
+  
+  public String getSemantic() {
+    return semantic;
   }
   
   public String getIndexExpression() {
@@ -206,5 +223,9 @@ public class Pos {
         surface + "/" + posId + "/" +
         positionIncr + "/" + positionLength + "/" +
         getStartOffset() + "/" + getEndOffset());
+  }
+
+  private static String convertSemantic(String semantic) {
+    return semantic.equals("*") ? null : semantic;
   }
 }

@@ -55,7 +55,7 @@ public class TokenGenerator {
   
   private void convertNodeListToPosList(Node beginNode) {
     Node node = beginNode.getNext();
-    Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0, 0);
+    Pos prevPos = new Pos("", null, PosId.UNKNOWN, 0, 0, 0);
     while (!isEosNode(node)) {
       Pos curPos = new Pos(node, prevPos.getEndOffset());
       if (curPos.getPosId() == PosId.PREANALYSIS) {
@@ -194,7 +194,7 @@ public class TokenGenerator {
         eojeolPos = eojeolTokens.getFirst();
         eojeolPos.setPositionIncr(1);
       } else {
-        eojeolPos = new Pos(getTerm(), PosId.EOJEOL, getStartOffset(), 1, 1);
+        eojeolPos = new Pos(getTerm(), null, PosId.EOJEOL, getStartOffset(), 1, 1);
         eojeolTokens.addFirst(eojeolPos);
       }
       return eojeolPos;

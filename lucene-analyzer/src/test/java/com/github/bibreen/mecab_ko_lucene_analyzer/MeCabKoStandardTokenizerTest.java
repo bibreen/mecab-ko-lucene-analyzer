@@ -23,6 +23,8 @@ import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.tokenattributes.*;
 import org.junit.Test;
 
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticAttribute;
+
 public class MeCabKoStandardTokenizerTest {
   private String tokenizerToString(Tokenizer tokenizer) throws Exception {
     String result = new String();
@@ -35,10 +37,14 @@ public class MeCabKoStandardTokenizerTest {
         (CharTermAttribute)tokenizer.addAttribute(CharTermAttribute.class);
     TypeAttribute type =
         (TypeAttribute)tokenizer.addAttribute(TypeAttribute.class);
+    SemanticAttribute semantic = 
+        (SemanticAttribute)tokenizer.addAttribute(SemanticAttribute.class);
+        
 
     while (tokenizer.incrementToken() == true) {
       result += new String(term.buffer(), 0, term.length()) + ":";
       result += type.type() + ":";
+      result += semantic.semantic() + ":";
       result += String.valueOf(posIncrAtt.getPositionIncrement()) + ":";
       result += String.valueOf(posLengthAtt.getPositionLength()) + ":";
       result += String.valueOf(extOffset.startOffset()) + ":";
@@ -74,6 +80,17 @@ public class MeCabKoStandardTokenizerTest {
     assertEquals(false, tokenizer.incrementToken());
     tokenizer.close();
   }
+  
+  @Test
+  public void testSemanticSentence() throws Exception {
+    Tokenizer tokenizer = createTokenizer(
+        new StringReader("이승기 미근동"), 2);
+    assertEquals(
+        "꽃:N:1:1:0:1,배달:N:1:1:1:3,꽃:N:1:1:4:5,꽃망울:COMPOUND:0:2:4:7," +
+        "망울:N:1:1:5:7,오토바이:N:1:1:8:12,",
+        tokenizerToString(tokenizer));
+  }
+  
 
   @Test
   public void testShortSentence() throws Exception {

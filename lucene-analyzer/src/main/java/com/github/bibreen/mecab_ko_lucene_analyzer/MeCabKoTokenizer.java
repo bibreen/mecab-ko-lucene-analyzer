@@ -24,6 +24,7 @@ import org.apache.lucene.analysis.tokenattributes.*;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticAttribute;
 import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 
 /**
@@ -38,6 +39,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private PositionLengthAttribute posLenAtt;
   private OffsetAttribute offsetAtt;
   private TypeAttribute typeAtt;
+  private SemanticAttribute semanticAtt;
  
   private String document;
   private String mecabDicDir;
@@ -108,6 +110,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
     posLenAtt = addAttribute(PositionLengthAttribute.class);
     offsetAtt = addAttribute(OffsetAttribute.class);
     typeAtt = addAttribute(TypeAttribute.class);
+    semanticAtt = addAttribute(SemanticAttribute.class);
   }
 
   @Override
@@ -148,6 +151,7 @@ public final class MeCabKoTokenizer extends Tokenizer {
     charTermAtt.copyBuffer(
         token.getSurface().toCharArray(), 0, token.getSurfaceLength());
     typeAtt.setType(token.getPosId().toString());
+    semanticAtt.setSemantic(token.getSemantic());
   }
   
   @Override
