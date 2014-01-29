@@ -35,6 +35,7 @@ public class Pos {
   private String indexExpression;
   private Node node;
   
+  // index_expression
   public static class Expression {
     final static int TERM_INDEX = 0;
     final static int TAG_INDEX = 1;
@@ -43,10 +44,15 @@ public class Pos {
     final static int POSITION_LENGTH_INDEX = 4;
   }
   
+  // feature
   public static class NodeIndex {
+    final static int POS = 0;
     final static int SEMANTIC = 1;
+    final static int TYPE = 4;
+    // when Inflect
     final static int START_POS = 5;
     final static int END_POS = 6;
+    // when Compound
     final static int INDEX_EXPRESSION = 8;
   }
   
@@ -96,15 +102,14 @@ public class Pos {
    * ex) 명사/NN/1/1
    */
   public Pos(String expression, int startOffset) {
-    System.out.println("expression:" + expression);
     String[] datas = expression.split("/");
     this.surface = datas[Expression.TERM_INDEX];
     this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
-    this.semantic = datas[Expression.SEMANTIC_INDEX];
+    this.semantic = convertSemantic(datas[Expression.SEMANTIC_INDEX]);
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
-    this.positionIncr=
+    this.positionIncr =
         Integer.parseInt(datas[Expression.POSITION_INCR_INDEX]);
     this.positionLength =
         Integer.parseInt(datas[Expression.POSITION_LENGTH_INDEX]);
@@ -134,10 +139,8 @@ public class Pos {
   }
   
   private int getCompoundNounPositionLength(String indexExpression) {
-    System.out.println(indexExpression);
     String firstToken = indexExpression.split("\\+")[1];
-    final int postionLengthPosition = 3;
-    return Integer.parseInt(firstToken.split("/")[postionLengthPosition]);
+    return Integer.parseInt(firstToken.split("/")[Expression.POSITION_LENGTH_INDEX]);
   }
   
   public Node getNode() {
@@ -220,7 +223,9 @@ public class Pos {
   @Override
   public String toString() {
     return new String(
-        surface + "/" + posId + "/" +
+        surface + "/" + 
+        posId + "/" +
+        semantic + "/" +
         positionIncr + "/" + positionLength + "/" +
         getStartOffset() + "/" + getEndOffset());
   }

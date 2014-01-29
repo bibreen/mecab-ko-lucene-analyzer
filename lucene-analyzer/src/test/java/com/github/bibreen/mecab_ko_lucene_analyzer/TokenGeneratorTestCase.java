@@ -72,12 +72,9 @@ public class TokenGeneratorTestCase {
   }
   
   private static int getPosId(String feature) {
-    final int TAG_POSITION = 0;
-    final int TYPE_POSITION = 3;
-    
     String[] features = feature.split(",");
-    String tag = features[TAG_POSITION];
-    String type = features[TYPE_POSITION];
+    String pos = features[Pos.NodeIndex.POS];
+    String type = features[Pos.NodeIndex.TYPE];
     if (type.equals("Compound")) {
       return PosId.COMPOUND.getNum();
     } else if (type.equals("Inflect")) {
@@ -85,7 +82,7 @@ public class TokenGeneratorTestCase {
     } else if (type.equals("Preanalysis")) {
       return PosId.PREANALYSIS.getNum();
     } else {
-      return PosId.convertFrom(tag).getNum();
+      return PosId.convertFrom(pos).getNum();
     }
   }
 }
