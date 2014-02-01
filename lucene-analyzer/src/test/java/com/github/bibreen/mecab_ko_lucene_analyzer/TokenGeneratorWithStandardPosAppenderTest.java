@@ -432,7 +432,7 @@ public class TokenGeneratorWithStandardPosAppenderTest
   }
   
   @Test
-  public void testSemantic() {
+  public void testSemanteme() {
     Node node = mockNodeListFactory(new String[] {
         "남희석\tNNP,인명,T,남희석,*,*,*,*,*",
         "은\tJX,*,T,은,*,*,*,*,*",

@@ -55,7 +55,7 @@ public class TokenGenerator {
   
   private void convertNodeListToPosList(Node beginNode) {
     Node node = beginNode.getNext();
-    Pos prevPos = new Pos("", null, PosId.UNKNOWN, 0, 0, 0);
+    Pos prevPos = new Pos("", PosId.UNKNOWN, 0, 0, 0);
     while (!isEosNode(node)) {
       Pos curPos = new Pos(node, prevPos.getEndOffset());
       if (curPos.getPosId() == PosId.PREANALYSIS) {
@@ -194,10 +194,23 @@ public class TokenGenerator {
         eojeolPos = eojeolTokens.getFirst();
         eojeolPos.setPositionIncr(1);
       } else {
-        eojeolPos = new Pos(getTerm(), null, PosId.EOJEOL, getStartOffset(), 1, 1);
+        // TODO: 형태소 조합을 mophemes 필드에 넣자.
+        eojeolPos = new Pos(getTerm(), PosId.EOJEOL, getStartOffset(), 1, 1);
+        eojeolPos.setMophemes(concatMophemes(posList));
         eojeolTokens.addFirst(eojeolPos);
       }
       return eojeolPos;
+    }
+    
+    private String concatMophemes(List<Pos> poses) {
+      StringBuffer buff = new StringBuffer();
+      for (int i = 0; i < poses.size(); i++) {
+        if (i != 0) {
+          buff.append("+");
+        }
+        buff.append(poses.get(i).getMophemes());
+      }
+      return buff.toString();
     }
 
     private int recalcEojeolPositionLength(LinkedList<Pos> eojeolTokens) {

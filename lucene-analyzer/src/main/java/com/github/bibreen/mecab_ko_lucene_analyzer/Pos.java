@@ -25,7 +25,8 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  */
 public class Pos {
   private String surface;
-  private String semantic;
+  private String semanteme;
+  private String mophemes;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
@@ -39,7 +40,7 @@ public class Pos {
   public static class Expression {
     final static int TERM_INDEX = 0;
     final static int TAG_INDEX = 1;
-    final static int SEMANTIC_INDEX = 2;
+    final static int SEMANTEME_INDEX = 2;
     final static int POSITION_INCR_INDEX = 3;
     final static int POSITION_LENGTH_INDEX = 4;
   }
@@ -47,7 +48,7 @@ public class Pos {
   // feature
   public static class NodeIndex {
     final static int POS = 0;
-    final static int SEMANTIC = 1;
+    final static int SEMANTEME = 1;
     final static int TYPE = 4;
     // when Inflect
     final static int START_POS = 5;
@@ -58,20 +59,18 @@ public class Pos {
   
   public Pos(
       String surface,
-      String semantic,
       PosId posId,
       int startOffset,
       int positionIncr,
       int positionLength) {
+
     this.surface = surface;
-    this.semantic = semantic;
     this.posId = posId;
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
     this.positionIncr = positionIncr;
     this.positionLength = positionLength;
-
   }
   
   /**
@@ -83,16 +82,11 @@ public class Pos {
   public Pos(Node node, int prevEndOffset) {
     this(
         node.getSurface(),
-        convertSemantic(node.getFeature().split(",")[NodeIndex.SEMANTIC]),
         PosId.convertFrom(node.getPosid()),
         prevEndOffset + node.getRlength() - node.getLength(),
         1, 1);
     this.node = node;
-    if (posId == PosId.COMPOUND ||
-        posId == PosId.INFLECT ||
-        posId == PosId.PREANALYSIS) {
-      parseFeatureString();
-    }
+    parseFeatureString();
   }
   
   /**
@@ -105,7 +99,7 @@ public class Pos {
     String[] datas = expression.split("/");
     this.surface = datas[Expression.TERM_INDEX];
     this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
-    this.semantic = convertSemantic(datas[Expression.SEMANTIC_INDEX]);
+    this.semanteme = convertSemanteme(datas[Expression.SEMANTEME_INDEX]);
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
@@ -117,25 +111,26 @@ public class Pos {
   
   private void parseFeatureString() {
     String feature = node.getFeature();
+
+    String features[] = node.getFeature().split(",");
+    this.mophemes = node.getFeature().split(",")[NodeIndex.POS];
+    this.semanteme = convertSemanteme(features[NodeIndex.SEMANTEME]);
+
     String items[] = feature.split(",");
-    if (items.length < NodeIndex.INDEX_EXPRESSION + 1) {
-      throw new IllegalArgumentException(
-          "Please, use higher version of mecab-ko-dic.");
-    }
-    this.semantic = convertSemantic(items[NodeIndex.SEMANTIC]);
     if (posId == PosId.INFLECT || posId == PosId.PREANALYSIS) {
       this.startPosId = PosId.convertFrom(items[NodeIndex.START_POS].toUpperCase());
       this.endPosId = PosId.convertFrom(items[NodeIndex.END_POS].toUpperCase());
+      indexExpression = items[NodeIndex.INDEX_EXPRESSION];
     } else if (posId == PosId.COMPOUND){
       this.startPosId = PosId.N;
       this.endPosId = PosId.N;
       this.positionLength =
           getCompoundNounPositionLength(items[NodeIndex.INDEX_EXPRESSION]);
+      indexExpression = items[NodeIndex.INDEX_EXPRESSION];
     } else {
       this.startPosId = posId;
       this.endPosId = posId;
     }
-    indexExpression = items[NodeIndex.INDEX_EXPRESSION];
   }
   
   private int getCompoundNounPositionLength(String indexExpression) {
@@ -167,8 +162,12 @@ public class Pos {
     return surface.length();
   }
   
-  public String getSemantic() {
-    return semantic;
+  public String getMophemes() {
+    return mophemes;
+  }
+  
+  public String getSemanteme() {
+    return semanteme;
   }
   
   public String getIndexExpression() {
@@ -219,18 +218,22 @@ public class Pos {
   public void setPositionLength(int val) {
     positionLength = val;
   }
+  
+  public void setMophemes(String mophemes) {
+    this.mophemes = mophemes;
+  }
 
   @Override
   public String toString() {
     return new String(
         surface + "/" + 
         posId + "/" +
-        semantic + "/" +
+        semanteme + "/" +
         positionIncr + "/" + positionLength + "/" +
         getStartOffset() + "/" + getEndOffset());
   }
 
-  private static String convertSemantic(String semantic) {
-    return semantic.equals("*") ? null : semantic;
+  private static String convertSemanteme(String semanteme) {
+    return semanteme.equals("*") ? null : semanteme;
   }
 }

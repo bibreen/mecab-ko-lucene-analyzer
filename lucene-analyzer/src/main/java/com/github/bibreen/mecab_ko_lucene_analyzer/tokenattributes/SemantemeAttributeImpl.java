@@ -19,35 +19,35 @@ import org.apache.lucene.util.AttributeImpl;
 import org.apache.lucene.util.AttributeReflector;
 
 
-public class SemanticAttributeImpl extends AttributeImpl implements
-    SemanticAttribute, Cloneable {
+public class SemantemeAttributeImpl extends AttributeImpl implements
+    SemantemeAttribute, Cloneable {
 
-  private String semantic;
+  private String semanteme;
 
   @Override
-  public String semantic() {
-    return semantic;
+  public String semanteme() {
+    return semanteme;
   }
 
   @Override
-  public void setSemantic(String semantic) {
-    this.semantic = semantic;
+  public void setSemanteme(String semanteme) {
+    this.semanteme = semanteme;
   }
 
   @Override
   public void clear() {
-    this.semantic = null;
+    this.semanteme = null;
 
   }
 
   @Override
   public void copyTo(AttributeImpl target) {
-    SemanticAttribute targetAttribute = (SemanticAttribute) target;
-    targetAttribute.setSemantic(semantic);                                                           
+    SemantemeAttribute targetAttribute = (SemantemeAttribute) target;
+    targetAttribute.setSemanteme(semanteme);                                                           
   }
   
   @Override
   public void reflectWith(AttributeReflector reflector) {                        
-    reflector.reflect(SemanticAttribute.class, "semantic", semantic());
+    reflector.reflect(SemantemeAttribute.class, "semanteme", semanteme());
   }
 }

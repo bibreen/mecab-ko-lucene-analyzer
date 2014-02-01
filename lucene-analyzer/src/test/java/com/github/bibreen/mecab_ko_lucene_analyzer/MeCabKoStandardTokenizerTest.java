@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.tokenattributes.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemantemeAttribute;
 
 public class MeCabKoStandardTokenizerTest {
   private String tokenizerToString(Tokenizer tokenizer) throws Exception {
@@ -38,14 +38,14 @@ public class MeCabKoStandardTokenizerTest {
         (CharTermAttribute)tokenizer.addAttribute(CharTermAttribute.class);
     TypeAttribute type =
         (TypeAttribute)tokenizer.addAttribute(TypeAttribute.class);
-    SemanticAttribute semantic = 
-        (SemanticAttribute)tokenizer.addAttribute(SemanticAttribute.class);
+    SemantemeAttribute semanteme = 
+        (SemantemeAttribute)tokenizer.addAttribute(SemantemeAttribute.class);
         
 
     while (tokenizer.incrementToken() == true) {
       result += new String(term.buffer(), 0, term.length()) + ":";
       result += type.type() + ":";
-      result += semantic.semantic() + ":";
+      result += semanteme.semanteme() + ":";
       result += String.valueOf(posIncrAtt.getPositionIncrement()) + ":";
       result += String.valueOf(posLengthAtt.getPositionLength()) + ":";
       result += String.valueOf(extOffset.startOffset()) + ":";
@@ -83,7 +83,7 @@ public class MeCabKoStandardTokenizerTest {
   }
   
   @Test
-  public void testSemanticSentence() throws Exception {
+  public void testSemantemeSentence() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("이승기 미근동"), 2);
     assertEquals(

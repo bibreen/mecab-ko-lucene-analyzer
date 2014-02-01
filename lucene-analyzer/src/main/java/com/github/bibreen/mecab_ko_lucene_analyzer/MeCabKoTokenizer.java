@@ -20,11 +20,16 @@ import java.io.Reader;
 import java.util.Queue;
 
 import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.tokenattributes.*;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
+import org.apache.lucene.analysis.tokenattributes.PositionLengthAttribute;
+import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.MophemesAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemantemeAttribute;
 import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 
 /**
@@ -39,7 +44,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private PositionLengthAttribute posLenAtt;
   private OffsetAttribute offsetAtt;
   private TypeAttribute typeAtt;
-  private SemanticAttribute semanticAtt;
+  private MophemesAttribute mophemesAtt;
+  private SemantemeAttribute semantemeAtt;
  
   private String document;
   private String mecabDicDir;
@@ -110,7 +116,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
     posLenAtt = addAttribute(PositionLengthAttribute.class);
     offsetAtt = addAttribute(OffsetAttribute.class);
     typeAtt = addAttribute(TypeAttribute.class);
-    semanticAtt = addAttribute(SemanticAttribute.class);
+    mophemesAtt = addAttribute(MophemesAttribute.class);
+    semantemeAtt = addAttribute(SemantemeAttribute.class);
   }
 
   @Override
@@ -151,7 +158,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
     charTermAtt.copyBuffer(
         token.getSurface().toCharArray(), 0, token.getSurfaceLength());
     typeAtt.setType(token.getPosId().toString());
-    semanticAtt.setSemantic(token.getSemantic());
+    mophemesAtt.setMophemes(token.getMophemes());
+    semantemeAtt.setSemanteme(token.getSemanteme());
   }
   
   @Override
