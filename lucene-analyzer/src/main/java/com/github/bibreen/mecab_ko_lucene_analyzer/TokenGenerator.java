@@ -194,9 +194,8 @@ public class TokenGenerator {
         eojeolPos = eojeolTokens.getFirst();
         eojeolPos.setPositionIncr(1);
       } else {
-        // TODO: 형태소 조합을 mophemes 필드에 넣자.
         eojeolPos = new Pos(getTerm(), PosId.EOJEOL, getStartOffset(), 1, 1);
-        eojeolPos.setMophemes(concatMophemes(posList));
+        eojeolPos.setPos(concatMophemes(posList));
         eojeolTokens.addFirst(eojeolPos);
       }
       return eojeolPos;

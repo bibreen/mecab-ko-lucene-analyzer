@@ -17,7 +17,7 @@ package com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes;
 
 import org.apache.lucene.util.Attribute;
 
-public interface SemantemeAttribute extends Attribute {
-  public String semanteme();
-  public void setSemanteme(String semanteme);
+public interface SemanticClassAttribute extends Attribute {
+  public String semanticClass();
+  public void setSemanteme(String semanticClass);
 }

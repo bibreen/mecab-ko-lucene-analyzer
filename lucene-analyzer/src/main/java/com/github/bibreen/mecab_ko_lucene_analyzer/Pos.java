@@ -25,8 +25,8 @@ import com.github.bibreen.mecab_ko_lucene_analyzer.PosIdManager.PosId;
  */
 public class Pos {
   private String surface;
-  private String semanteme;
-  private String mophemes;
+  private String semanticClass;
+  private String pos;
   private PosId posId;
   private PosId startPosId;
   private PosId endPosId;
@@ -37,12 +37,12 @@ public class Pos {
   private Node node;
   
   // index_expression
-  public static class Expression {
-    final static int TERM_INDEX = 0;
-    final static int TAG_INDEX = 1;
-    final static int SEMANTEME_INDEX = 2;
-    final static int POSITION_INCR_INDEX = 3;
-    final static int POSITION_LENGTH_INDEX = 4;
+  public static class ExpressionIndex {
+    final static int TERM = 0;
+    final static int TAG = 1;
+    final static int SEMANTIC_CLASS = 2;
+    final static int POSITION_INCR = 3;
+    final static int POSITION_LENGTH = 4;
   }
   
   // feature
@@ -97,24 +97,24 @@ public class Pos {
    */
   public Pos(String expression, int startOffset) {
     String[] datas = expression.split("/");
-    this.surface = datas[Expression.TERM_INDEX];
-    this.posId = PosId.convertFrom(datas[Expression.TAG_INDEX]);
-    this.semanteme = convertSemanteme(datas[Expression.SEMANTEME_INDEX]);
+    this.surface = datas[ExpressionIndex.TERM];
+    this.posId = PosId.convertFrom(datas[ExpressionIndex.TAG]);
+    this.semanticClass = convertSemanteme(datas[ExpressionIndex.SEMANTIC_CLASS]);
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
     this.positionIncr =
-        Integer.parseInt(datas[Expression.POSITION_INCR_INDEX]);
+        Integer.parseInt(datas[ExpressionIndex.POSITION_INCR]);
     this.positionLength =
-        Integer.parseInt(datas[Expression.POSITION_LENGTH_INDEX]);
+        Integer.parseInt(datas[ExpressionIndex.POSITION_LENGTH]);
   }
   
   private void parseFeatureString() {
     String feature = node.getFeature();
 
     String features[] = node.getFeature().split(",");
-    this.mophemes = node.getFeature().split(",")[NodeIndex.POS];
-    this.semanteme = convertSemanteme(features[NodeIndex.SEMANTEME]);
+    this.pos = features[NodeIndex.POS];
+    this.semanticClass = convertSemanteme(features[NodeIndex.SEMANTEME]);
 
     String items[] = feature.split(",");
     if (posId == PosId.INFLECT || posId == PosId.PREANALYSIS) {
@@ -135,7 +135,7 @@ public class Pos {
   
   private int getCompoundNounPositionLength(String indexExpression) {
     String firstToken = indexExpression.split("\\+")[1];
-    return Integer.parseInt(firstToken.split("/")[Expression.POSITION_LENGTH_INDEX]);
+    return Integer.parseInt(firstToken.split("/")[ExpressionIndex.POSITION_LENGTH]);
   }
   
   public Node getNode() {
@@ -163,11 +163,11 @@ public class Pos {
   }
   
   public String getMophemes() {
-    return mophemes;
+    return pos;
   }
   
   public String getSemanteme() {
-    return semanteme;
+    return semanticClass;
   }
   
   public String getIndexExpression() {
@@ -219,8 +219,8 @@ public class Pos {
     positionLength = val;
   }
   
-  public void setMophemes(String mophemes) {
-    this.mophemes = mophemes;
+  public void setPos(String pos) {
+    this.pos = pos;
   }
 
   @Override
@@ -228,12 +228,12 @@ public class Pos {
     return new String(
         surface + "/" + 
         posId + "/" +
-        semanteme + "/" +
+        semanticClass + "/" +
         positionIncr + "/" + positionLength + "/" +
         getStartOffset() + "/" + getEndOffset());
   }
 
-  private static String convertSemanteme(String semanteme) {
-    return semanteme.equals("*") ? null : semanteme;
+  private static String convertSemanteme(String semanticClass) {
+    return semanticClass.equals("*") ? null : semanticClass;
   }
 }

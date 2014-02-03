@@ -28,8 +28,8 @@ import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.chasen.mecab.Lattice;
 import org.chasen.mecab.Tagger;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.MophemesAttribute;
-import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemantemeAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.PartOfSpeechAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticClassAttribute;
 import com.github.bibreen.mecab_ko_mecab_loader.MeCabLoader;
 
 /**
@@ -44,8 +44,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
   private PositionLengthAttribute posLenAtt;
   private OffsetAttribute offsetAtt;
   private TypeAttribute typeAtt;
-  private MophemesAttribute mophemesAtt;
-  private SemantemeAttribute semantemeAtt;
+  private PartOfSpeechAttribute posAtt;
+  private SemanticClassAttribute semanticClassAtt;
  
   private String document;
   private String mecabDicDir;
@@ -116,8 +116,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
     posLenAtt = addAttribute(PositionLengthAttribute.class);
     offsetAtt = addAttribute(OffsetAttribute.class);
     typeAtt = addAttribute(TypeAttribute.class);
-    mophemesAtt = addAttribute(MophemesAttribute.class);
-    semantemeAtt = addAttribute(SemantemeAttribute.class);
+    posAtt = addAttribute(PartOfSpeechAttribute.class);
+    semanticClassAtt = addAttribute(SemanticClassAttribute.class);
   }
 
   @Override
@@ -158,8 +158,8 @@ public final class MeCabKoTokenizer extends Tokenizer {
     charTermAtt.copyBuffer(
         token.getSurface().toCharArray(), 0, token.getSurfaceLength());
     typeAtt.setType(token.getPosId().toString());
-    mophemesAtt.setMophemes(token.getMophemes());
-    semantemeAtt.setSemanteme(token.getSemanteme());
+    posAtt.setMophemes(token.getMophemes());
+    semanticClassAtt.setSemanteme(token.getSemanteme());
   }
   
   @Override

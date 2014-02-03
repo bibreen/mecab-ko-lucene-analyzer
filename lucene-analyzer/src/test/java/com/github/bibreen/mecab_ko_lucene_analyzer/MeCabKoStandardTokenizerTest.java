@@ -24,7 +24,7 @@ import org.apache.lucene.analysis.tokenattributes.*;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemantemeAttribute;
+import com.github.bibreen.mecab_ko_lucene_analyzer.tokenattributes.SemanticClassAttribute;
 
 public class MeCabKoStandardTokenizerTest {
   private String tokenizerToString(Tokenizer tokenizer) throws Exception {
@@ -38,14 +38,14 @@ public class MeCabKoStandardTokenizerTest {
         (CharTermAttribute)tokenizer.addAttribute(CharTermAttribute.class);
     TypeAttribute type =
         (TypeAttribute)tokenizer.addAttribute(TypeAttribute.class);
-    SemantemeAttribute semanteme = 
-        (SemantemeAttribute)tokenizer.addAttribute(SemantemeAttribute.class);
+    SemanticClassAttribute semanticClass = 
+        (SemanticClassAttribute)tokenizer.addAttribute(SemanticClassAttribute.class);
         
 
     while (tokenizer.incrementToken() == true) {
       result += new String(term.buffer(), 0, term.length()) + ":";
       result += type.type() + ":";
-      result += semanteme.semanteme() + ":";
+      result += semanticClass.semanticClass() + ":";
       result += String.valueOf(posIncrAtt.getPositionIncrement()) + ":";
       result += String.valueOf(posLengthAtt.getPositionLength()) + ":";
       result += String.valueOf(extOffset.startOffset()) + ":";
