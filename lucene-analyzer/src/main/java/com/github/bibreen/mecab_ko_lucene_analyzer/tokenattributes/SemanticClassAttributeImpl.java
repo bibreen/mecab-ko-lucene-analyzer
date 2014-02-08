@@ -30,7 +30,7 @@ public class SemanticClassAttributeImpl extends AttributeImpl implements
   }
 
   @Override
-  public void setSemanteme(String semanticClass) {
+  public void setSemanticClass(String semanticClass) {
     this.semanticClass = semanticClass;
   }
 
@@ -43,7 +43,7 @@ public class SemanticClassAttributeImpl extends AttributeImpl implements
   @Override
   public void copyTo(AttributeImpl target) {
     SemanticClassAttribute targetAttribute = (SemanticClassAttribute) target;
-    targetAttribute.setSemanteme(semanticClass);                                                           
+    targetAttribute.setSemanticClass(semanticClass);
   }
   
   @Override

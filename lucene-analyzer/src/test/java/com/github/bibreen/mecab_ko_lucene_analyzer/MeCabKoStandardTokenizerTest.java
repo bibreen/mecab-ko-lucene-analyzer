@@ -83,7 +83,7 @@ public class MeCabKoStandardTokenizerTest {
   }
   
   @Test
-  public void testSemantemeSentence() throws Exception {
+  public void testSemanticClassSentence() throws Exception {
     Tokenizer tokenizer = createTokenizer(
         new StringReader("이승기 미근동"), 2);
     assertEquals(

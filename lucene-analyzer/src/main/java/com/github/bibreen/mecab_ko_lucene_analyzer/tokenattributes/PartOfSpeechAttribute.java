@@ -4,5 +4,5 @@ import org.apache.lucene.util.Attribute;
 
 public interface PartOfSpeechAttribute extends Attribute {
   public String partOfSpeech();
-  public void setMophemes(String partOfSpeech);
+  public void setPartOfSpeech(String partOfSpeech);
 }

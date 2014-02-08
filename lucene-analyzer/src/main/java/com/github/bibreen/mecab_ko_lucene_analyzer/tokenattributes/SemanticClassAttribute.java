@@ -19,5 +19,5 @@ import org.apache.lucene.util.Attribute;
 
 public interface SemanticClassAttribute extends Attribute {
   public String semanticClass();
-  public void setSemanteme(String semanticClass);
+  public void setSemanticClass(String semanticClass);
 }

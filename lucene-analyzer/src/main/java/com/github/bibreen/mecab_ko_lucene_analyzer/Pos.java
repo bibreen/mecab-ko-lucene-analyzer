@@ -48,7 +48,7 @@ public class Pos {
   // feature
   public static class NodeIndex {
     final static int POS = 0;
-    final static int SEMANTEME = 1;
+    final static int SEMANTIC_CLASS = 1;
     final static int TYPE = 4;
     // when Inflect
     final static int START_POS = 5;
@@ -99,7 +99,7 @@ public class Pos {
     String[] datas = expression.split("/");
     this.surface = datas[ExpressionIndex.TERM];
     this.posId = PosId.convertFrom(datas[ExpressionIndex.TAG]);
-    this.semanticClass = convertSemanteme(datas[ExpressionIndex.SEMANTIC_CLASS]);
+    this.semanticClass = convertSemanticClass(datas[ExpressionIndex.SEMANTIC_CLASS]);
     startPosId = posId;
     endPosId = posId;
     this.startOffset = startOffset;
@@ -114,7 +114,7 @@ public class Pos {
 
     String features[] = node.getFeature().split(",");
     this.pos = features[NodeIndex.POS];
-    this.semanticClass = convertSemanteme(features[NodeIndex.SEMANTEME]);
+    this.semanticClass = convertSemanticClass(features[NodeIndex.SEMANTIC_CLASS]);
 
     String items[] = feature.split(",");
     if (posId == PosId.INFLECT || posId == PosId.PREANALYSIS) {
@@ -166,7 +166,7 @@ public class Pos {
     return pos;
   }
   
-  public String getSemanteme() {
+  public String getSemanticClass() {
     return semanticClass;
   }
   
@@ -233,7 +233,7 @@ public class Pos {
         getStartOffset() + "/" + getEndOffset());
   }
 
-  private static String convertSemanteme(String semanticClass) {
+  private static String convertSemanticClass(String semanticClass) {
     return semanticClass.equals("*") ? null : semanticClass;
   }
 }

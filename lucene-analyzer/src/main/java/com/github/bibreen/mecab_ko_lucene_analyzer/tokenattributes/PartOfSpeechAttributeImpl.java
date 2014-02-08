@@ -14,7 +14,7 @@ public class PartOfSpeechAttributeImpl extends AttributeImpl implements
   }
 
   @Override
-  public void setMophemes(String partOfSpeech) {
+  public void setPartOfSpeech(String partOfSpeech) {
     this.partOfSpeech = partOfSpeech;
   }
 
@@ -26,7 +26,7 @@ public class PartOfSpeechAttributeImpl extends AttributeImpl implements
   @Override
   public void copyTo(AttributeImpl target) {
     PartOfSpeechAttribute targetAttribute = (PartOfSpeechAttribute) target;
-    targetAttribute.setMophemes(partOfSpeech);
+    targetAttribute.setPartOfSpeech(partOfSpeech);
   }
   
   @Override

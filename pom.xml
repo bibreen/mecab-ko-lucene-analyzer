@@ -4,7 +4,7 @@
 
   <groupId>com.github.bibreen</groupId>
   <artifactId>mecab-ko</artifactId>
-  <version>0.13.3-SNAPSHOT</version>
+  <version>0.14.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>mecab_ko_lucene_analyzer</name>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>0.90.2</version>
+      <version>0.90.10</version>
     </dependency>
     <dependency>
       <groupId>org.chasen.mecab</groupId>
