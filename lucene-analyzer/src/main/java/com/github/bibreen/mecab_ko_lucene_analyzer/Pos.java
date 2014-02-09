@@ -99,6 +99,7 @@ public class Pos {
     String[] datas = expression.split("/");
     this.surface = datas[ExpressionIndex.TERM];
     this.posId = PosId.convertFrom(datas[ExpressionIndex.TAG]);
+    this.pos = datas[ExpressionIndex.TAG];
     this.semanticClass = convertSemanticClass(datas[ExpressionIndex.SEMANTIC_CLASS]);
     startPosId = posId;
     endPosId = posId;
