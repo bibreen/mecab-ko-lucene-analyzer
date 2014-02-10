@@ -103,12 +103,7 @@ __주의 사항__
     $ java -Djava.library.path="/usr/local/lib" -jar start.jar
 
 ### 분석 결과
-
-    input:
-    mecab-ko-lucene-analyzer를 사용하여 한글 검색서버를 개발하세요.
-
-    output:
-    mecab | ko | lucene | analyzer를 | analyzer | 사용하여 | 사용 | 한글 | 검색 | 서버를 | 서버 | 개발하세요 | 개발
+![박보영이 서울에 갔다.](https://github.com/bibreen/mecab-ko-lucene-analyzer/blob/master/solr_demo.png)
 
 ## 라이센스
 Copyright 2013 Yongwoon Lee, Yungho Yu.
