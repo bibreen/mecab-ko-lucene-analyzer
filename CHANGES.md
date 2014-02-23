@@ -1,5 +1,10 @@
 # mecab-ko-lucene-analyzer ChangeLog
 
+## 0.14.0
+  - mecab-ko-dic-1.5.0 의 변경된 사전 포멧에 따른 변경.
+  - 세분화된 형태소명 partOfSpeech 필드 추가.
+  - '인명', '지명' 의 의미 분류를 나타내는 semanticClass 필드 추가.
+
 ## 0.13.3
   - StandardPosAppender에서 체언 접두사(XPN) 인덱싱 방식 변경. (독립적인 토큰이 되도록 변경)
 
