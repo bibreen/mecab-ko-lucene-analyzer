@@ -2,7 +2,7 @@
 mecab-ko Analysis Plugin은 [mecab-ko-lucene-analyzer](https://github.com/bibreen/mecab-ko-lucene-analyzer)를 elasticsearch에서 사용하는 플러그인 입니다.
 
   - 이 플러그인은 `mecab_ko_standard_tokenizer`를 포함하고 있습니다.
-  - elasticsearch 0.90.3 버전 기준으로 작성되었습니다.
+  - elasticsearch 0.90.3 버전 기준으로 작성되었습니다. (elasticsearch 1.0.0 검증 완료)
 
 ## 설명
 
@@ -32,7 +32,7 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     $ sudo cp libMeCab.so /usr/local/lib
 
 ### ElasticSearch Plugin 설치
-    bin/plugin --install analysis-mecab-ko-0.13.3 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.13.3.zip
+    bin/plugin --install analysis-mecab-ko-0.14.0 --url https://bitbucket.org/bibreen/mecab-ko-dic/downloads/elasticsearch-analysis-mecab-ko-0.14.0.zip
 
 ### ElasticSearch 실행
     $ ./elasticsearch -f -Djava.library.path=/usr/local/lib
