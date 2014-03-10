@@ -26,9 +26,11 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
 [mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
 
     $ tar zxvf mecab-java-XX.tar.gz
-    $ mv mecab-java-XX mecab-XX/java
-    $ cd mecab-XX/java
-    $ make # Makefile 에서 INCLUDE 변수에 java include directory를 설정해준다.
+    $ cd mecab-java-XX
+    $ vi Makefile
+        # java path 설정. ; INCLUDE=/usr/local/jdk1.6.0_41/include 
+        # "-cp ." 추가.   ; $(JAVAC) -cp . test.java
+    $ make 
     $ sudo cp libMeCab.so /usr/local/lib
 
 ### ElasticSearch Plugin 설치
