@@ -36,9 +36,8 @@ Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
 [mecab-java-XX.tar.gz](http://code.google.com/p/mecab/downloads/list) 를 다운받아 설치합니다.
 
     $ tar zxvf mecab-java-XX.tar.gz
-    $ mv mecab-java-XX mecab-XX/java
-    $ cd mecab-XX/java
-    $ make # Makefile 에서 INCLUDE 변수에 java include directory를 설정해준다.
+    $ cd mecab-java-XX
+    $ make # Makefile 에서 INCLUDE 변수에 java include directory를 설정해준다. 테스트코드 컴파일 오류시 "-cp ." 추가.
     $ cp MeCab.jar [solr 디렉터리]/example/lib/ext # JNI 클래스는 System classpath에 위치해야 합니다. Jetty는 기본값으로 $jetty.home/lib/ext에 추가적인 jar를 넣을 수 있습니다.
     $ sudo cp libMeCab.so /usr/local/lib
 
