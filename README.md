@@ -37,7 +37,11 @@ Solr example(Solr with Jetty)의 사용을 기준으로 설명합니다.
 
     $ tar zxvf mecab-java-XX.tar.gz
     $ cd mecab-java-XX
-    $ make # Makefile 에서 INCLUDE 변수에 java include directory를 설정해준다. 테스트코드 컴파일 오류시 "-cp ." 추가.
+    $ vi Makefile
+        # java path 설정.               ; INCLUDE=/usr/local/jdk1.6.0_41/include 
+        # OpenJDK 사용시 "-O1" 로 변경. ; $(CXX) -O1 -c -fpic $(TARGET)_wrap.cxx  $(INC)
+        # "-cp ." 추가.                 ; $(JAVAC) -cp . test.java
+    $ make 
     $ cp MeCab.jar [solr 디렉터리]/example/lib/ext # JNI 클래스는 System classpath에 위치해야 합니다. Jetty는 기본값으로 $jetty.home/lib/ext에 추가적인 jar를 넣을 수 있습니다.
     $ sudo cp libMeCab.so /usr/local/lib
 
