@@ -28,8 +28,9 @@ mecab-ko와 mecab-ko-dic의 설치는 [mecab-ko-dic 설명](https://bitbucket.or
     $ tar zxvf mecab-java-XX.tar.gz
     $ cd mecab-java-XX
     $ vi Makefile
-        # java path 설정. ; INCLUDE=/usr/local/jdk1.6.0_41/include 
-        # "-cp ." 추가.   ; $(JAVAC) -cp . test.java
+        # java path 설정.               ; INCLUDE=/usr/local/jdk1.6.0_41/include 
+        # OpenJDK 사용시 "-O1" 로 변경. ; $(CXX) -O1 -c -fpic $(TARGET)_wrap.cxx  $(INC)
+        # "-cp ." 추가.                 ; $(JAVAC) -cp . test.java
     $ make 
     $ sudo cp libMeCab.so /usr/local/lib
 
